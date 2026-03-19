@@ -234,6 +234,18 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
     const flipAudioRef = useRef(new Audio(pasaHojaAudio));
     const isNavigatingFromTOC = useRef(false);
     const bookContainerRef = useRef<HTMLDivElement>(null);
+ 
+    // Auto-detect single page for small screens
+    useEffect(() => {
+        const checkMobile = () => {
+            if (window.innerWidth < 1024) {
+                setIsSinglePage(true);
+            }
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     // --- DOCUMENT-LEVEL NATIVE NAVIGATION SHIELD ---
     useEffect(() => {
