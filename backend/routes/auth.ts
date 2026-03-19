@@ -1,0 +1,64 @@
+
+import { Router } from 'express';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { Client } from 'pg';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+import client from '../db';
+
+const router = Router();
+const SECRET = process.env.JWT_SECRET || 'secret';
+
+// Login Route
+router.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    console.log('Login attempt:', email);
+
+    try {
+        const result = await client.query('SELECT * FROM users WHERE email = $1', [email]);
+        const user = result.rows[0];
+
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
+
+        // Check password (if hashed) behavior
+        // const valid = await bcrypt.compare(password, user.password_hash);
+        // For debugging/demo seeds without valid bcrypt hash, we might need a fallback or ensure seeds are valid.
+        // The seeds have a valid bcrypt hash for 'password123' ($2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW)
+
+        const valid = await bcrypt.compare(password, user.password_hash);
+        if (!valid) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
+
+        // Get Role
+        const roleRes = await client.query(`
+            SELECT r.name FROM roles r
+            JOIN user_roles ur ON ur.role_id = r.id
+            WHERE ur.user_id = $1
+        `, [user.id]);
+
+        const role = roleRes.rows[0]?.name || 'user';
+
+        // Sign Token
+        const token = jwt.sign({ id: user.id, email: user.email, role }, SECRET, { expiresIn: '24h' });
+
+        // Log Activity
+        await client.query(`
+            INSERT INTO activity_log (user_id, action, module, details, ip, user_agent)
+            VALUES ($1, 'LOGIN', 'AUTH', 'User logged in', $2, $3)
+        `, [user.id, req.ip, req.headers['user-agent']]);
+
+        res.json({ token, user: { id: user.id, name: user.name, email: user.email, role } });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+export default router;
