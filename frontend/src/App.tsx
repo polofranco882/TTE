@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Book, User, Lock, ArrowRight, Activity, Settings as SettingsIcon } from 'lucide-react';
+import { Book, User, Lock, ArrowRight, Activity, Settings as SettingsIcon, Download } from 'lucide-react';
 import AdminDashboard from './AdminDashboard';
 import Sidebar from './Sidebar';
 import Library from './Library';
@@ -100,6 +100,28 @@ function App() {
     setUserRole(null);
     localStorage.removeItem('token');
     localStorage.removeItem('role');
+  };
+
+  // PWA Install Logic
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+  useEffect(() => {
+    const handler = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const installPWA = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setDeferredPrompt(null);
+      showNotification('¡Aplicación instalada con éxito!', 'success');
+    }
   };
 
   if (!token) {
@@ -208,6 +230,21 @@ function App() {
                 </>
               )}
             </motion.button>
+
+            {deferredPrompt && (
+              <motion.button
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={installPWA}
+                type="button"
+                className="w-full bg-white/5 hover:bg-white/10 text-white py-3 rounded-xl font-medium text-sm border border-white/10 transition-all flex items-center justify-center gap-2 group mt-2"
+              >
+                <Download className="w-4 h-4 text-accent" />
+                Instalar App en este equipo
+              </motion.button>
+            )}
           </form>
 
           <div className="mt-8 pt-6 border-t border-white/10">
