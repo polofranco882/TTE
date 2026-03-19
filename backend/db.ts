@@ -4,9 +4,11 @@ import { Client } from 'pg';
 // dotenv removed to prevent interference
 // dotenv.config();
 
+const isLocal = !process.env.DATABASE_URL || process.env.DATABASE_URL.includes('localhost') || process.env.DATABASE_URL.includes('127.0.0.1');
+
 const client = new Client({
     connectionString: process.env.DATABASE_URL || 'postgresql://postgres:sa@localhost:5432/TTE',
-    ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
+    ssl: isLocal ? false : { rejectUnauthorized: false }
 });
 
 client.connect()
