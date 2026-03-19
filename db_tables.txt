@@ -1,0 +1,13 @@
+Connected successfully!
+Current Database: defaultdb
+
+Tables in public schema:
+ No tables found in public schema!
+
+Users and Roles in app schema:
+ - [1] admin@tte.com (Admin User) -> Role: admin
+ - [2] manager@tte.com (Manager User) -> Role: manager
+ - [3] user1@tte.com (User One) -> Role: user
+ - [4] user2@tte.com (User Two) -> Role: user
+ - [5] Wilmerguerrero.ed.d@gmail.com (Wilmer Guerrero) -> Role: admin
+ - [6] Ramirezoyarzo69@gmail.com (Raúl Ramírez) -> Role: admin

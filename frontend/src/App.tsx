@@ -153,17 +153,17 @@ function App() {
         >
           <div className="flex justify-center mb-8">
             <motion.div
-              animate={{ rotate: [0, 10, -10, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="bg-accent p-4 rounded-2xl shadow-lg shadow-accent/30"
+              animate={{ rotate: [0, 5, -5, 0] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+              className="bg-accent p-1 rounded-3xl shadow-2x shadow-accent/40 border-2 border-white/20 overflow-hidden"
             >
-              <Book className="w-10 h-10 text-white" />
+              <img src="/pwa-icon-512.png" alt="TTE Logo" className="w-20 h-20 object-contain" />
             </motion.div>
           </div>
 
           <div className="text-center mb-10">
-            <h1 className="text-4xl font-bold text-white mb-2 tracking-tight drop-shadow-lg">Welcome Back</h1>
-            <p className="text-gray-300">Unlock your potential with our extensive library.</p>
+            <h1 className="text-4xl font-black text-white mb-2 tracking-tighter drop-shadow-2xl">TRAILS TO ENGLISH</h1>
+            <p className="text-gray-300 font-medium">Plataforma interactiva de aprendizaje.</p>
           </div>
 
           <form onSubmit={login} className="space-y-6">
@@ -175,7 +175,7 @@ function App() {
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   className="w-full pl-12 pr-4 py-4 rounded-xl border border-white/10 bg-black/20 focus:bg-black/40 focus:border-accent focus:ring-4 focus:ring-accent/20 transition-all outline-none text-white placeholder-gray-500"
-                  placeholder="name@company.com"
+                  placeholder="usuario@tte.com"
                 />
               </div>
             </div>

@@ -1,0 +1,31 @@
+--- SYNC START ---
+Connected to both databases!
+Cleaning remote tables...
+Syncing table: roles...
+ - Synced 3 rows
+Syncing table: users...
+ - Synced 6 rows
+Syncing table: user_roles...
+ - Synced 6 rows
+Syncing table: books...
+ - Inserted book: Book 3 (ID: 8)
+ - Inserted book: Book 4 (ID: 9)
+ - Inserted book: Book 5 (ID: 10)
+ - Inserted book: Book 6 (ID: 11)
+ - Inserted book: Book 7 (ID: 12)
+ - Inserted book: Book 8 (ID: 13)
+ - Inserted book: Book 9 (ID: 14)
+ - Inserted book: Book 10 (ID: 15)
+ - Inserted book: Book 11 (ID: 16)
+ - Inserted book: Book 12 (ID: 17)
+ - Inserted book: TRAILS TO ENGLISH PRUEBA (ID: 6)
+ - Inserted book: TRAILS TO ENGLISH (ID: 7)
+ - Synced 12 rows
+Syncing table: user_books...
+ - Synced 23 rows
+Syncing table: book_contents...
+ - Synced 418 rows
+Syncing table: ai_config...
+ - Synced 1 rows
+
+SUCCESS: All data migrated successfully!

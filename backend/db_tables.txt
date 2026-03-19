@@ -1,0 +1,16 @@
+Connected successfully!
+Current Database: TTE
+
+Tables in public schema:
+ - activity_log
+ - ai_config
+ - book_contents
+ - books
+ - roles
+ - sessions
+ - user_books
+ - user_roles
+ - users
+
+Users and Roles in app schema:
+ (Could not read users/roles tables)
