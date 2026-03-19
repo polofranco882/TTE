@@ -30,14 +30,14 @@ const reportRoutes = require('./routes/reports').default || require('./routes/re
 const adminRoutes = require('./routes/admin').default || require('./routes/admin');
 const aiRoutes = require('./routes/ai').default || require('./routes/ai');
 
-app.use('/api/auth', authRoutes);
-app.use('/api/books', bookRoutes);
-app.use('/api/reports', reportRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/ai', aiRoutes);
+app.use('/auth', authRoutes);
+app.use('/books', bookRoutes);
+app.use('/reports', reportRoutes);
+app.use('/admin', adminRoutes);
+app.use('/ai', aiRoutes);
 
 // Protected Route Example
-app.get('/api/protected', (req, res) => {
+app.get('/protected', (req, res) => {
     res.json({ message: 'This is protected' });
 });
 
