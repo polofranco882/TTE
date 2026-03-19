@@ -12,7 +12,7 @@ export default defineConfig({
       manifest: {
         name: 'Trails to English',
         short_name: 'TTE',
-        description: 'Plataforma educativa interactiva para el aprendizaje de inglés.',
+        description: 'Interactive educational platform for English learning.',
         theme_color: '#1e40af',
         background_color: '#ffffff',
         display: 'standalone',

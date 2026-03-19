@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import {
     Book, LayoutDashboard, PieChart, Settings, LogOut,
-    ChevronLeft, Menu, BookOpen
+    ChevronLeft, Menu, BookOpen, Star
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -50,6 +50,7 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen, userRole, onLogou
     if (isEditorActive) return null;
 
     const menuItems = [
+        { id: 'welcome', label: 'Welcome', icon: <Star size={20} />, roles: ['user', 'admin', 'manager'] },
         { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} />, roles: ['admin', 'manager'] },
         { id: 'books', label: 'Library', icon: <Book size={20} />, roles: ['user', 'admin', 'manager'] },
         { id: 'admin-books', label: 'Manage Books', icon: <BookOpen size={20} />, roles: ['admin', 'manager'] },

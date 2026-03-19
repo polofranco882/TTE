@@ -818,7 +818,7 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                         <input
                                             id="b-search-input"
                                             className="w-full bg-transparent outline-none border-none text-white text-lg placeholder-white/30 pl-8 pr-10"
-                                            placeholder="Busca por Título, Tema o Número de Página..."
+                                            placeholder="Search by Title, Topic or Page Number..."
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
                                             autoComplete="off"
@@ -865,12 +865,12 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                             ))
                                         ) : (
                                             <div className="text-center py-8 text-white/40">
-                                                No se encontraron resultados para "{searchQuery}"
+                                                No results found for "{searchQuery}"
                                             </div>
                                         )
                                     ) : (
                                         <div className="text-center py-6 text-white/20 text-sm">
-                                            Escribe un contenido para buscar...
+                                            Type content to search...
                                         </div>
                                     )}
                                 </div>
@@ -1116,7 +1116,7 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                                                             if (isTrue !== undefined) {
                                                                                 if (isTrue) {
                                                                                     setValidationState('correct');
-                                                                                    setValidationMessage('¡Excelente progreso!');
+                                                                                    setValidationMessage('Excellent progress!');
                                                                                     addXp(10);
                                                                                     incrementStreak();
                                                                                 } else {
@@ -1243,13 +1243,13 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                                 <path d="M12 5.67l-1 5 3 2-2 4 4 4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"></path>
                                             </svg>
                                         </div>
-                                        <h2 className="text-2xl font-black text-gray-800 mb-2">¡Te quedaste sin vidas!</h2>
-                                        <p className="text-gray-500 font-medium mb-8">Debes esperar a que se regeneren o volver a intentarlo más tarde.</p>
+                                        <h2 className="text-2xl font-black text-gray-800 mb-2">You ran out of lives!</h2>
+                                        <p className="text-gray-500 font-medium mb-8">You must wait for them to regenerate or try again later.</p>
                                         <button onClick={() => { setIsGameOver(false); setViewState('INDEX'); }} className="w-full py-4 rounded-2xl bg-[#ff4b4b] text-white font-black hover:bg-[#ea2b2b] shadow-[0_4px_0_0_#ba1919] transition-all active:translate-y-1 active:shadow-none mb-3">
-                                            SALIR DE LA LECCIÓN
+                                            EXIT LESSON
                                         </button>
                                         <button onClick={() => setIsGameOver(false)} className="w-full py-4 text-gray-400 font-bold hover:bg-gray-100 rounded-2xl transition-colors">
-                                            MÁS TARDE
+                                            LATER
                                         </button>
                                     </div>
                                 </div>

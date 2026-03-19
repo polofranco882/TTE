@@ -569,18 +569,18 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                     >
                         <div className="w-[220px] flex flex-col h-full"> 
                             <div className="h-10 flex items-center justify-between px-4 border-b border-white/5">
-                                <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Componentes</p>
+                                <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Components</p>
                                 <button onClick={() => setLeftPanelOpen(false)} className="p-1 hover:bg-white/5 rounded text-gray-500"><ChevronLeft size={14} /></button>
                             </div>
                             <div className="flex-1 overflow-y-auto p-3 custom-scrollbar space-y-4">
                                 {[
                                     {
                                         group: 'Multimedia', items: [
-                                            { type: 'text', icon: <Type size={14} />, label: 'Texto' },
-                                            { type: 'image', icon: <ImageIcon size={14} />, label: 'Imagen' },
+                                            { type: 'text', icon: <Type size={14} />, label: 'Text' },
+                                            { type: 'image', icon: <ImageIcon size={14} />, label: 'Image' },
                                             { type: 'video', icon: <Video size={14} />, label: 'Video' },
                                             { type: 'audio', icon: <Music size={14} />, label: 'Audio' },
-                                            { type: 'button', icon: <MousePointer2 size={14} />, label: 'Botón' }
+                                            { type: 'button', icon: <MousePointer2 size={14} />, label: 'Button' }
                                         ]
                                     },
                                     {
@@ -590,13 +590,13 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                             { type: 'word_bank', icon: <ListOrdered size={14} />, label: 'Word Bank' },
                                             { type: 'matching', icon: <CopyCheck size={14} />, label: 'Matching' },
                                             { type: 'cloze', icon: <Edit3 size={14} />, label: 'Cloze' },
-                                            { type: 'completion', icon: <CheckCircle2 size={14} />, label: 'Completar' }
+                                            { type: 'completion', icon: <CheckCircle2 size={14} />, label: 'Completion' }
                                         ]
                                     },
                                     {
-                                        group: 'Linguística', items: [
+                                        group: 'Linguistic', items: [
                                             { type: 'listen_tap', icon: <Headphones size={14} />, label: 'Audio Tap' },
-                                            { type: 'dictation', icon: <CheckSquare size={14} />, label: 'Dictado' },
+                                            { type: 'dictation', icon: <CheckSquare size={14} />, label: 'Dictation' },
                                             { type: 'pronunciation', icon: <Mic size={14} />, label: 'Speak' }
                                         ]
                                     }
@@ -646,14 +646,14 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                             <div className="px-4 py-2 bg-[#161930] border border-white/10 rounded-full shadow-2xl flex items-center gap-3 backdrop-blur-md">
                                 <div className="flex items-center gap-2">
                                     <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Modo Vista Previa</span>
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Preview Mode</span>
                                 </div>
                                 <div className="h-4 w-[1px] bg-white/10" />
                                 <button
                                     onClick={(e) => { e.stopPropagation(); setIsPreview(false); }}
                                     className="flex items-center gap-2 px-3 py-1.5 bg-accent hover:bg-orange-600 text-white rounded-lg text-[10px] font-black transition-all active:scale-95 shadow-lg shadow-accent/20"
                                 >
-                                    <Eye size={14} /> SALIR DE PREVIEW
+                                    <Eye size={14} /> EXIT PREVIEW
                                 </button>
                             </div>
                         </motion.div>
@@ -697,7 +697,7 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                             setConfirmModal({
                                                 isOpen: true,
                                                 title: "Clear Current Page",
-                                                description: "¿Seguro que quieres borrar todos los elementos de esta hoja?",
+                                                description: "Are you sure you want to clear all elements from this page?",
                                                 onConfirm: () => { setBlocks([]); setSelectedIds([]); }
                                             });
                                         }}
@@ -786,10 +786,10 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                                 if (isTrue !== undefined) {
                                                     if (isTrue) {
                                                         setValidationState('correct');
-                                                        setValidationMessage('¡Excelente progreso! (Preview)');
+                                                        setValidationMessage('Excellent progress! (Preview)');
                                                     } else {
                                                         setValidationState('incorrect');
-                                                        setValidationMessage('Respuesta incorrecta (Preview)');
+                                                        setValidationMessage('Incorrect answer (Preview)');
                                                     }
                                                 }
                                             }}
@@ -1218,7 +1218,7 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                                         />
                                                         <div className="bg-accent/10 border border-accent/20 rounded-lg p-2 mt-2">
                                                             <p className="text-[8px] text-gray-400 leading-relaxed">
-                                                                Use <span className="text-white font-bold">|</span> to separate multiple valid answers. E.g. <span className="text-white">Good morning|Buenos días</span>
+                                                                Use <span className="text-white font-bold">|</span> to separate multiple valid answers. E.g. <span className="text-white">Good morning|Good afternoon</span>
                                                             </p>
                                                         </div>
                                                         {selectedBlock.data.correctAnswer && selectedBlock.data.correctAnswer.includes('|') && (
@@ -1314,7 +1314,7 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                             {selectedBlock.type === 'completion' && (
                                                 <div className="space-y-4 pt-4 border-t border-white/5">
                                                     <div>
-                                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1 block">Título / Prefijo</label>
+                                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1 block">Title / Prefix</label>
                                                         <input
                                                             type="text"
                                                             value={selectedBlock.data.title || ''}
@@ -1324,7 +1324,7 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                                         />
                                                     </div>
                                                     <div>
-                                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1 block">Respuestas Correctas</label>
+                                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1 block">Correct Answers</label>
                                                         <input
                                                             type="text"
                                                             value={(selectedBlock.data.correctAnswers || []).join(' | ')}
@@ -1332,7 +1332,7 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                                             className="w-full bg-[#0c0e1a] border border-white/10 rounded-lg p-2 text-xs text-white"
                                                             placeholder="night | NIGHT | evening"
                                                         />
-                                                        <p className="text-[7px] text-gray-500 mt-1 uppercase">Separa con Pipe (|) para múltiples opciones</p>
+                                                        <p className="text-[7px] text-gray-500 mt-1 uppercase">Separate with Pipe (|) for multiple options</p>
                                                     </div>
                                                     <div className="flex items-center gap-2">
                                                         <input
@@ -1341,11 +1341,11 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                                             onChange={(e) => updateBlockData(selectedId!, { caseSensitive: e.target.checked })}
                                                             className="rounded border-white/10 bg-black"
                                                         />
-                                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Sensible a Mayúsculas</label>
+                                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Case Sensitive</label>
                                                     </div>
 
                                                     <div className="space-y-2 pt-2 border-t border-white/5">
-                                                        <p className="text-[8px] text-gray-500 font-bold uppercase tracking-widest">Diseño Premium (Preset)</p>
+                                                        <p className="text-[8px] text-gray-500 font-bold uppercase tracking-widest">Premium Design (Preset)</p>
                                                         <div className="grid grid-cols-2 gap-2">
                                                             {[
                                                                 { id: 'classic', label: 'Classic' },
@@ -1366,43 +1366,43 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
 
                                                     <div className="grid grid-cols-2 gap-3 pt-2">
                                                         <div className="flex flex-col gap-1">
-                                                            <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Color Título</span>
+                                                            <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Title Color</span>
                                                             <input type="color" value={selectedBlock.data.titleColor || '#000000'} onChange={e => updateBlockData(selectedId!, { titleColor: e.target.value })} className="w-full h-8 rounded cursor-pointer bg-transparent border-0" />
                                                         </div>
                                                         <div className="flex flex-col gap-1">
-                                                            <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Color Texto</span>
+                                                            <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Text Color</span>
                                                             <input type="color" value={selectedBlock.data.textColor || '#000000'} onChange={e => updateBlockData(selectedId!, { textColor: e.target.value })} className="w-full h-8 rounded cursor-pointer bg-transparent border-0" />
                                                         </div>
                                                     </div>
 
                                                     <div className="grid grid-cols-2 gap-3">
                                                         <div className="flex flex-col gap-1">
-                                                            <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Fuente</span>
+                                                            <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Font</span>
                                                             <select 
                                                                 value={selectedBlock.data.fontFamily || 'serif'} 
                                                                 onChange={e => updateBlockData(selectedId!, { fontFamily: e.target.value })}
                                                                 className="bg-[#0c0e1a] border border-white/10 rounded-lg p-2 text-[10px] text-white outline-none"
                                                             >
-                                                                <option value="serif">Serif (Clásico)</option>
+                                                                <option value="serif">Serif (Classic)</option>
                                                                 <option value="sans-serif">Sans Serif</option>
                                                                 <option value="monospace">Monospace</option>
                                                             </select>
                                                         </div>
                                                         <div className="flex flex-col gap-1">
-                                                            <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Tamaño</span>
+                                                            <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Size</span>
                                                             <input type="number" value={selectedBlock.data.fontSize || 24} onChange={e => updateBlockData(selectedId!, { fontSize: parseInt(e.target.value) })} className="w-full bg-[#0c0e1a] border border-white/10 rounded-lg p-2 text-xs text-white" />
                                                         </div>
                                                     </div>
 
                                                     <div className="pt-2 border-t border-white/5">
-                                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1 block">Ancho del Campo (px / auto)</label>
+                                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1 block">Field Width (px / auto)</label>
                                                         <div className="flex gap-2">
                                                             <input
                                                                 type="text"
                                                                 value={selectedBlock.data.inputWidth || 'auto'}
                                                                 onChange={(e) => updateBlockData(selectedId!, { inputWidth: e.target.value })}
                                                                 className="flex-1 bg-[#0c0e1a] border border-white/10 rounded-lg p-2 text-xs text-white"
-                                                                placeholder="auto o 300"
+                                                                placeholder="auto or 300"
                                                             />
                                                             <button
                                                                 onClick={() => updateBlockData(selectedId!, { inputWidth: 'auto' })}
@@ -1411,16 +1411,16 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                                                 AUTO
                                                             </button>
                                                         </div>
-                                                        <p className="text-[7px] text-gray-500 mt-1 uppercase">Ingresa un número (px) o usa AUTO para ajuste dinámico</p>
+                                                        <p className="text-[7px] text-gray-500 mt-1 uppercase">Enter a number (px) or use AUTO for dynamic adjustment</p>
                                                     </div>
 
                                                     <div className="pt-2 border-t border-white/5">
-                                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1 block">Alineación del Contenido</label>
+                                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1 block">Content Alignment</label>
                                                         <div className="grid grid-cols-3 gap-2">
                                                             {[
-                                                                { id: 'left', label: 'Izquierda' },
-                                                                { id: 'center', label: 'Centro' },
-                                                                { id: 'right', label: 'Derecha' }
+                                                                { id: 'left', label: 'Left' },
+                                                                { id: 'center', label: 'Center' },
+                                                                { id: 'right', label: 'Right' }
                                                             ].map(a => (
                                                                 <button
                                                                     key={a.id}
@@ -1434,7 +1434,7 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                                     </div>
 
                                                     <div className="pt-2 border-t border-white/5">
-                                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1 block">Formato de Texto</label>
+                                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1 block">Text Format</label>
                                                         <div className="flex gap-2">
                                                             <button 
                                                                 onClick={() => updateBlockData(selectedId!, { bold: !selectedBlock.data.bold })}
@@ -1760,19 +1760,19 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                                         {selectedBlock.data.frameStyle && selectedBlock.data.frameStyle !== 'none' && (
                                                             <div className="grid grid-cols-3 gap-2 mt-1">
                                                                 <div className="flex flex-col items-center gap-1">
-                                                                    <span className="text-[7px] text-gray-600 uppercase tracking-widest">Fondo</span>
+                                                                    <span className="text-[7px] text-gray-600 uppercase tracking-widest">Background</span>
                                                                     <input type="color" value={selectedBlock.data.frameBg || '#0a1560'}
                                                                         onChange={e => updateBlockData(selectedId!, { frameBg: e.target.value })}
                                                                         className="w-full h-7 rounded cursor-pointer bg-transparent border-0" />
                                                                 </div>
                                                                 <div className="flex flex-col items-center gap-1">
-                                                                    <span className="text-[7px] text-gray-600 uppercase tracking-widest">Borde ext</span>
+                                                                    <span className="text-[7px] text-gray-600 uppercase tracking-widest">Outer Border</span>
                                                                     <input type="color" value={selectedBlock.data.frameBorder || '#cc0000'}
                                                                         onChange={e => updateBlockData(selectedId!, { frameBorder: e.target.value })}
                                                                         className="w-full h-7 rounded cursor-pointer bg-transparent border-0" />
                                                                 </div>
                                                                 <div className="flex flex-col items-center gap-1">
-                                                                    <span className="text-[7px] text-gray-600 uppercase tracking-widest">Borde int</span>
+                                                                    <span className="text-[7px] text-gray-600 uppercase tracking-widest">Inner Border</span>
                                                                     <input type="color" value={selectedBlock.data.frameInner || '#ffffff'}
                                                                         onChange={e => updateBlockData(selectedId!, { frameInner: e.target.value })}
                                                                         className="w-full h-7 rounded cursor-pointer bg-transparent border-0" />

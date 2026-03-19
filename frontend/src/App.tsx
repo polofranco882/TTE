@@ -9,6 +9,7 @@ import AdminBooks from './AdminBooks';
 import BookReader from './BookReader';
 import Settings from './Settings';
 import loginBg from './assets/final-login-bg.jpg';
+import WelcomeScreen from './WelcomeScreen';
 import Notification, { type NotificationType } from './components/Notification';
 
 
@@ -64,7 +65,7 @@ function App() {
         localStorage.setItem('token', data.token);
         localStorage.setItem('role', data.user.role);
         // Set default tab based on role
-        setActiveTab(['admin', 'manager'].includes(data.user.role) ? 'dashboard' : 'books');
+        setActiveTab(['admin', 'manager'].includes(data.user.role) ? 'dashboard' : 'welcome');
         showNotification('Welcome back! Login successful.', 'success');
       } else {
         if (res.status === 401) {
@@ -85,7 +86,9 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [activeTab, setActiveTab] = useState(() => {
     const role = localStorage.getItem('role');
-    return (role === 'admin' || role === 'manager') ? 'dashboard' : 'books';
+    const token = localStorage.getItem('token');
+    if (!token) return 'welcome';
+    return (role === 'admin' || role === 'manager') ? 'dashboard' : 'welcome';
   });
   const [selectedBookId, setSelectedBookId] = useState<number | null>(null);
 
@@ -120,7 +123,7 @@ function App() {
     const { outcome } = await deferredPrompt.userChoice;
     if (outcome === 'accepted') {
       setDeferredPrompt(null);
-      showNotification('¡Aplicación instalada con éxito!', 'success');
+      showNotification('App installed successfully!', 'success');
     }
   };
 
@@ -185,7 +188,7 @@ function App() {
 
           <div className="text-center mb-10">
             <h1 className="text-4xl font-black text-white mb-2 tracking-tighter drop-shadow-2xl">TRAILS TO ENGLISH</h1>
-            <p className="text-gray-300 font-medium">Plataforma interactiva de aprendizaje.</p>
+            <p className="text-gray-300 font-medium">Interactive learning platform.</p>
           </div>
 
           <form onSubmit={login} className="space-y-6">
@@ -241,8 +244,10 @@ function App() {
                 type="button"
                 className="w-full bg-white/5 hover:bg-white/10 text-white py-3 rounded-xl font-medium text-sm border border-white/10 transition-all flex items-center justify-center gap-2 group mt-2"
               >
-                <Download className="w-4 h-4 text-accent" />
-                Instalar App en este equipo
+                <button type="button" className="flex items-center gap-2">
+                  <Download className="w-4 h-4 text-accent" />
+                  Install App on this device
+                </button>
               </motion.button>
             )}
           </form>
@@ -278,6 +283,10 @@ function App() {
           onNotify={showNotification}
         />
       );
+    }
+
+    if (activeTab === 'welcome') {
+      return <WelcomeScreen onStartLearning={() => setActiveTab('books')} />;
     }
 
     if (activeTab === 'dashboard') {

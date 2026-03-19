@@ -90,13 +90,13 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange }) => {
                     defaultValue="p"
                     className="h-6 bg-black/40 border border-white/10 rounded text-[10px] font-bold text-gray-300 px-1 mr-0.5 outline-none cursor-pointer hover:border-accent"
                 >
-                    <option value="p">Párrafo</option>
-                    <option value="h1">Título 1</option>
-                    <option value="h2">Título 2</option>
-                    <option value="h3">Título 3</option>
-                    <option value="h4">Título 4</option>
-                    <option value="blockquote">Cita</option>
-                    <option value="pre">Código</option>
+                    <option value="p">Paragraph</option>
+                    <option value="h1">Title 1</option>
+                    <option value="h2">Title 2</option>
+                    <option value="h3">Title 3</option>
+                    <option value="h4">Title 4</option>
+                    <option value="blockquote">Quote</option>
+                    <option value="pre">Code</option>
                 </select>
 
                 {/* Font Family */}
@@ -138,50 +138,50 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange }) => {
                 <Divider />
 
                 {/* Bold, Italic, Underline, Strike */}
-                <ToolBtn onClick={() => exec('bold')} title="Negrita (Ctrl+B)" active={isActive('bold')}>
+                <ToolBtn onClick={() => exec('bold')} title="Bold (Ctrl+B)" active={isActive('bold')}>
                     <strong>B</strong>
                 </ToolBtn>
-                <ToolBtn onClick={() => exec('italic')} title="Cursiva (Ctrl+I)" active={isActive('italic')}>
+                <ToolBtn onClick={() => exec('italic')} title="Italic (Ctrl+I)" active={isActive('italic')}>
                     <em>I</em>
                 </ToolBtn>
-                <ToolBtn onClick={() => exec('underline')} title="Subrayado (Ctrl+U)" active={isActive('underline')}>
+                <ToolBtn onClick={() => exec('underline')} title="Underline (Ctrl+U)" active={isActive('underline')}>
                     <span className="underline">U</span>
                 </ToolBtn>
-                <ToolBtn onClick={() => exec('strikeThrough')} title="Tachado" active={isActive('strikeThrough')}>
+                <ToolBtn onClick={() => exec('strikeThrough')} title="Strikethrough" active={isActive('strikeThrough')}>
                     <span className="line-through">S</span>
                 </ToolBtn>
 
                 <Divider />
 
                 {/* Alignment */}
-                <ToolBtn onClick={() => exec('justifyLeft')} title="Alinear izquierda">
+                <ToolBtn onClick={() => exec('justifyLeft')} title="Align Left">
                     <svg viewBox="0 0 16 16" width="12" fill="currentColor"><rect x="1" y="2" width="14" height="1.5" rx="1" /><rect x="1" y="6" width="9" height="1.5" rx="1" /><rect x="1" y="10" width="14" height="1.5" rx="1" /><rect x="1" y="14" width="9" height="1.5" rx="1" /></svg>
                 </ToolBtn>
-                <ToolBtn onClick={() => exec('justifyCenter')} title="Centrar">
+                <ToolBtn onClick={() => exec('justifyCenter')} title="Center">
                     <svg viewBox="0 0 16 16" width="12" fill="currentColor"><rect x="1" y="2" width="14" height="1.5" rx="1" /><rect x="3.5" y="6" width="9" height="1.5" rx="1" /><rect x="1" y="10" width="14" height="1.5" rx="1" /><rect x="3.5" y="14" width="9" height="1.5" rx="1" /></svg>
                 </ToolBtn>
-                <ToolBtn onClick={() => exec('justifyRight')} title="Alinear derecha">
+                <ToolBtn onClick={() => exec('justifyRight')} title="Align Right">
                     <svg viewBox="0 0 16 16" width="12" fill="currentColor"><rect x="1" y="2" width="14" height="1.5" rx="1" /><rect x="6" y="6" width="9" height="1.5" rx="1" /><rect x="1" y="10" width="14" height="1.5" rx="1" /><rect x="6" y="14" width="9" height="1.5" rx="1" /></svg>
                 </ToolBtn>
-                <ToolBtn onClick={() => exec('justifyFull')} title="Justificar">
+                <ToolBtn onClick={() => exec('justifyFull')} title="Justify">
                     <svg viewBox="0 0 16 16" width="12" fill="currentColor"><rect x="1" y="2" width="14" height="1.5" rx="1" /><rect x="1" y="6" width="14" height="1.5" rx="1" /><rect x="1" y="10" width="14" height="1.5" rx="1" /><rect x="1" y="14" width="14" height="1.5" rx="1" /></svg>
                 </ToolBtn>
 
                 <Divider />
 
                 {/* Lists */}
-                <ToolBtn onClick={() => exec('insertUnorderedList')} title="Lista con viñetas">
+                <ToolBtn onClick={() => exec('insertUnorderedList')} title="Bulleted List">
                     <svg viewBox="0 0 16 16" width="12" fill="currentColor"><circle cx="2" cy="4" r="1.5" /><rect x="5" y="3" width="10" height="2" rx="1" /><circle cx="2" cy="8" r="1.5" /><rect x="5" y="7" width="10" height="2" rx="1" /><circle cx="2" cy="12" r="1.5" /><rect x="5" y="11" width="10" height="2" rx="1" /></svg>
                 </ToolBtn>
-                <ToolBtn onClick={() => exec('insertOrderedList')} title="Lista numerada">
+                <ToolBtn onClick={() => exec('insertOrderedList')} title="Numbered List">
                     <svg viewBox="0 0 16 16" width="12" fill="currentColor"><text x="0" y="5" fontSize="5" fontWeight="bold">1.</text><rect x="5" y="3" width="10" height="2" rx="1" /><text x="0" y="9.5" fontSize="5" fontWeight="bold">2.</text><rect x="5" y="7" width="10" height="2" rx="1" /><text x="0" y="14" fontSize="5" fontWeight="bold">3.</text><rect x="5" y="11" width="10" height="2" rx="1" /></svg>
                 </ToolBtn>
 
                 {/* Indent */}
-                <ToolBtn onClick={() => exec('indent')} title="Aumentar sangría">
+                <ToolBtn onClick={() => exec('indent')} title="Increase Indent">
                     <svg viewBox="0 0 16 16" width="12" fill="currentColor"><rect x="1" y="2" width="14" height="1.5" rx="1" /><rect x="5" y="6" width="10" height="1.5" rx="1" /><rect x="5" y="10" width="10" height="1.5" rx="1" /><rect x="1" y="14" width="14" height="1.5" rx="1" /><polygon points="1,6 1,11 4,8.5" /></svg>
                 </ToolBtn>
-                <ToolBtn onClick={() => exec('outdent')} title="Disminuir sangría">
+                <ToolBtn onClick={() => exec('outdent')} title="Decrease Indent">
                     <svg viewBox="0 0 16 16" width="12" fill="currentColor"><rect x="1" y="2" width="14" height="1.5" rx="1" /><rect x="5" y="6" width="10" height="1.5" rx="1" /><rect x="5" y="10" width="10" height="1.5" rx="1" /><rect x="1" y="14" width="14" height="1.5" rx="1" /><polygon points="4,6 4,11 1,8.5" /></svg>
                 </ToolBtn>
 
@@ -191,7 +191,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange }) => {
                 <div className="relative">
                     <button
                         onMouseDown={(e) => { e.preventDefault(); setColorTarget(colorTarget === 'fore' ? null : 'fore'); }}
-                        title="Color de texto"
+                        title="Text Color"
                         className="flex flex-col items-center justify-center w-7 h-7 rounded hover:bg-white/10 transition-all"
                     >
                         <span className="text-[11px] font-black text-white leading-none">A</span>
@@ -199,7 +199,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange }) => {
                     </button>
                     {colorTarget === 'fore' && (
                         <div className="absolute top-9 left-0 z-50 bg-[#1a1f35] border border-white/20 rounded-xl p-3 shadow-2xl">
-                            <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2">Color de texto</p>
+                            <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2">Text Color</p>
                             <input type="color" value={foreColor}
                                 onChange={(e) => {
                                     setForeColor(e.target.value);
@@ -223,7 +223,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange }) => {
                 <div className="relative">
                     <button
                         onMouseDown={(e) => { e.preventDefault(); setColorTarget(colorTarget === 'hilite' ? null : 'hilite'); }}
-                        title="Color de resaltado"
+                        title="Highlight Color"
                         className="flex flex-col items-center justify-center w-7 h-7 rounded hover:bg-white/10 transition-all"
                     >
                         <svg viewBox="0 0 14 14" width="12" fill="currentColor" className="text-yellow-400">
@@ -234,7 +234,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange }) => {
                     </button>
                     {colorTarget === 'hilite' && (
                         <div className="absolute top-9 left-0 z-50 bg-[#1a1f35] border border-white/20 rounded-xl p-3 shadow-2xl">
-                            <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2">Resaltado</p>
+                            <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2">Highlight</p>
                             <input type="color" value={hiliteColor}
                                 onChange={(e) => {
                                     setHiliteColor(e.target.value);
@@ -260,41 +260,41 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange }) => {
                 <Divider />
 
                 {/* Superscript / Subscript */}
-                <ToolBtn onClick={() => exec('superscript')} title="Superíndice">
+                <ToolBtn onClick={() => exec('superscript')} title="Superscript">
                     x<sup className="text-[8px]">2</sup>
                 </ToolBtn>
-                <ToolBtn onClick={() => exec('subscript')} title="Subíndice">
+                <ToolBtn onClick={() => exec('subscript')} title="Subscript">
                     x<sub className="text-[8px]">2</sub>
                 </ToolBtn>
 
                 {/* Link */}
                 <ToolBtn
                     onClick={() => {
-                        const url = prompt('URL del enlace:');
+                        const url = prompt('Link URL:');
                         if (url) exec('createLink', url);
                     }}
-                    title="Insertar enlace"
+                    title="Insert Link"
                 >
                     🔗
                 </ToolBtn>
-                <ToolBtn onClick={() => exec('unlink')} title="Eliminar enlace">
+                <ToolBtn onClick={() => exec('unlink')} title="Remove Link">
                     🔗<span className="text-red-400 -ml-1 text-[8px]">✕</span>
                 </ToolBtn>
 
                 <Divider />
 
                 {/* Horizontal rule */}
-                <ToolBtn onClick={() => exec('insertHorizontalRule')} title="Línea horizontal">—</ToolBtn>
+                <ToolBtn onClick={() => exec('insertHorizontalRule')} title="Horizontal Line">—</ToolBtn>
 
                 {/* Clear formatting */}
-                <ToolBtn onClick={() => exec('removeFormat')} title="Limpiar formato">
+                <ToolBtn onClick={() => exec('removeFormat')} title="Clear Formatting">
                     <svg viewBox="0 0 16 16" width="12" fill="currentColor"><path d="M3 2l10 12M5 2h8l-3 5h3l-5 7" /><line x1="1" y1="14" x2="6" y2="14" strokeWidth="2" stroke="currentColor" /></svg>
                 </ToolBtn>
 
                 {/* Undo / redo */}
                 <Divider />
-                <ToolBtn onClick={() => exec('undo')} title="Deshacer (Ctrl+Z)">↩</ToolBtn>
-                <ToolBtn onClick={() => exec('redo')} title="Rehacer (Ctrl+Y)">↪</ToolBtn>
+                <ToolBtn onClick={() => exec('undo')} title="Undo (Ctrl+Z)">↩</ToolBtn>
+                <ToolBtn onClick={() => exec('redo')} title="Redo (Ctrl+Y)">↪</ToolBtn>
             </div>
 
             {/* ── EDITOR AREA ── */}

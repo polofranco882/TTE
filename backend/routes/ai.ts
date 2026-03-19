@@ -507,62 +507,62 @@ async function generateWithGemini(config: any, prompt: string, assetType: string
                 imageDataUri = `data:image/png;base64,${imageData}`;
             }
 
-            const layoutPrompt = `Actúa como un generador de páginas educativas estilo Duolingo.
+            const layoutPrompt = `Act as a Duolingo-style educational page generator.
 
-OBJETIVO
-- Genera una NUEVA página web interactiva basada en la imagen adjunta.
-- La actividad debe poder contestarse dentro de la página (inputs, selección, etc.) y validarse con retroalimentación inmediata.
+OBJECTIVE
+- Generate a NEW interactive web page based on the attached image.
+- The activity must be answerable within the page (inputs, selection, etc.) and validated with immediate feedback.
 
-ENTRADA
-- Recibirás 1 imagen (la actividad original).
-- Debes interpretar su contenido y convertirlo en una experiencia interactiva equivalente, sin cambiar la intención pedagógica.
+INPUT
+- You will receive 1 image (the original activity).
+- You must interpret its content and convert it into an equivalent interactive experience, without changing the pedagogical intent.
 
-SALIDA OBLIGATORIA (ENTREGABLE)
-Devuelve SOLO:
-1) Un archivo HTML completo (con CSS y JS embebidos) listo para pegar y ejecutar.
-2) Incluye todo en un solo archivo (sin dependencias externas).
-3) La página debe ser responsive (móvil y escritorio).
-4) NO devuelvas markdown, NO uses backticks, SOLO el código HTML desde <!DOCTYPE html> hasta </html>.
+MANDATORY OUTPUT (DELIVERABLE)
+Return ONLY:
+1) A complete HTML file (with embedded CSS and JS) ready to paste and run.
+2) Include everything in a single file (no external dependencies).
+3) The page must be responsive (mobile and desktop).
+4) DO NOT return markdown, DO NOT use backticks, ONLY the HTML code from <!DOCTYPE html> to </html>.
 
-REQUISITOS DE DISEÑO (ESTILO DUOLINGO)
-- UI limpia, moderna, amigable.
-- Progreso superior (barra o pasos).
-- Tarjetas (cards) para cada pregunta.
-- Botones: "Comprobar", "Siguiente", "Reintentar".
-- Estados visuales: correcto/incorrecto (con mensajes cortos).
-- Animaciones suaves (sin exagerar).
-- Usa un color de fondo oscuro o moderno (#1a1a2e, #0f1129) o uno que combine con la imagen.
+DESIGN REQUIREMENTS (DUOLINGO STYLE)
+- Clean, modern, friendly UI.
+- Top progress (bar or steps).
+- Cards for each question.
+- Buttons: "Check", "Next", "Retry".
+- Visual states: correct/incorrect (with short messages).
+- Smooth animations (without overdoing it).
+- Use a dark or modern background color (#1a1a2e, #0f1129) or one that matches the image.
 
-REQUISITOS FUNCIONALES DE LA ACTIVIDAD
-- Reproduce exactamente el tipo de ejercicio de la imagen:
-  - Si hay espacios en blanco: usa campos de texto.
-  - Si hay opciones: usa selección única o múltiple.
-  - Si hay "match": usa select dropdowns o botones para emparejar.
-  - Si hay ordenar: botones de mover o inputs.
-- Debe haber validación:
-  - Al presionar "Comprobar", marca cada ítem como correcto/incorrecto.
-  - Muestra feedback por pregunta y un resultado total.
-- Debe existir un botón "Mostrar respuestas" (opcional) pero protegido tras un clic adicional (confirmación).
+FUNCTIONAL REQUIREMENTS OF THE ACTIVITY
+- Exactly reproduce the type of exercise from the image:
+  - If there are blanks: use text fields.
+  - If there are options: use single or multiple selection.
+  - If there is a "match": use select dropdowns or buttons to pair.
+  - If there is ordering: move buttons or inputs.
+- There must be validation:
+  - When pressing "Check", mark each item as correct/incorrect.
+  - Show feedback per question and a total result.
+- There must be a "Show answers" button (optional) but protected behind an additional click (confirmation).
 
-IMAGEN DENTRO DE LA HOJA (AJUSTE + MEJORAR RESOLUCIÓN)
-- Inserta la imagen original como "referencia" dentro de la página.
-- Usa EXACAMENTE este base64 recortado en el src de la imagen principal: {REFERENCE_IMAGE_DATA_URI}
-- La imagen debe ajustarse al ancho del contenedor sin deformarse.
-- Permite zoom (botones +/– o slider) y "Abrir en grande" (modal).
-- Mejora visualmente la imagen con técnicas en el navegador (JS + Canvas embebido):
-  - Usa canvas para aplicar nitidez ligera y aumento de contraste cuando cargue.
+IMAGE WITHIN THE SHEET (ADJUSTMENT + IMPROVE RESOLUTION)
+- Insert the original image as a "reference" within the page.
+- Use EXACTLY this cropped base64 in the main image src: {REFERENCE_IMAGE_DATA_URI}
+- The image must fit the container width without deforming.
+- Allow zoom (+/– buttons or slider) and "Open large" (modal).
+- Visually improve the image using browser techniques (JS + embedded Canvas):
+  - Use canvas to apply slight sharpening and contrast increase when loading.
 
-DATOS Y RESPUESTAS
-- Extrae del contenido de la imagen: Las preguntas, Opciones, y Respuestas correctas.
-- Guarda esas respuestas en un objeto JS embebido (answerKey).
-- NO inventes preguntas nuevas si no es necesario; solo haz interactivo lo que se ve en la imagen.
+DATA AND ANSWERS
+- Extract from the image content: Questions, Options, and Correct answers.
+- Store those answers in an embedded JS object (answerKey).
+- DO NOT invent new questions if not necessary; only make interactive what is seen in the image.
 
-RESTRICCIONES
-- Sin enlaces externos, sin frameworks, sin CDNs (usa JS Vanilla y CSS plano).
-- Todo debe funcionar offline.
-- No incluyas explicaciones: entrega directamente el HTML final.
+RESTRICTIONS
+- No external links, no frameworks, no CDNs (use Vanilla JS and plain CSS).
+- Everything must work offline.
+- Do not include explanations: deliver the final HTML directly.
 
-Instrucciones adicionales del usuario: ${prompt}`;
+Additional user instructions: ${prompt}`;
 
             const response = await ai.models.generateContent({
                 model: 'gemini-2.5-flash', // Layout always uses vision-capable model

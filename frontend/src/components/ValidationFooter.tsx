@@ -46,7 +46,7 @@ const ValidationFooter: React.FC<ValidationFooterProps> = ({ status, message, on
                             <div>
                                 <h3 className={`text-2xl font-black mb-1 ${status === 'correct' ? 'text-[#58cc02]' : 'text-[#ff4b4b]'
                                     }`}>
-                                    {status === 'correct' ? '¡Excelente!' : 'Solución correcta:'}
+                                    {status === 'correct' ? 'Excellent!' : 'Correct solution:'}
                                 </h3>
                                 {message && (
                                     <p className={`text-lg font-bold ${status === 'correct' ? 'text-[#46a302]' : 'text-[#ea2b2b]'
@@ -63,7 +63,7 @@ const ValidationFooter: React.FC<ValidationFooterProps> = ({ status, message, on
                             className={`w-full md:w-auto px-10 py-4 rounded-xl font-black text-xl text-white shadow-[0_4px_0_0_rgba(0,0,0,0.2)] hover:shadow-none hover:translate-y-1 transition-all flex items-center justify-center gap-3 ${status === 'correct' ? 'bg-[#58cc02] hover:bg-[#46a302]' : 'bg-[#ff4b4b] hover:bg-[#ea2b2b]'
                                 }`}
                         >
-                            CONTINUAR
+                            CONTINUE
                         </button>
                     </div>
                 </motion.div>
@@ -82,7 +82,7 @@ const ValidationFooter: React.FC<ValidationFooterProps> = ({ status, message, on
                                 className={`px-10 py-4 rounded-xl font-black text-xl text-white shadow-[0_4px_0_0_rgba(0,0,0,0.2)] transition-all flex items-center justify-center gap-3 ${isCheckDisabled ? 'bg-gray-600 opacity-50 cursor-not-allowed text-gray-400' : 'bg-accent hover:bg-orange-500 hover:shadow-none hover:translate-y-1'
                                     }`}
                             >
-                                COMPROBAR
+                                CHECK
                             </button>
                         </div>
                     </motion.div>
