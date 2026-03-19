@@ -18,14 +18,13 @@ const client = new Client({
 client.connect()
     .then(async () => {
         console.log('DB Connected');
-        if (!isLocal) {
-            try {
-                // Ensure the "app" schema is used for all queries in production
-                await client.query('SET search_path TO app, public;');
-                console.log('Search path set to app, public');
-            } catch (e) {
-                console.error('Error setting search_path:', e);
-            }
+        try {
+            // Ensure both "app" and "public" schemas are searched.
+            // This allows local (no app schema) and production (app schema) to work with the same code.
+            await client.query('SET search_path TO app, public;');
+            console.log('Search path set to app, public');
+        } catch (e) {
+            console.error('Error setting search_path:', e);
         }
     })
     .catch(err => console.error('DB Connection Error:', err));

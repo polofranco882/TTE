@@ -33,12 +33,12 @@ router.get('/', authenticateToken, async (req: any, res: any) => {
         let params: any[] = [];
 
         if (role === 'admin' || role === 'manager') {
-            query = 'SELECT * FROM app.books ORDER BY COALESCE(sort_order, id) ASC';
+            query = 'SELECT * FROM books ORDER BY COALESCE(sort_order, id) ASC';
         } else {
             query = `
                 SELECT b.*, ub.assignment_status 
-                FROM app.books b
-                JOIN app.user_books ub ON ub.book_id = b.id
+                FROM books b
+                JOIN user_books ub ON ub.book_id = b.id
                 WHERE ub.user_id = $1 AND ub.assignment_status = 'assigned'
                 ORDER BY COALESCE(b.sort_order, b.id) ASC
             `;
@@ -63,7 +63,7 @@ router.put('/reorder', authenticateToken, async (req: any, res: any) => {
         if (!Array.isArray(order)) return res.status(400).json({ message: 'Invalid payload' });
 
         for (const item of order) {
-            await client.query('UPDATE app.books SET sort_order = $1 WHERE id = $2', [item.sort_order, item.id]);
+            await client.query('UPDATE books SET sort_order = $1 WHERE id = $2', [item.sort_order, item.id]);
         }
 
         res.json({ message: 'Order saved' });
@@ -83,7 +83,7 @@ router.put('/:id', authenticateToken, async (req: any, res: any) => {
         const { title, category, status, description, details, cover_image, rating, reading_time, publisher, isbn, publication_date } = req.body;
 
         const query = `
-            UPDATE app.books 
+            UPDATE books 
             SET title = $1, category = $2, status = $3, description = $4, details = $5, cover_image = $6,
                 rating = $7, reading_time = $8, publisher = $9, isbn = $10, publication_date = $11
             WHERE id = $12
@@ -111,7 +111,7 @@ router.patch('/:id/status', authenticateToken, async (req: any, res: any) => {
         const { id } = req.params;
         const { status } = req.body;
 
-        await client.query('UPDATE app.books SET status = $1 WHERE id = $2', [status, id]);
+        await client.query('UPDATE books SET status = $1 WHERE id = $2', [status, id]);
         res.json({ message: 'Book updated' });
     } catch (err) {
         res.status(500).json(err);
@@ -127,27 +127,27 @@ router.get('/reports/kpi', authenticateToken, async (req: any, res: any) => {
 
     try {
         // 1. Total Users
-        const userCount = await client.query("SELECT COUNT(*) FROM app.users WHERE status = 'active'");
+        const userCount = await client.query("SELECT COUNT(*) FROM users WHERE status = 'active'");
 
         // 2. Total Books Assigned
-        const assignmentCount = await client.query("SELECT COUNT(*) FROM app.user_books");
+        const assignmentCount = await client.query("SELECT COUNT(*) FROM user_books");
 
         // 3. Reading Progress (Active vs Completed)
         const statusDist = await client.query(`
             SELECT assignment_status, COUNT(*) as count 
-            FROM app.user_books 
+            FROM user_books 
             GROUP BY assignment_status
         `);
 
         // 4. Per Book Statistics (Book 1 - Book 12 focus)
-        // We want to see how many app.users have "completed" vs "in_progress" for each book
+        // We want to see how many users have "completed" vs "in_progress" for each book
         const bookStats = await client.query(`
             SELECT b.title, 
                    COUNT(ub.user_id) as total_assigned,
                    SUM(CASE WHEN ub.assignment_status = 'completed' THEN 1 ELSE 0 END) as completed_count,
                    SUM(CASE WHEN ub.assignment_status = 'in_progress' THEN 1 ELSE 0 END) as active_count
-            FROM app.books b
-            LEFT JOIN app.user_books ub ON b.id = ub.book_id
+            FROM books b
+            LEFT JOIN user_books ub ON b.id = ub.book_id
             WHERE b.title LIKE 'Book %'
             GROUP BY b.id, b.title
             ORDER BY b.id ASC
@@ -156,7 +156,7 @@ router.get('/reports/kpi', authenticateToken, async (req: any, res: any) => {
         // 5. "Apertura" / Engagement (Active Users in last 24h - simulated for now based on login logs)
         const activeUsersLast24h = await client.query(`
             SELECT COUNT(DISTINCT user_id) 
-            FROM app.activity_log 
+            FROM activity_log 
             WHERE created_at > NOW() - INTERVAL '24 HOURS'
         `);
 
@@ -190,10 +190,10 @@ router.get('/:id/contents', authenticateToken, async (req: any, res: any) => {
 
         if (role === 'admin' || role === 'manager') {
             // Admins see ALL items
-            query = 'SELECT * FROM app.book_contents WHERE book_id = $1 ORDER BY order_index ASC';
+            query = 'SELECT * FROM book_contents WHERE book_id = $1 ORDER BY order_index ASC';
         } else {
             // Users only see active items
-            query = 'SELECT * FROM app.book_contents WHERE book_id = $1 AND is_active = TRUE ORDER BY order_index ASC';
+            query = 'SELECT * FROM book_contents WHERE book_id = $1 AND is_active = TRUE ORDER BY order_index ASC';
         }
 
         const result = await client.query(query, params);
@@ -215,13 +215,13 @@ router.post('/:id/contents', authenticateToken, async (req: any, res: any) => {
         const { contents } = req.body; // Array of objects
 
         // Simple sync strategy: delete and re-insert for now
-        await client.query('DELETE FROM app.book_contents WHERE book_id = $1', [id]);
+        await client.query('DELETE FROM book_contents WHERE book_id = $1', [id]);
 
         if (contents && contents.length > 0) {
             for (let i = 0; i < contents.length; i++) {
                 const { title, type, content, page_number } = contents[i];
                 await client.query(
-                    'INSERT INTO app.book_contents (book_id, title, type, content, page_number, order_index) VALUES ($1, $2, $3, $4, $5, $6)',
+                    'INSERT INTO book_contents (book_id, title, type, content, page_number, order_index) VALUES ($1, $2, $3, $4, $5, $6)',
                     [id, title, type, content, page_number, i]
                 );
             }
@@ -242,7 +242,7 @@ router.get('/:id/contents-meta', authenticateToken, async (req: any, res: any) =
         const { id } = req.params;
 
         const result = await client.query(
-            'SELECT id, book_id, title, type, page_number, order_index, parent_id, COALESCE(is_active, TRUE) as is_active FROM app.book_contents WHERE book_id = $1 ORDER BY order_index ASC',
+            'SELECT id, book_id, title, type, page_number, order_index, parent_id, COALESCE(is_active, TRUE) as is_active FROM book_contents WHERE book_id = $1 ORDER BY order_index ASC',
             [id]
         );
         res.json(result.rows);
@@ -257,7 +257,7 @@ router.get('/:id/contents/:contentId', authenticateToken, async (req: any, res: 
     try {
         const { contentId } = req.params;
         const result = await client.query(
-            'SELECT * FROM app.book_contents WHERE id = $1',
+            'SELECT * FROM book_contents WHERE id = $1',
             [contentId]
         );
         if (result.rows.length === 0) return res.status(404).json({ message: 'Content not found' });
@@ -279,13 +279,13 @@ router.post('/:id/contents/add', authenticateToken, async (req: any, res: any) =
 
         // Get the next order_index
         const maxOrder = await client.query(
-            'SELECT COALESCE(MAX(order_index), -1) + 1 as next_order FROM app.book_contents WHERE book_id = $1',
+            'SELECT COALESCE(MAX(order_index), -1) + 1 as next_order FROM book_contents WHERE book_id = $1',
             [id]
         );
         const orderIndex = maxOrder.rows[0].next_order;
 
         const result = await client.query(
-            'INSERT INTO app.book_contents (book_id, title, type, content, page_number, order_index) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+            'INSERT INTO book_contents (book_id, title, type, content, page_number, order_index) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
             [id, title || '', type || 'topic', content || '', page_number || '', orderIndex]
         );
 
@@ -321,7 +321,7 @@ router.put('/:id/contents/:contentId', authenticateToken, async (req: any, res: 
 
         values.push(contentId);
         const result = await client.query(
-            `UPDATE app.book_contents SET ${updates.join(', ')} WHERE id = $${idx} RETURNING id, title, type, page_number, order_index`,
+            `UPDATE book_contents SET ${updates.join(', ')} WHERE id = $${idx} RETURNING id, title, type, page_number, order_index`,
             values
         );
 
@@ -340,7 +340,7 @@ router.delete('/:id/contents/:contentId', authenticateToken, async (req: any, re
         if (role !== 'admin' && role !== 'manager') return res.status(403).json({ message: 'Forbidden' });
 
         const { contentId } = req.params;
-        const result = await client.query('DELETE FROM app.book_contents WHERE id = $1', [contentId]);
+        const result = await client.query('DELETE FROM book_contents WHERE id = $1', [contentId]);
 
         if (result.rowCount === 0) return res.status(404).json({ message: 'Content not found' });
         res.json({ message: 'Content deleted' });
@@ -362,7 +362,7 @@ router.post('/:id/contents-batch-delete', authenticateToken, async (req: any, re
         }
 
         const result = await client.query(
-            'DELETE FROM app.book_contents WHERE id = ANY($1::int[])',
+            'DELETE FROM book_contents WHERE id = ANY($1::int[])',
             [ids]
         );
 
@@ -384,7 +384,7 @@ router.put('/:id/contents-reorder', authenticateToken, async (req: any, res: any
 
         for (const item of order) {
             await client.query(
-                'UPDATE app.book_contents SET order_index = $1, parent_id = $2 WHERE id = $3', 
+                'UPDATE book_contents SET order_index = $1, parent_id = $2 WHERE id = $3', 
                 [item.order_index, item.parent_id !== undefined ? item.parent_id : null, item.id]
             );
         }
@@ -404,7 +404,7 @@ router.patch('/:id/contents/:contentId/toggle', authenticateToken, async (req: a
 
         const { contentId } = req.params;
         const result = await client.query(
-            'UPDATE app.book_contents SET is_active = NOT COALESCE(is_active, TRUE) WHERE id = $1 RETURNING id, is_active',
+            'UPDATE book_contents SET is_active = NOT COALESCE(is_active, TRUE) WHERE id = $1 RETURNING id, is_active',
             [contentId]
         );
         if (result.rowCount === 0) return res.status(404).json({ message: 'Content not found' });

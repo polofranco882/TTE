@@ -30,11 +30,11 @@ const authenticateAdmin = (req: any, res: any, next: any) => {
 // Get All Users
 router.get('/users', authenticateAdmin, async (req: any, res: any) => {
     try {
-        const result = await client.query('SELECT id, name, email, status, created_at FROM app.users ORDER BY id ASC');
+        const result = await client.query('SELECT id, name, email, status, created_at FROM users ORDER BY id ASC');
         res.json(result.rows);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Server error fetching app.users' });
+        res.status(500).json({ message: 'Server error fetching users' });
     }
 });
 
@@ -43,14 +43,14 @@ router.get('/users/:id/books', authenticateAdmin, async (req: any, res: any) => 
     try {
         const { id } = req.params;
 
-        // Return all app.books, and map the assignment status for this user
-        // We do a LEFT JOIN on app.user_books for this specific user_id
+        // Return all books, and map the assignment status for this user
+        // We do a LEFT JOIN on user_books for this specific user_id
         const query = `
             SELECT b.id, b.title, b.category, b.status, b.metadata,
                    b.metadata->>'cover_image' as cover_image,
                    COALESCE(ub.assignment_status, 'inactive') as assignment_status
-            FROM app.books b
-            LEFT JOIN app.user_books ub ON b.id = ub.book_id AND ub.user_id = $1
+            FROM books b
+            LEFT JOIN user_books ub ON b.id = ub.book_id AND ub.user_id = $1
             ORDER BY b.id ASC
         `;
 
@@ -58,7 +58,7 @@ router.get('/users/:id/books', authenticateAdmin, async (req: any, res: any) => 
         res.json(result.rows);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Server error fetching user app.books' });
+        res.status(500).json({ message: 'Server error fetching user books' });
     }
 });
 
@@ -74,7 +74,7 @@ router.post('/users/:id/books', authenticateAdmin, async (req: any, res: any) =>
 
         // Upsert logic: Insert or Update
         const query = `
-            INSERT INTO app.user_books (user_id, book_id, assignment_status)
+            INSERT INTO user_books (user_id, book_id, assignment_status)
             VALUES ($1, $2, $3)
             ON CONFLICT (user_id, book_id) 
             DO UPDATE SET assignment_status = $3
@@ -106,7 +106,7 @@ router.post('/users/:id/reset-password', authenticateAdmin, async (req: any, res
 
         // Update the user's password
         const result = await client.query(
-            'UPDATE app.users SET password_hash = $1 WHERE id = $2 RETURNING id, name, email',
+            'UPDATE users SET password_hash = $1 WHERE id = $2 RETURNING id, name, email',
             [hashedPassword, id]
         );
 
@@ -135,7 +135,7 @@ router.post('/users/create', authenticateAdmin, async (req: any, res: any) => {
         }
 
         // Check if user already exists
-        const userExists = await client.query('SELECT id FROM app.users WHERE email = $1', [email]);
+        const userExists = await client.query('SELECT id FROM users WHERE email = $1', [email]);
         if (userExists.rows.length > 0) {
             return res.status(400).json({ message: 'User with this email already exists' });
         }
@@ -151,7 +151,7 @@ router.post('/users/create', authenticateAdmin, async (req: any, res: any) => {
         try {
             // Insert User
             const insertUserQuery = `
-                INSERT INTO app.users (name, email, password_hash)
+                INSERT INTO users (name, email, password_hash)
                 VALUES ($1, $2, $3)
                 RETURNING id, name, email, status, created_at
             `;
@@ -159,14 +159,14 @@ router.post('/users/create', authenticateAdmin, async (req: any, res: any) => {
             const newUser = userResult.rows[0];
 
             // Get Role ID
-            const roleResult = await client.query('SELECT id FROM app.roles WHERE name = $1', [role]);
+            const roleResult = await client.query('SELECT id FROM roles WHERE name = $1', [role]);
             if (roleResult.rows.length === 0) {
                 throw new Error(`Role '${role}' not found in database`);
             }
             const roleId = roleResult.rows[0].id;
 
             // Assign Role
-            await client.query('INSERT INTO app.user_roles (user_id, role_id) VALUES ($1, $2)', [newUser.id, roleId]);
+            await client.query('INSERT INTO user_roles (user_id, role_id) VALUES ($1, $2)', [newUser.id, roleId]);
 
             await client.query('COMMIT');
 

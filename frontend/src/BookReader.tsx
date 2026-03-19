@@ -124,13 +124,13 @@ const FlipbookPage = forwardRef<HTMLDivElement, FlipbookPageProps>((props, ref) 
             {/* Debug Layer (Overlay that shows navigation zones) */}
             {debugNav && (
                 <div className="absolute inset-0 z-[100] pointer-events-none flex">
-                    <div className="h-full w-[12%] bg-green-500/30 border-r border-green-500 flex items-center justify-center text-[8px] font-black text-white">CLICK ZONE</div>
+                    <div className="h-full w-[5%] bg-green-500/30 border-r border-green-500 flex items-center justify-center text-[8px] font-black text-white">CLICK ZONE</div>
                     <div className="h-full flex-1 bg-red-500/20 flex flex-col items-center justify-center text-[8px] font-black text-white">
                         <span>PROTECTED AREA</span>
                         <div className="w-1/2 h-px bg-white/20 my-1"/>
                         <span>CONTENT ONLY</span>
                     </div>
-                    <div className="h-full w-[12%] bg-green-500/30 border-l border-green-500 flex items-center justify-center text-[8px] font-black text-white">CLICK ZONE</div>
+                    <div className="h-full w-[5%] bg-green-500/30 border-l border-green-500 flex items-center justify-center text-[8px] font-black text-white">CLICK ZONE</div>
                 </div>
             )}
 
@@ -294,7 +294,7 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
             const totalWidth = rect.width;
             
             // Margins for navigation (12% of total width)
-            const margin = totalWidth * 0.12; 
+            const margin = totalWidth * 0.05; 
             const isNearEdge = x < margin || x > (totalWidth - margin);
 
             if (!isNearEdge) {
@@ -753,20 +753,20 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                         initial={{ x: 50, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: 50, opacity: 0 }}
-                        className={`absolute inset-0 z-[150] bg-[#1e293b]/50 backdrop-blur-xl overflow-y-auto pt-32 pb-20 px-4 md:px-12 ${transitionClass}`}
+                        className={`absolute inset-0 z-[150] bg-[#1e293b]/50 backdrop-blur-xl overflow-y-auto pt-20 md:pt-32 pb-10 md:pb-20 px-4 md:px-12 ${transitionClass}`}
                     >
                         <div className="max-w-4xl mx-auto">
-                            <div className="flex justify-center items-center gap-6 mb-16">
+                            <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-6 mb-8 md:mb-16">
                                 <motion.h2
                                     initial={{ y: -20, opacity: 0 }}
                                     animate={{ y: 0, opacity: 1 }}
-                                    className="text-7xl font-black tracking-tighter text-white/90 m-0"
+                                    className="text-4xl sm:text-7xl font-black tracking-tighter text-white/90 m-0"
                                 >
                                     Contents
                                 </motion.h2>
                                 <button
                                     onClick={onBack}
-                                    className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all font-black text-[10px] uppercase tracking-[0.2em] text-gray-400 hover:text-white group mt-4 shadow-xl"
+                                    className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all font-black text-[10px] uppercase tracking-[0.2em] text-gray-400 hover:text-white group sm:mt-4 shadow-xl"
                                 >
                                     <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
                                     Return to Library
@@ -798,7 +798,7 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                                 }}
                                                 className={`grid grid-cols-12 px-6 py-4 cursor-pointer transition-all items-center ${color.bg} ${color.hover} group`}
                                             >
-                                                <div className={`col-span-10 flex items-center gap-4 ${item.type === 'chapter' ? 'font-black text-lg uppercase tracking-wider' : 'font-medium pl-6 text-white/80'}`}>
+                                                <div className={`col-span-10 flex items-center gap-4 ${item.type === 'chapter' ? 'font-black text-sm md:text-lg uppercase tracking-wider' : 'font-medium pl-6 text-white/80'}`}>
                                                     <span className={color.text}>{item.title}</span>
                                                 </div>
                                                 <div className="col-span-2 text-center text-sm font-bold text-gray-400 group-hover:text-white transition-colors">
@@ -1148,7 +1148,7 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                                                  <div className="absolute inset-0 z-[50] pointer-events-none flex">
                                                                      {/* Left Navigation Zone */}
                                                                      <div 
-                                                                        className="h-full w-[12%] pointer-events-auto cursor-pointer flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"
+                                                                        className="h-full w-[5%] pointer-events-auto cursor-pointer flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"
                                                                         onClick={(e) => {
                                                                             console.log("Master Overlay: FLIP PREV", { x: e.clientX, y: e.clientY });
                                                                             flipBookRef.current?.pageFlip()?.flipPrev();
@@ -1164,7 +1164,7 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
 
                                                                      {/* Right Navigation Zone */}
                                                                      <div 
-                                                                        className="h-full w-[12%] pointer-events-auto cursor-pointer flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"
+                                                                        className="h-full w-[5%] pointer-events-auto cursor-pointer flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"
                                                                         onClick={(e) => {
                                                                             console.log("Master Overlay: FLIP NEXT", { x: e.clientX, y: e.clientY });
                                                                             flipBookRef.current?.pageFlip()?.flipNext();

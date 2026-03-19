@@ -27,8 +27,8 @@ async function reset() {
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
 
-        // Update the user in the "app" schema
-        const query = 'UPDATE app.users SET password_hash = $1 WHERE email = $2';
+        // Update the user
+        const query = 'UPDATE users SET password_hash = $1 WHERE email = $2';
         const result = await client.query(query, [hashedPassword, email]);
 
         if (result.rowCount > 0) {

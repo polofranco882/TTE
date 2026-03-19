@@ -18,7 +18,7 @@ router.post('/login', async (req, res) => {
     console.log('Login attempt:', email);
 
     try {
-        const result = await client.query('SELECT * FROM app.users WHERE email = $1', [email]);
+        const result = await client.query('SELECT * FROM users WHERE email = $1', [email]);
         const user = result.rows[0];
 
         if (!user) {
@@ -38,8 +38,8 @@ router.post('/login', async (req, res) => {
 
         // Get Role
         const roleRes = await client.query(`
-            SELECT r.name FROM app.roles r
-            JOIN app.user_roles ur ON ur.role_id = r.id
+            SELECT r.name FROM roles r
+            JOIN user_roles ur ON ur.role_id = r.id
             WHERE ur.user_id = $1
         `, [user.id]);
 
@@ -50,7 +50,7 @@ router.post('/login', async (req, res) => {
 
         // Log Activity
         await client.query(`
-            INSERT INTO app.activity_log (user_id, action, module, details, ip, user_agent)
+            INSERT INTO activity_log (user_id, action, module, details, ip, user_agent)
             VALUES ($1, 'LOGIN', 'AUTH', 'User logged in', $2, $3)
         `, [user.id, req.ip, req.headers['user-agent']]);
 

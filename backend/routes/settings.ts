@@ -8,7 +8,7 @@ const router = Router();
 // Get all settings
 router.get('/', async (req, res) => {
     try {
-        const result = await client.query('SELECT key, value FROM app.settings');
+        const result = await client.query('SELECT key, value FROM settings');
         const settings: { [key: string]: string } = {};
         result.rows.forEach(row => {
             settings[row.key] = row.value;
@@ -28,7 +28,7 @@ router.post('/', authenticateToken, authorizeAdmin, async (req, res) => {
         await client.query('BEGIN');
         for (const [key, value] of Object.entries(settings)) {
             await client.query(`
-                INSERT INTO app.settings (key, value, updated_at)
+                INSERT INTO settings (key, value, updated_at)
                 VALUES ($1, $2, CURRENT_TIMESTAMP)
                 ON CONFLICT (key) DO UPDATE SET value = $2, updated_at = CURRENT_TIMESTAMP;
             `, [key, value]);

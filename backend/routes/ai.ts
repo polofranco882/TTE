@@ -34,7 +34,7 @@ const authenticateAdmin = (req: any, res: any, next: any) => {
 
 router.get('/config', authenticateAdmin, async (req: any, res: any) => {
     try {
-        const result = await client.query('SELECT * FROM app.ai_config ORDER BY id LIMIT 1');
+        const result = await client.query('SELECT * FROM ai_config ORDER BY id LIMIT 1');
         if (result.rows.length === 0) {
             return res.json(null);
         }
@@ -65,12 +65,12 @@ router.put('/config', authenticateAdmin, async (req: any, res: any) => {
         } = req.body;
 
         // Check if a row exists
-        const existing = await client.query('SELECT id, api_key FROM app.ai_config ORDER BY id LIMIT 1');
+        const existing = await client.query('SELECT id, api_key FROM ai_config ORDER BY id LIMIT 1');
 
         if (existing.rows.length === 0) {
             // Insert
             await client.query(
-                `INSERT INTO app.ai_config (provider, api_key, model, allow_image, allow_video, max_seconds, max_resolution, max_size_mb, updated_at)
+                `INSERT INTO ai_config (provider, api_key, model, allow_image, allow_video, max_seconds, max_resolution, max_size_mb, updated_at)
                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())`,
                 [provider || 'openai', api_key || '', model || 'gpt-image-1',
                 allow_image !== false, allow_video !== false,
@@ -80,7 +80,7 @@ router.put('/config', authenticateAdmin, async (req: any, res: any) => {
             // Update — if api_key is empty or null, keep the existing one
             const finalApiKey = api_key && api_key.trim() !== '' ? api_key : existing.rows[0].api_key;
             await client.query(
-                `UPDATE app.ai_config SET
+                `UPDATE ai_config SET
                     provider = $1, api_key = $2, model = $3,
                     allow_image = $4, allow_video = $5,
                     max_seconds = $6, max_resolution = $7, max_size_mb = $8,
@@ -118,7 +118,7 @@ router.post('/generate', authenticateToken, async (req: any, res: any) => {
         }
 
         // 1. Read config
-        const configResult = await client.query('SELECT * FROM app.ai_config ORDER BY id LIMIT 1');
+        const configResult = await client.query('SELECT * FROM ai_config ORDER BY id LIMIT 1');
         if (configResult.rows.length === 0 || !configResult.rows[0].api_key || configResult.rows[0].api_key.trim() === '') {
             return res.json({
                 status: 'error',

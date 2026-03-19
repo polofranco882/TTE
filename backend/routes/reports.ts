@@ -29,15 +29,15 @@ router.get('/kpi', authenticateToken, async (req: any, res: any) => {
 
     try {
         // 1. Total Users
-        const userCount = await client.query("SELECT COUNT(*) FROM app.users WHERE status = 'active'");
+        const userCount = await client.query("SELECT COUNT(*) FROM users WHERE status = 'active'");
 
         // 2. Total Books Assigned
-        const assignmentCount = await client.query("SELECT COUNT(*) FROM app.user_books");
+        const assignmentCount = await client.query("SELECT COUNT(*) FROM user_books");
 
         // 3. Reading Progress (Active vs Completed)
         const statusDist = await client.query(`
             SELECT assignment_status, COUNT(*) as count 
-            FROM app.user_books 
+            FROM user_books 
             GROUP BY assignment_status
         `);
 
@@ -48,7 +48,7 @@ router.get('/kpi', authenticateToken, async (req: any, res: any) => {
                    SUM(CASE WHEN ub.assignment_status = 'completed' THEN 1 ELSE 0 END) as completed_count,
                    SUM(CASE WHEN ub.assignment_status = 'in_progress' THEN 1 ELSE 0 END) as active_count
             FROM books b
-            LEFT JOIN app.user_books ub ON b.id = ub.book_id
+            LEFT JOIN user_books ub ON b.id = ub.book_id
             WHERE b.title LIKE 'Book %'
             GROUP BY b.id, b.title
             ORDER BY b.id ASC
@@ -57,7 +57,7 @@ router.get('/kpi', authenticateToken, async (req: any, res: any) => {
         // 5. "Apertura" / Engagement
         const activeUsersLast24h = await client.query(`
             SELECT COUNT(DISTINCT user_id) 
-            FROM app.activity_log 
+            FROM activity_log 
             WHERE created_at > NOW() - INTERVAL '24 HOURS'
         `);
 

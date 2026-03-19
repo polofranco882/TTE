@@ -33,7 +33,7 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen, userRole, onLogou
         const handleResize = () => {
             const currentIsMobile = window.innerWidth < 1024;
             setIsMobile(currentIsMobile);
-            
+
             if (prevIsMobile && !currentIsMobile) {
                 setIsOpen(true); // Always open when transitioning to desktop
             } else if (!prevIsMobile && currentIsMobile) {
@@ -108,7 +108,7 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen, userRole, onLogou
                                 <div className="bg-accent p-2 rounded-xl shadow-lg shadow-accent/20 flex-shrink-0">
                                     <Book size={24} className="text-white" />
                                 </div>
-                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">TTESOL Portal</span>
+                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">TTESOL</span>
                             </motion.div>
                         )}
                     </AnimatePresence>
