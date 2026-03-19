@@ -10,7 +10,7 @@ import { Client } from 'pg';
 import './db';
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
