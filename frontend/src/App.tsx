@@ -157,7 +157,7 @@ function App() {
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
               className="p-0 rounded-full shadow-2xl border-4 border-white/20 overflow-hidden bg-white"
             >
-              <img src="/pwa-icon-512.png" alt="TTE Logo" className="w-24 h-24 object-contain" />
+              <img src="/brand-logo-512.png" alt="TTE Logo" className="w-24 h-24 object-contain" />
             </motion.div>
           </div>
 

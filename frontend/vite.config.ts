@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'pwa-icon-512.png'],
+      includeAssets: ['favicon.ico', 'brand-logo-512.png'],
       manifest: {
         name: 'Trails to English',
         short_name: 'TTE',
@@ -19,13 +19,13 @@ export default defineConfig({
         orientation: 'portrait',
         icons: [
           {
-            src: 'pwa-icon-192.png',
+            src: 'brand-logo-192.png',
             sizes: '192x192',
             type: 'image/png',
             purpose: 'any maskable'
           },
           {
-            src: 'pwa-icon-512.png',
+            src: 'brand-logo-512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'
