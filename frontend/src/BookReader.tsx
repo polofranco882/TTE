@@ -980,32 +980,36 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                                 </div>
                                             </div>
 
-                                            {/* Right: Prev/Next & Progress */}
+                                            {/* Right: Prev/Next & Progress Navigation */}
                                             <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] shrink-0 w-full lg:w-auto justify-between lg:justify-end mt-1 lg:mt-0 select-none">
                                                 <button onClick={() => flipBookRef.current?.pageFlip()?.flipPrev()} className="flex items-center justify-center gap-1.5 flex-1 lg:flex-none px-3 py-1.5 lg:py-1 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white group relative shrink-0">
                                                     <ArrowLeft size={10} className="group-hover:-translate-x-1 transition-transform" />
                                                     Prev
                                                 </button>
 
-                                                <div className="flex items-center gap-1.5 opacity-50 px-2 shrink-0">
-                                                    <span className="hidden sm:inline">Prog: {Math.round(((contents.findIndex(c => c.title === selectedChapter.title) + 1) / contents.length) * 100)}%</span>
-                                                    {selectedChapter.page_number && (
-                                                        <>
-                                                            <span className="w-1 h-1 rounded-full bg-white/20 hidden sm:inline"></span>
-                                                            <form onSubmit={handleJumpPageSubmit} className="flex flex-row items-center gap-1 group/pageinput">
-                                                                <span className="text-accent text-[11px] lg:text-[9px]">Pg</span>
-                                                                <input 
-                                                                    type="text"
-                                                                    value={jumpPageInput || selectedChapter.page_number}
-                                                                    onChange={(e) => setJumpPageInput(e.target.value)}
-                                                                    className="w-8 bg-transparent text-accent text-[11px] lg:text-[9px] font-black border-b border-transparent focus:border-accent/50 outline-none text-center p-0 appearance-none"
-                                                                    onFocus={() => setJumpPageInput('')}
-                                                                    onBlur={() => setJumpPageInput('')}
-                                                                    title="Type a page and press Enter"
-                                                                />
-                                                            </form>
-                                                        </>
-                                                    )}
+                                                {/* PROMIMENT PAGE JUMPER */}
+                                                <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-1.5 rounded-xl hover:border-accent/40 transition-all group/jumper">
+                                                    <div className="flex items-center gap-1.5 opacity-70 px-1 shrink-0">
+                                                        <span className="hidden sm:inline text-white/50">Prog: {Math.round(((contents.findIndex(c => c.title === selectedChapter.title) + 1) / contents.length) * 100)}%</span>
+                                                        <span className="w-1 h-1 rounded-full bg-white/20 hidden sm:inline mx-1"></span>
+                                                    </div>
+                                                    
+                                                    <form onSubmit={handleJumpPageSubmit} className="flex flex-row items-center gap-1">
+                                                        <span className="text-accent text-[11px] lg:text-[10px] font-black">PAGE</span>
+                                                        <input 
+                                                            type="text"
+                                                            value={jumpPageInput || selectedChapter.page_number}
+                                                            onChange={(e) => setJumpPageInput(e.target.value)}
+                                                            className="w-10 bg-accent/10 text-accent text-[12px] lg:text-[11px] font-black border-b-2 border-accent/20 focus:border-accent focus:bg-accent/20 outline-none text-center p-1 rounded-sm transition-all appearance-none"
+                                                            onFocus={() => setJumpPageInput('')}
+                                                            onBlur={() => {
+                                                                // If they blurred without submitting, reset to current page if field is empty
+                                                                if (!jumpPageInput) setJumpPageInput('');
+                                                            }}
+                                                            title="Enter page number and press Enter"
+                                                        />
+                                                        <span className="text-white/30 text-[10px] ml-1">of {contents.length}</span>
+                                                    </form>
                                                 </div>
 
                                                 <button onClick={() => flipBookRef.current?.pageFlip()?.flipNext()} className="flex items-center justify-center gap-1.5 flex-1 lg:flex-none px-4 py-1.5 lg:py-1 rounded-lg bg-accent/20 border border-accent/30 hover:bg-accent/30 transition-all text-accent group shadow-lg shadow-accent/10 relative shrink-0">
