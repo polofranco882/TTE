@@ -159,21 +159,17 @@ const EditBookModal = ({ isOpen, onClose, book, token, onSuccess, onNotify }: Ed
                                     </div>
                                 </div>
 
-                                {/* Category */}
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Category</label>
-                                    <select
+                                    <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Category Label (Orange)</label>
+                                    <input
+                                        type="text"
                                         name="category"
                                         value={formData.category}
                                         onChange={handleChange}
                                         className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white outline-none focus:border-accent/50 focus:bg-white/10 transition-all font-medium"
+                                        placeholder="e.g., ENGLISH COURSE"
                                         required
-                                    >
-                                        <option value="English" className="bg-[#161930]">English</option>
-                                        <option value="Advanced" className="bg-[#161930]">Advanced</option>
-                                        <option value="Basic" className="bg-[#161930]">Basic</option>
-                                        <option value="General" className="bg-[#161930]">General</option>
-                                    </select>
+                                    />
                                 </div>
                             </div>
 

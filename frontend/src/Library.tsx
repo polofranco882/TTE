@@ -135,9 +135,9 @@ const Library = ({ token, userRole, onNotify, onStartReading }: { token: string;
 
                 {/* Books Grid */}
                 {loading ? (
-                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 md:gap-12 max-w-7xl mx-auto">
-                        {[1, 2].map(i => (
-                            <div key={i} className="h-[500px] md:h-[600px] bg-white/5 rounded-3xl animate-pulse border border-white/5"></div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8 md:gap-12 max-w-[1600px] mx-auto">
+                        {[1, 2, 3].map(i => (
+                            <div key={i} className="h-[500px] bg-white/5 rounded-3xl animate-pulse border border-white/5"></div>
                         ))}
                     </div>
                 ) : (
@@ -145,7 +145,7 @@ const Library = ({ token, userRole, onNotify, onStartReading }: { token: string;
                         variants={container}
                         initial="hidden"
                         animate="show"
-                        className="grid grid-cols-1 xl:grid-cols-2 gap-8 md:gap-16 perspective-1000 max-w-7xl mx-auto pb-20"
+                        className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8 md:gap-10 perspective-1000 max-w-[1600px] mx-auto pb-20"
                     >
                         {books.map((book) => (
                             <motion.div
@@ -156,7 +156,7 @@ const Library = ({ token, userRole, onNotify, onStartReading }: { token: string;
                                     scale: 1.01,
                                     transition: { duration: 0.4, ease: "easeOut" }
                                 }}
-                                className={`group relative bg-white/5 backdrop-blur-md rounded-3xl shadow-2xl hover:shadow-[0_20px_60px_rgba(8,_112,_184,_0.25)] transition-all duration-500 overflow-hidden border border-white/10 flex flex-col md:flex-row h-auto md:h-[400px] xl:h-[500px] ${book.status === 'inactive' ? 'opacity-60 grayscale' : ''}`}
+                                className={`group relative bg-white/5 backdrop-blur-md rounded-3xl shadow-2xl hover:shadow-[0_20px_60px_rgba(8,_112,_184,_0.25)] transition-all duration-500 overflow-hidden border border-white/10 flex flex-col sm:flex-row h-auto sm:h-[350px] md:h-[400px] lg:h-[420px] ${book.status === 'inactive' ? 'opacity-60 grayscale' : ''}`}
                             >
                                 {/* Admin Edit Badge */}
                                 {(userRole === 'admin' || userRole === 'manager') && (
@@ -169,23 +169,23 @@ const Library = ({ token, userRole, onNotify, onStartReading }: { token: string;
                                 )}
 
                                 {/* Cover Image */}
-                                <div className="relative w-full md:w-2/5 h-[300px] md:h-full overflow-hidden p-6 flex justify-center items-center bg-gradient-to-b md:bg-gradient-to-r from-white/5 to-transparent">
-                                    <div className="relative w-full max-w-[180px] md:max-w-full h-auto md:h-[90%] aspect-[2/3] rounded-lg overflow-hidden shadow-2xl transform transition-transform duration-700 group-hover:scale-105 group-hover:-rotate-2">
+                                <div className="relative w-full sm:w-[180px] md:w-[220px] lg:w-[240px] flex-shrink-0 h-[300px] sm:h-full overflow-hidden p-4 sm:p-6 flex justify-center items-center bg-gradient-to-b sm:bg-gradient-to-r from-white/10 to-transparent border-b sm:border-b-0 sm:border-r border-white/5">
+                                    <div className="relative w-full h-full max-h-[250px] sm:max-h-full aspect-[2/3] rounded-xl overflow-hidden shadow-2xl transform transition-transform duration-700 group-hover:scale-105 group-hover:-rotate-1">
                                         {book.cover_image ? (
                                             <img
                                                 src={book.cover_image}
                                                 alt={book.title}
-                                                className="w-full h-full object-cover"
+                                                className="w-full h-full object-contain"
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900 text-gray-600">
                                                 <BookOpen size={48} />
                                             </div>
                                         )}
-                                        <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
+                                        <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-white/0 skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
                                     </div>
-
-                                    <div className="absolute top-4 left-4 md:top-6 md:left-6 bg-accent/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] md:text-xs font-bold text-white shadow-lg border border-white/20 z-20 uppercase">
+ 
+                                    <div className="absolute top-4 left-4 sm:top-6 sm:left-6 bg-accent/90 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] md:text-xs font-black text-white shadow-xl border border-white/20 z-20 uppercase tracking-widest">
                                         {book.category}
                                     </div>
                                 </div>
