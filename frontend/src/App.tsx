@@ -155,9 +155,9 @@ function App() {
             <motion.div
               animate={{ rotate: [0, 5, -5, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="bg-accent p-1 rounded-3xl shadow-2x shadow-accent/40 border-2 border-white/20 overflow-hidden"
+              className="p-0 rounded-full shadow-2xl border-4 border-white/20 overflow-hidden bg-white"
             >
-              <img src="/pwa-icon-512.png" alt="TTE Logo" className="w-20 h-20 object-contain" />
+              <img src="/pwa-icon-512.png" alt="TTE Logo" className="w-24 h-24 object-contain" />
             </motion.div>
           </div>
 
