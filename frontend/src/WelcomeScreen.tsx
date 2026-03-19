@@ -7,51 +7,42 @@ interface WelcomeScreenProps {
 
 const WelcomeScreen = ({ onStartLearning }: WelcomeScreenProps) => {
   return (
-    <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
+    <div className="flex-1 flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-[#0a0c10]">
+      {/* Premium Background Effects */}
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-accent/20 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-orange-600/10 rounded-full blur-[120px]"></div>
+      </div>
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="max-w-3xl w-full"
       >
-        {/* Decorative elements */}
-        <div className="flex justify-center mb-8 gap-4">
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
-            className="p-3 bg-accent/10 rounded-2xl text-accent"
-          >
-            <GraduationCap size={32} />
-          </motion.div>
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
-            className="p-3 bg-orange-500/10 rounded-2xl text-orange-500"
-          >
-            <Star size={32} />
-          </motion.div>
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.7, type: "spring", stiffness: 200 }}
-            className="p-3 bg-blue-500/10 rounded-2xl text-blue-500"
-          >
-            <BookOpen size={32} />
-          </motion.div>
-        </div>
+        {/* Brand Logo Header */}
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="flex justify-center mb-10"
+        >
+          <div className="p-1 rounded-full bg-white shadow-2xl shadow-accent/20 border-4 border-white/10 ring-8 ring-accent/5">
+            <img src="/brand-logo-512.png" alt="TTE Logo" className="w-24 h-24 object-contain" />
+          </div>
+        </motion.div>
 
         {/* Hero Section */}
-        <h1 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight leading-tight">
-          Welcome to the <br />
+        <h1 className="text-5xl md:text-8xl font-black text-white mb-8 tracking-tighter leading-[0.9] uppercase drop-shadow-2xl">
+          <span className="text-sm md:text-xl font-bold tracking-[0.5em] text-accent/80 mb-4 block animate-pulse">Welcome to the</span>
+          <span className="bg-clip-text text-transparent bg-gradient-to-br from-white via-white to-white/40">TTE ESOL</span> <br />
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-accent via-orange-400 to-orange-600">
-            TTE ESOL English Academy
+            English Academy
           </span>
         </h1>
         
-        <p className="text-xl md:text-2xl text-gray-400 mb-12 font-medium max-w-2xl mx-auto leading-relaxed">
-          Your English journey starts here. Explore interactive materials, enhance your skills, and master the language with our premium platform.
+        <p className="text-lg md:text-xl text-gray-400 mb-12 font-medium max-w-xl mx-auto leading-relaxed border-l-2 border-accent/30 pl-6 italic">
+          "Your English journey starts here. Explore interactive materials, enhance your skills, and master the language with our premium platform."
         </p>
 
         {/* Call to action */}
@@ -68,20 +59,21 @@ const WelcomeScreen = ({ onStartLearning }: WelcomeScreenProps) => {
         {/* Stats or Features */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20">
           {[
-            { title: "Interactive Books", desc: "Engaging reading experience.", icon: <BookOpen size={20} /> },
-            { title: "Expert Content", desc: "Curated for all levels.", icon: <Star size={20} /> },
-            { title: "Fast Progress", desc: "Interactive exercises for growth.", icon: <GraduationCap size={20} /> }
+            { title: "Interactive Books", desc: "Engaging reading experience with AI.", icon: <BookOpen size={24} /> },
+            { title: "Expert Content", desc: "Curated for all levels by professionals.", icon: <Star size={24} /> },
+            { title: "Fast Progress", desc: "Adaptive platform for rapid growth.", icon: <GraduationCap size={24} /> }
           ].map((feature, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1 + (i * 0.2) }}
-              className="bg-white/5 backdrop-blur-sm border border-white/10 p-6 rounded-2xl hover:bg-white/10 transition-colors text-left"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              whileHover={{ y: -5, backgroundColor: 'rgba(255,255,255,0.08)' }}
+              transition={{ delay: 0.5 + (i * 0.1) }}
+              className="bg-white/[0.03] backdrop-blur-md border border-white/10 p-8 rounded-[2rem] transition-all text-left group"
             >
-              <div className="text-accent mb-4">{feature.icon}</div>
-              <h3 className="text-white font-bold text-lg mb-1">{feature.title}</h3>
-              <p className="text-gray-400 text-sm">{feature.desc}</p>
+              <div className="bg-accent/20 w-12 h-12 rounded-xl flex items-center justify-center text-accent mb-6 group-hover:scale-110 transition-transform">{feature.icon}</div>
+              <h3 className="text-white font-black text-xl mb-2 tracking-tight">{feature.title}</h3>
+              <p className="text-gray-500 text-sm leading-relaxed">{feature.desc}</p>
             </motion.div>
           ))}
         </div>
