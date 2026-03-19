@@ -22,18 +22,19 @@ router.post('/login', async (req, res) => {
         const user = result.rows[0];
 
         if (!user) {
+            console.log(`LOGIN FAILED: User not found for email [${email}]`);
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
-        // Check password (if hashed) behavior
-        // const valid = await bcrypt.compare(password, user.password_hash);
-        // For debugging/demo seeds without valid bcrypt hash, we might need a fallback or ensure seeds are valid.
-        // The seeds have a valid bcrypt hash for 'password123' ($2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW)
-
+        console.log(`LOGIN: User found for [${email}]. Comparing passwords...`);
         const valid = await bcrypt.compare(password, user.password_hash);
+        
         if (!valid) {
+            console.log(`LOGIN FAILED: Password mismatch for [${email}]. DB Hash starts with: ${user.password_hash.substring(0, 10)}...`);
             return res.status(401).json({ message: 'Invalid credentials' });
         }
+        
+        console.log(`LOGIN SUCCESS: [${email}]`);
 
         // Get Role
         const roleRes = await client.query(`
