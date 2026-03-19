@@ -141,7 +141,7 @@ const AdminBooks = ({ token, onNotify }: AdminBooksProps) => {
                         className="flex justify-center items-center gap-2 w-full sm:w-auto px-6 py-2.5 bg-accent/10 text-accent rounded-xl font-bold text-sm border border-accent/20 cursor-not-allowed opacity-50"
                     >
                         <Plus size={18} />
-                        NUEVO LIBRO
+                        NEW BOOK
                     </button>
                 </div>
             </div>

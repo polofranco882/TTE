@@ -255,7 +255,7 @@ const EditBookModal = ({ isOpen, onClose, book, token, onSuccess, onNotify }: Ed
                                             value={formData.publisher}
                                             onChange={handleChange}
                                             className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white outline-none focus:border-accent/50 transition-all text-sm"
-                                            placeholder="TTE Global Education"
+                                            placeholder="TTESOL Global Education"
                                         />
                                     </div>
                                     <div className="space-y-2">

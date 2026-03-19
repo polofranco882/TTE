@@ -10,8 +10,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'brand-logo-512.png'],
       manifest: {
-        name: 'Trails to English',
-        short_name: 'TTE',
+        name: 'TTESOL Academy',
+        short_name: 'TTESOL',
         description: 'Interactive educational platform for English learning.',
         theme_color: '#1e40af',
         background_color: '#ffffff',

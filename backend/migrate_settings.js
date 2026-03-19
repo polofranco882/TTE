@@ -30,7 +30,7 @@ async function migrate() {
         // Insert default welcome settings if they don't exist
         const defaultSettings = [
             ['welcome_title_top', 'Welcome to the'],
-            ['welcome_title_main', 'TTE ESOL'],
+            ['welcome_title_main', 'TTESOL'],
             ['welcome_title_accent', 'English Academy'],
             ['welcome_description', 'Your English journey starts here. Explore interactive materials, enhance your skills, and master the language with our premium platform.'],
             ['feature1_title', 'Interactive Books'],

@@ -154,13 +154,13 @@ function App() {
       });
       if (res.ok) {
         setSettings(newSettings);
-        showNotification('Configuración actualizada', 'success');
+        showNotification('Settings updated', 'success');
       } else {
-        showNotification('Error al actualizar configuración', 'error');
+        showNotification('Error updating settings', 'error');
       }
     } catch (err) {
       console.error('Error updating settings:', err);
-      showNotification('Error de conexión', 'error');
+      showNotification('Connection error', 'error');
     }
   };
 
@@ -219,12 +219,12 @@ function App() {
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
               className="p-0 rounded-full shadow-2xl border-4 border-white/20 overflow-hidden bg-white"
             >
-              <img src="/brand-logo-512.png" alt="TTE Logo" className="w-24 h-24 object-contain" />
+              <img src="/brand-logo-512.png" alt="TTESOL Logo" className="w-24 h-24 object-contain" />
             </motion.div>
           </div>
 
           <div className="text-center mb-10">
-            <h1 className="text-4xl font-black text-white mb-2 tracking-tighter drop-shadow-2xl">TRAILS TO ENGLISH</h1>
+            <h1 className="text-4xl font-black text-white mb-2 tracking-tighter drop-shadow-2xl">TTESOL</h1>
             <p className="text-gray-300 font-medium">Interactive learning platform.</p>
           </div>
 
@@ -237,7 +237,7 @@ function App() {
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   className="w-full pl-12 pr-4 py-4 rounded-xl border border-white/10 bg-black/20 focus:bg-black/40 focus:border-accent focus:ring-4 focus:ring-accent/20 transition-all outline-none text-white placeholder-gray-500"
-                  placeholder="usuario@tte.com"
+                  placeholder="user@ttesol.com"
                 />
               </div>
             </div>
