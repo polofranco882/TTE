@@ -32,7 +32,13 @@ async function migrate() {
             ['welcome_title_top', 'Welcome to the'],
             ['welcome_title_main', 'TTE ESOL'],
             ['welcome_title_accent', 'English Academy'],
-            ['welcome_description', 'Your English journey starts here. Explore interactive materials, enhance your skills, and master the language with our premium platform.']
+            ['welcome_description', 'Your English journey starts here. Explore interactive materials, enhance your skills, and master the language with our premium platform.'],
+            ['feature1_title', 'Interactive Books'],
+            ['feature1_desc', 'Engaging reading experience with AI.'],
+            ['feature2_title', 'Expert Content'],
+            ['feature2_desc', 'Curated for all levels by professionals.'],
+            ['feature3_title', 'Fast Progress'],
+            ['feature3_desc', 'Adaptive platform for rapid growth.']
         ];
 
         for (const [key, value] of defaultSettings) {

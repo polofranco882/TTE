@@ -29,6 +29,13 @@ const WelcomeScreen = ({ onStartLearning, settings, userRole, onUpdateSettings }
   const titleAccent = localSettings.welcome_title_accent || 'English Academy';
   const description = localSettings.welcome_description || 'Your English journey starts here...';
 
+  const f1Title = localSettings.feature1_title || 'Interactive Books';
+  const f1Desc = localSettings.feature1_desc || 'Engaging reading experience with AI.';
+  const f2Title = localSettings.feature2_title || 'Expert Content';
+  const f2Desc = localSettings.feature2_desc || 'Curated for all levels by professionals.';
+  const f3Title = localSettings.feature3_title || 'Fast Progress';
+  const f3Desc = localSettings.feature3_desc || 'Adaptive platform for rapid growth.';
+
   return (
     <div className="flex-1 flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-[#0a0c10]">
       {/* Premium Background Effects */}
@@ -93,7 +100,30 @@ const WelcomeScreen = ({ onStartLearning, settings, userRole, onUpdateSettings }
                 className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-white outline-none focus:border-accent resize-none"
               />
             </div>
-            <div className="flex gap-2 justify-end pt-2">
+
+            {/* Features Edit Section */}
+            <div className="pt-4 border-t border-white/10 mt-4">
+              <h4 className="text-sm font-black text-white uppercase tracking-widest mb-4">Sección de Características</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-3 bg-white/5 p-4 rounded-2xl border border-white/5">
+                  <div className="bg-accent/20 w-8 h-8 rounded-lg flex items-center justify-center text-accent mb-2"><BookOpen size={16} /></div>
+                  <input placeholder="Título 1" value={f1Title} onChange={e => setLocalSettings({...localSettings, feature1_title: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:border-accent outline-none" />
+                  <textarea placeholder="Descripción 1" rows={2} value={f1Desc} onChange={e => setLocalSettings({...localSettings, feature1_desc: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:border-accent outline-none resize-none" />
+                </div>
+                <div className="space-y-3 bg-white/5 p-4 rounded-2xl border border-white/5">
+                  <div className="bg-orange-500/20 w-8 h-8 rounded-lg flex items-center justify-center text-orange-500 mb-2"><Star size={16} /></div>
+                  <input placeholder="Título 2" value={f2Title} onChange={e => setLocalSettings({...localSettings, feature2_title: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:border-accent outline-none" />
+                  <textarea placeholder="Descripción 2" rows={2} value={f2Desc} onChange={e => setLocalSettings({...localSettings, feature2_desc: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:border-accent outline-none resize-none" />
+                </div>
+                <div className="space-y-3 bg-white/5 p-4 rounded-2xl border border-white/5">
+                  <div className="bg-blue-500/20 w-8 h-8 rounded-lg flex items-center justify-center text-blue-500 mb-2"><GraduationCap size={16} /></div>
+                  <input placeholder="Título 3" value={f3Title} onChange={e => setLocalSettings({...localSettings, feature3_title: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:border-accent outline-none" />
+                  <textarea placeholder="Descripción 3" rows={2} value={f3Desc} onChange={e => setLocalSettings({...localSettings, feature3_desc: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:border-accent outline-none resize-none" />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-2 justify-end pt-4 border-t border-white/5 mt-4">
               <button onClick={() => setIsEditing(false)} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors">
                 <X size={16} /> Cancelar
               </button>
@@ -132,9 +162,9 @@ const WelcomeScreen = ({ onStartLearning, settings, userRole, onUpdateSettings }
         {/* Stats or Features */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20">
           {[
-            { title: "Interactive Books", desc: "Engaging reading experience with AI.", icon: <BookOpen size={24} /> },
-            { title: "Expert Content", desc: "Curated for all levels by professionals.", icon: <Star size={24} /> },
-            { title: "Fast Progress", desc: "Adaptive platform for rapid growth.", icon: <GraduationCap size={24} /> }
+            { title: f1Title, desc: f1Desc, icon: <BookOpen size={24} />, color: 'accent' },
+            { title: f2Title, desc: f2Desc, icon: <Star size={24} />, color: 'orange-500' },
+            { title: f3Title, desc: f3Desc, icon: <GraduationCap size={24} />, color: 'blue-500' }
           ].map((feature, i) => (
             <motion.div
               key={i}
@@ -144,9 +174,9 @@ const WelcomeScreen = ({ onStartLearning, settings, userRole, onUpdateSettings }
               transition={{ delay: 0.5 + (i * 0.1) }}
               className="bg-white/[0.03] backdrop-blur-md border border-white/10 p-8 rounded-[2rem] transition-all text-left group"
             >
-              <div className="bg-accent/20 w-12 h-12 rounded-xl flex items-center justify-center text-accent mb-6 group-hover:scale-110 transition-transform">{feature.icon}</div>
-              <h3 className="text-white font-black text-xl mb-2 tracking-tight">{feature.title}</h3>
-              <p className="text-gray-500 text-sm leading-relaxed">{feature.desc}</p>
+              <div className={`bg-${feature.color}/20 w-12 h-12 rounded-xl flex items-center justify-center text-${feature.color} mb-6 group-hover:scale-110 transition-transform`}>{feature.icon}</div>
+              <h3 className="text-white font-black text-xl mb-2 tracking-tight line-clamp-1">{feature.title}</h3>
+              <p className="text-gray-500 text-sm leading-relaxed line-clamp-2">{feature.desc}</p>
             </motion.div>
           ))}
         </div>
