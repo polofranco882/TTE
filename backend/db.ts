@@ -5,7 +5,8 @@ import { Client } from 'pg';
 // dotenv.config();
 
 const client = new Client({
-    connectionString: process.env.DATABASE_URL || 'postgresql://postgres:sa@localhost:5432/TTE', // Updated to TTE
+    connectionString: process.env.DATABASE_URL || 'postgresql://postgres:sa@localhost:5432/TTE',
+    ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
 });
 
 client.connect()
