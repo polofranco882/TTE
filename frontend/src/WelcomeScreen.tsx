@@ -1,11 +1,34 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Star, GraduationCap, ChevronRight } from 'lucide-react';
+import { BookOpen, Star, GraduationCap, ChevronRight, Edit2, Save, X } from 'lucide-react';
 
 interface WelcomeScreenProps {
   onStartLearning: () => void;
+  settings: { [key: string]: string };
+  userRole: string | null;
+  onUpdateSettings: (newSettings: { [key: string]: string }) => Promise<void>;
 }
 
-const WelcomeScreen = ({ onStartLearning }: WelcomeScreenProps) => {
+const WelcomeScreen = ({ onStartLearning, settings, userRole, onUpdateSettings }: WelcomeScreenProps) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [localSettings, setLocalSettings] = useState(settings);
+
+  useEffect(() => {
+    setLocalSettings(settings);
+  }, [settings]);
+
+  const handleSave = async () => {
+    await onUpdateSettings(localSettings);
+    setIsEditing(false);
+  };
+
+  const isAdmin = userRole === 'admin' || userRole === 'manager';
+
+  const titleTop = localSettings.welcome_title_top || 'Welcome to the';
+  const titleMain = localSettings.welcome_title_main || 'TTE ESOL';
+  const titleAccent = localSettings.welcome_title_accent || 'English Academy';
+  const description = localSettings.welcome_description || 'Your English journey starts here...';
+
   return (
     <div className="flex-1 flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-[#0a0c10]">
       {/* Premium Background Effects */}
@@ -33,17 +56,67 @@ const WelcomeScreen = ({ onStartLearning }: WelcomeScreenProps) => {
         </motion.div>
 
         {/* Hero Section */}
-        <h1 className="text-5xl md:text-8xl font-black text-white mb-8 tracking-tighter leading-[0.9] uppercase drop-shadow-2xl">
-          <span className="text-sm md:text-xl font-bold tracking-[0.5em] text-accent/80 mb-4 block animate-pulse">Welcome to the</span>
-          <span className="bg-clip-text text-transparent bg-gradient-to-br from-white via-white to-white/40">TTE ESOL</span> <br />
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-accent via-orange-400 to-orange-600">
-            English Academy
-          </span>
-        </h1>
-        
-        <p className="text-lg md:text-xl text-gray-400 mb-12 font-medium max-w-xl mx-auto leading-relaxed border-l-2 border-accent/30 pl-6 italic">
-          "Your English journey starts here. Explore interactive materials, enhance your skills, and master the language with our premium platform."
-        </p>
+        {isEditing ? (
+          <div className="space-y-4 mb-10 text-left bg-white/5 p-6 rounded-3xl border border-white/10 backdrop-blur-xl">
+            <div>
+              <label className="text-xs font-bold text-accent uppercase tracking-widest block mb-2">Título Superior</label>
+              <input 
+                value={titleTop}
+                onChange={e => setLocalSettings({...localSettings, welcome_title_top: e.target.value})}
+                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-white outline-none focus:border-accent"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-xs font-bold text-accent uppercase tracking-widest block mb-2">Título Principal</label>
+                <input 
+                  value={titleMain}
+                  onChange={e => setLocalSettings({...localSettings, welcome_title_main: e.target.value})}
+                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-white outline-none focus:border-accent"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-accent uppercase tracking-widest block mb-2">Título Acento</label>
+                <input 
+                  value={titleAccent}
+                  onChange={e => setLocalSettings({...localSettings, welcome_title_accent: e.target.value})}
+                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-white outline-none focus:border-accent"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="text-xs font-bold text-accent uppercase tracking-widest block mb-2">Descripción</label>
+              <textarea 
+                rows={3}
+                value={description}
+                onChange={e => setLocalSettings({...localSettings, welcome_description: e.target.value})}
+                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-white outline-none focus:border-accent resize-none"
+              />
+            </div>
+            <div className="flex gap-2 justify-end pt-2">
+              <button onClick={() => setIsEditing(false)} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors">
+                <X size={16} /> Cancelar
+              </button>
+              <button onClick={handleSave} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-accent text-white hover:bg-accent/80 transition-colors font-bold">
+                <Save size={16} /> Guardar Cambios
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <h1 className="text-5xl md:text-8xl font-black text-white mb-8 tracking-tighter leading-[0.9] uppercase drop-shadow-2xl">
+              <span className="text-sm md:text-xl font-bold tracking-[0.5em] text-accent/80 mb-4 block animate-pulse">{titleTop}</span>
+              <span className="bg-clip-text text-transparent bg-gradient-to-br from-white via-white to-white/40">{titleMain}</span> <br />
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-accent via-orange-400 to-orange-600">
+                {titleAccent}
+              </span>
+            </h1>
+            
+            <p className="text-lg md:text-xl text-gray-400 mb-12 font-medium max-w-xl mx-auto leading-relaxed border-l-2 border-accent/30 pl-6 italic">
+              "{description}"
+            </p>
+          </>
+        )}
 
         {/* Call to action */}
         <motion.button
@@ -78,6 +151,19 @@ const WelcomeScreen = ({ onStartLearning }: WelcomeScreenProps) => {
           ))}
         </div>
       </motion.div>
+
+      {/* Admin Edit Trigger */}
+      {isAdmin && !isEditing && (
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          onClick={() => setIsEditing(true)}
+          className="absolute top-8 right-8 flex items-center gap-2 bg-white/5 hover:bg-white/10 text-white/50 hover:text-white px-4 py-2 rounded-full border border-white/10 transition-all backdrop-blur-md group"
+        >
+          <Edit2 size={16} className="group-hover:text-accent transition-colors" />
+          <span className="text-xs font-bold tracking-widest uppercase">Editar Contenido</span>
+        </motion.button>
+      )}
     </div>
   );
 };

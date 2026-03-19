@@ -38,9 +38,24 @@ function App() {
     setNotification(prev => ({ ...prev, isVisible: false }));
   };
 
+  // Settings State
+  const [settings, setSettings] = useState<{ [key: string]: string }>({});
+
+  const fetchSettings = async () => {
+    try {
+      const res = await fetch('/api/settings');
+      if (res.ok) {
+        const data = await res.json();
+        setSettings(data);
+      }
+    } catch (err) {
+      console.error('Error fetching settings:', err);
+    }
+  };
+
   // Effect to handle initial redirects or checks can go here
   useEffect(() => {
-    // Optional: Check token validity
+    fetchSettings();
   }, [token]);
 
   const login = async (e: React.FormEvent) => {
@@ -127,9 +142,31 @@ function App() {
     }
   };
 
+  const updateSettings = async (newSettings: { [key: string]: string }) => {
+    try {
+      const res = await fetch('/api/settings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ settings: newSettings })
+      });
+      if (res.ok) {
+        setSettings(newSettings);
+        showNotification('Configuración actualizada', 'success');
+      } else {
+        showNotification('Error al actualizar configuración', 'error');
+      }
+    } catch (err) {
+      console.error('Error updating settings:', err);
+      showNotification('Error de conexión', 'error');
+    }
+  };
+
   if (!token) {
     return (
-      <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+      <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-[#0a0c10]">
         {/* Background Image with Overlay */}
         <div
           className="absolute inset-0 bg-cover bg-center transition-all duration-1000"
@@ -286,7 +323,14 @@ function App() {
     }
 
     if (activeTab === 'welcome') {
-      return <WelcomeScreen onStartLearning={() => setActiveTab('books')} />;
+      return (
+        <WelcomeScreen
+          onStartLearning={() => setActiveTab('books')}
+          settings={settings}
+          userRole={userRole}
+          onUpdateSettings={updateSettings}
+        />
+      );
     }
 
     if (activeTab === 'dashboard') {

@@ -29,12 +29,14 @@ const bookRoutes = require('./routes/books').default || require('./routes/books'
 const reportRoutes = require('./routes/reports').default || require('./routes/reports');
 const adminRoutes = require('./routes/admin').default || require('./routes/admin');
 const aiRoutes = require('./routes/ai').default || require('./routes/ai');
+const settingsRoutes = require('./routes/settings').default || require('./routes/settings');
 
 app.use('/auth', authRoutes);
 app.use('/books', bookRoutes);
 app.use('/reports', reportRoutes);
 app.use('/admin', adminRoutes);
 app.use('/ai', aiRoutes);
+app.use('/settings', settingsRoutes);
 
 // Protected Route Example
 app.get('/protected', (req, res) => {
