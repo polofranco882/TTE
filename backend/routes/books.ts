@@ -29,9 +29,6 @@ router.get('/', authenticateToken, async (req: any, res: any) => {
     try {
         const { role, id } = req.user;
 
-        // Ensure sort_order column exists (safe, idempotent)
-        await client.query(`ALTER TABLE app.books ADD COLUMN IF NOT EXISTS sort_order INTEGER`);
-
         let query = '';
         let params: any[] = [];
 
@@ -61,11 +58,6 @@ router.put('/reorder', authenticateToken, async (req: any, res: any) => {
     try {
         const { role } = req.user;
         if (role !== 'admin' && role !== 'manager') return res.status(403).json({ message: 'Forbidden' });
-
-        // Ensure sort_order column exists (idempotent)
-        await client.query(`
-            ALTER TABLE app.books ADD COLUMN IF NOT EXISTS sort_order INTEGER
-        `);
 
         const { order } = req.body; // Array of { id: number, sort_order: number }
         if (!Array.isArray(order)) return res.status(400).json({ message: 'Invalid payload' });
@@ -193,10 +185,6 @@ router.get('/:id/contents', authenticateToken, async (req: any, res: any) => {
         const { id } = req.params;
         const { role } = req.user;
 
-        // Auto-migrate: ensure columns exist
-        await client.query(`ALTER TABLE app.book_contents ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE`);
-        await client.query(`ALTER TABLE app.book_contents ADD COLUMN IF NOT EXISTS parent_id INTEGER REFERENCES app.book_contents(id) ON DELETE SET NULL`);
-
         let query = '';
         let params: any[] = [id];
 
@@ -252,9 +240,6 @@ router.post('/:id/contents', authenticateToken, async (req: any, res: any) => {
 router.get('/:id/contents-meta', authenticateToken, async (req: any, res: any) => {
     try {
         const { id } = req.params;
-        // Auto-migrate
-        await client.query(`ALTER TABLE app.book_contents ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE`);
-        await client.query(`ALTER TABLE app.book_contents ADD COLUMN IF NOT EXISTS parent_id INTEGER REFERENCES app.book_contents(id) ON DELETE SET NULL`);
 
         const result = await client.query(
             'SELECT id, book_id, title, type, page_number, order_index, parent_id, COALESCE(is_active, TRUE) as is_active FROM app.book_contents WHERE book_id = $1 ORDER BY order_index ASC',
@@ -418,9 +403,6 @@ router.patch('/:id/contents/:contentId/toggle', authenticateToken, async (req: a
         if (role !== 'admin' && role !== 'manager') return res.status(403).json({ message: 'Forbidden' });
 
         const { contentId } = req.params;
-        // Auto-migrate
-        await client.query(`ALTER TABLE app.book_contents ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE`);
-
         const result = await client.query(
             'UPDATE app.book_contents SET is_active = NOT COALESCE(is_active, TRUE) WHERE id = $1 RETURNING id, is_active',
             [contentId]

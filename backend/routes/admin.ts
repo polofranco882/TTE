@@ -39,7 +39,7 @@ router.get('/users', authenticateAdmin, async (req: any, res: any) => {
 });
 
 // Get Books for Specific User (with status)
-router.get('/app.users/:id/app.books', authenticateAdmin, async (req: any, res: any) => {
+router.get('/users/:id/books', authenticateAdmin, async (req: any, res: any) => {
     try {
         const { id } = req.params;
 
@@ -63,7 +63,7 @@ router.get('/app.users/:id/app.books', authenticateAdmin, async (req: any, res: 
 });
 
 // Toggle Book Status for User
-router.post('/app.users/:id/app.books', authenticateAdmin, async (req: any, res: any) => {
+router.post('/users/:id/books', authenticateAdmin, async (req: any, res: any) => {
     try {
         const { id } = req.params; // user_id
         const { bookId, status } = req.body; // status: 'assigned' | 'inactive'
@@ -90,7 +90,7 @@ router.post('/app.users/:id/app.books', authenticateAdmin, async (req: any, res:
 });
 
 // Reset Password for a User (Admin only)
-router.post('/app.users/:id/reset-password', authenticateAdmin, async (req: any, res: any) => {
+router.post('/users/:id/reset-password', authenticateAdmin, async (req: any, res: any) => {
     try {
         const { id } = req.params;
         const { newPassword } = req.body;
@@ -122,7 +122,7 @@ router.post('/app.users/:id/reset-password', authenticateAdmin, async (req: any,
 });
 
 // Create New User (Admin only)
-router.post('/app.users/create', authenticateAdmin, async (req: any, res: any) => {
+router.post('/users/create', authenticateAdmin, async (req: any, res: any) => {
     try {
         const { name, email, password, role } = req.body;
 
