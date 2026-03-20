@@ -266,10 +266,11 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                 target.closest('input') || 
                                 target.closest('video') || 
                                 target.closest('audio') ||
-                                target.closest('.notification-container'); // Don't block notifications
+                                target.closest('.notification-container') ||
+                                target.closest('.nav-zone'); // Allow explicit nav zones to receive their clicks
 
             if (isInteractive) {
-                console.log("Document Shield: PROTECTED INTERACTIVE BLOCK", target);
+                console.log("Document Shield: PROTECTED INTERACTIVE BLOCK OR NAV ZONE", target);
                 return; // Let interactive elements handle their own events
             }
 
@@ -508,15 +509,16 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
         if (!flipBookRef.current) return;
         try {
             const pf = flipBookRef.current.pageFlip();
-            if (pf && pf.getCurrentPageIndex() > 0) {
-                if (isSinglePage) {
-                    pf.flipPrev();
-                } else {
-                    pf.flipPrev('bottom');
+            if (pf) {
+                const currentIndex = pf.getCurrentPageIndex();
+                if (currentIndex > 0) {
+                    // Use turnToPage which is more robust than flipPrev across devices
+                    const step = isSinglePage ? 1 : 2;
+                    pf.turnToPage(Math.max(0, currentIndex - step));
                 }
             }
         } catch (e) {
-            console.error(e);
+            console.error("FlipPrev Error:", e);
         }
     };
 
@@ -524,15 +526,16 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
         if (!flipBookRef.current) return;
         try {
             const pf = flipBookRef.current.pageFlip();
-            if (pf && pf.getCurrentPageIndex() < contents.length - 1) {
-                if (isSinglePage) {
-                    pf.flipNext();
-                } else {
-                    pf.flipNext('bottom');
+            if (pf) {
+                const currentIndex = pf.getCurrentPageIndex();
+                if (currentIndex < contents.length - 1) {
+                    // Use turnToPage which is more robust than flipNext across devices
+                    const step = isSinglePage ? 1 : 2;
+                    pf.turnToPage(Math.min(contents.length - 1, currentIndex + step));
                 }
             }
         } catch (e) {
-            console.error(e);
+            console.error("FlipNext Error:", e);
         }
     };
 
@@ -1182,7 +1185,7 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                                                  <div className="absolute inset-0 z-[500] pointer-events-none flex">
                                                                      {/* Left Navigation Zone */}
                                                                      <div 
-                                                                        className="h-full w-[15%] sm:w-[8%] pointer-events-auto cursor-pointer"
+                                                                        className="nav-zone h-full w-[15%] sm:w-[8%] pointer-events-auto cursor-pointer"
                                                                         onClick={handleFlipPrev}
                                                                      ></div>
 
@@ -1191,7 +1194,7 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
 
                                                                      {/* Right Navigation Zone */}
                                                                      <div 
-                                                                        className="h-full w-[15%] sm:w-[8%] pointer-events-auto cursor-pointer"
+                                                                        className="nav-zone h-full w-[15%] sm:w-[8%] pointer-events-auto cursor-pointer"
                                                                         onClick={handleFlipNext}
                                                                      ></div>
                                                                  </div>
