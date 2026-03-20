@@ -412,17 +412,37 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
     useEffect(() => {
         if (viewState === 'READING' && selectedChapter && isNavigatingFromTOC.current) {
             const chapterIndex = contents.findIndex(c => c.id === selectedChapter.id);
+            console.log("SyncNav: Attempting flip to index", chapterIndex, "Title:", selectedChapter.title);
+            
             if (chapterIndex !== -1) {
-                // Short delay to ensure HTMLFlipBook is completely mounted and initialized
-                setTimeout(() => {
-                    if (flipBookRef.current && flipBookRef.current.pageFlip()) {
-                        flipBookRef.current.pageFlip().turnToPage(chapterIndex);
-                    }
-                    // Release the navigation lock shortly after triggering the programmatic flip
+                // Reset jump input when navigating from TOC
+                setJumpPageInput('');
+                
+                // Clear the navigation lock after some time to allow the effect to complete
+                const clearLock = () => {
                     setTimeout(() => {
                         isNavigatingFromTOC.current = false;
-                    }, 150);
-                }, 100);
+                        console.log("SyncNav: Lock Released");
+                    }, 500);
+                };
+
+                // Use multiple attempts or a slightly longer delay to ensure the flipbook is ready
+                let attempts = 0;
+                const tryFlip = () => {
+                    if (flipBookRef.current && flipBookRef.current.pageFlip()) {
+                        console.log("SyncNav: Executing turnToPage", chapterIndex);
+                        flipBookRef.current.pageFlip().turnToPage(chapterIndex);
+                        clearLock();
+                    } else if (attempts < 10) {
+                        attempts++;
+                        setTimeout(tryFlip, 100);
+                    } else {
+                        console.warn("SyncNav: Flipbook not ready after 10 attempts");
+                        isNavigatingFromTOC.current = false;
+                    }
+                };
+                
+                tryFlip();
             } else {
                 isNavigatingFromTOC.current = false;
             }
@@ -998,13 +1018,13 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                                         <span className="text-accent text-[11px] lg:text-[10px] font-black">PAGE</span>
                                                         <input 
                                                             type="text"
-                                                            value={jumpPageInput || selectedChapter.page_number}
+                                                            placeholder={String(selectedChapter?.page_number || '')}
+                                                            value={jumpPageInput}
                                                             onChange={(e) => setJumpPageInput(e.target.value)}
-                                                            className="w-10 bg-accent/10 text-accent text-[12px] lg:text-[11px] font-black border-b-2 border-accent/20 focus:border-accent focus:bg-accent/20 outline-none text-center p-1 rounded-sm transition-all appearance-none"
-                                                            onFocus={() => setJumpPageInput('')}
+                                                            className="w-10 bg-accent/10 text-accent text-[12px] lg:text-[11px] font-black border-b-2 border-accent/20 focus:border-accent focus:bg-accent/20 outline-none text-center p-1 rounded-sm transition-all appearance-none placeholder:text-accent/40"
+                                                            onFocus={(e) => e.target.select()}
                                                             onBlur={() => {
-                                                                // If they blurred without submitting, reset to current page if field is empty
-                                                                if (!jumpPageInput) setJumpPageInput('');
+                                                                // keep it as is
                                                             }}
                                                             title="Enter page number and press Enter"
                                                         />
