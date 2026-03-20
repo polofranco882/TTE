@@ -1116,15 +1116,14 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                                                     minHeight={400}
                                                                     maxHeight={4000}
                                                                     showCover={true}
-                                                                    mobileScrollSupport={false} // Disable internal scroll/swipe to regain control
+                                                                    mobileScrollSupport={true}
                                                                     usePortrait={isSinglePage}
                                                                     
-                                                                    // HARD DISABLE: Disable internal library interaction listeners
+                                                                    // Disable user-driven click/drag to flip pages - we control page turning programmatically
                                                                     disableFlipByClick={true}
                                                                     useMouseEvents={false}
-                                                                    swipeDistance={0}
-                                                                    showPageCorners={false}
-                                                                    clickEventForward={false}
+                                                                    swipeDistance={999999}
+                                                                    showPageCorners={true}
                                                                     
                                                                     ref={flipBookRef}
                                                                     onFlip={(e: any) => {
@@ -1139,7 +1138,6 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                                                         }
                                                                     }}
                                                                     className="flip-book-container h-full w-full"
-                                                                    style={{ pointerEvents: 'none' }} // STUN THE MOTOR: No clicks reach the library
                                                                 >
                                                                 {contents.map((chapter) => (
                                                                     <FlipbookPage
