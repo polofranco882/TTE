@@ -327,7 +327,7 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
     }, [viewState, bookContainerRef]);
 
     // Audio Flip Settings
-    const [flipVolume, setFlipVolume] = useState(() => {
+    const [flipVolume] = useState(() => {
         const saved = localStorage.getItem('tte_flip_volume');
         return saved ? parseFloat(saved) : 1;
     });
@@ -335,7 +335,6 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
         const saved = localStorage.getItem('tte_flip_muted');
         return saved === 'true';
     });
-    const [showVolControls, setShowVolControls] = useState(false);
 
     // Gamification & Validation
     const { hearts, addXp, subtractHeart, incrementStreak, xp } = useGamification();
@@ -510,7 +509,11 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
         try {
             const pf = flipBookRef.current.pageFlip();
             if (pf && pf.getCurrentPageIndex() > 0) {
-                pf.flipPrev('bottom');
+                if (isSinglePage) {
+                    pf.flipPrev();
+                } else {
+                    pf.flipPrev('bottom');
+                }
             }
         } catch (e) {
             console.error(e);
@@ -522,7 +525,11 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
         try {
             const pf = flipBookRef.current.pageFlip();
             if (pf && pf.getCurrentPageIndex() < contents.length - 1) {
-                pf.flipNext('bottom');
+                if (isSinglePage) {
+                    pf.flipNext();
+                } else {
+                    pf.flipNext('bottom');
+                }
             }
         } catch (e) {
             console.error(e);
@@ -948,78 +955,37 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                             <div className={`w-full flex-1 flex flex-col min-h-0`}>
                                 <div className={`flex-1 flex flex-col bg-white/5 backdrop-blur-xl border-t border-white/10 shadow-2xl relative transition-all duration-300 overflow-hidden`}>                                    {/* Merged Header & Navigation Section */}
                                     {!isFullscreen && (
-                                        <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-y-2 mb-1 border-b border-white/5 pb-2 pt-1 px-2 md:px-4 pointer-events-auto">
-                                            {/* Left: Nav */}
-                                            <div className="flex items-center gap-1.5 shrink-0 w-full sm:w-auto overflow-hidden">
-                                                <button onClick={onBack} className="p-2 md:p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white group flex-shrink-0" title="Return to Library">
-                                                    <BookOpen size={16} className="md:w-3.5 md:h-3.5" />
-                                                </button>
-                                                <button onClick={() => setViewState('INDEX')} className="p-2 md:p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white group flex-shrink-0" title="Back to Index">
-                                                    <Menu size={16} className="md:w-3.5 md:h-3.5" />
-                                                </button>
-                                                <button onClick={() => setIsSinglePage(!isSinglePage)} className="hidden sm:flex p-2 md:p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white group items-center justify-center relative flex-shrink-0" title={isSinglePage ? "Switch to Double Page View" : "Switch to Single Page View"}>
-                                                    <Layout size={16} className={`transition-transform md:w-3.5 md:h-3.5 ${isSinglePage ? 'rotate-90' : ''}`} />
-                                                    <span className="absolute -bottom-1 -right-1 text-[8px] md:text-[7px] font-black bg-accent text-white px-1 rounded-sm leading-none">{isSinglePage ? '1' : '2'}</span>
-                                                </button>
-                                                <button onClick={toggleFullscreen} className="hidden sm:flex p-2 md:p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white group ml-1 sm:ml-2 flex-shrink-0" title={isFullscreen ? "Exit Fullscreen (Esc)" : "Fullscreen (F11)"}>
-                                                    {isFullscreen ? <Shrink size={16} className="md:w-3.5 md:h-3.5" /> : <Expand size={16} className="md:w-3.5 md:h-3.5" />}
-                                                </button>
-                                                
-                                                {/* Search Button */}
-                                                <button onClick={() => { setShowSearch(true); setTimeout(() => document.getElementById('b-search-input')?.focus(), 100); }} className="p-2 md:p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white group sm:ml-1 flex-shrink-0" title="Search Book Contents">
-                                                    <Search size={16} className="md:w-3.5 md:h-3.5" />
-                                                </button>
+                                        <div className="flex flex-col gap-y-2 mb-1 border-b border-white/5 pb-2 pt-1 px-2 md:px-4 pointer-events-auto">
+                                            {/* Row 1: All Nav Icons Scrollable + Mobile Page Jumper */}
+                                            <div className="flex items-center justify-between w-full">
+                                                <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink mx-1 pb-1">
+                                                    <button onClick={onBack} className="p-2 md:p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white group flex-shrink-0" title="Return to Library">
+                                                        <BookOpen size={16} className="md:w-3.5 md:h-3.5" />
+                                                    </button>
+                                                    <button onClick={() => setViewState('INDEX')} className="p-2 md:p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white group flex-shrink-0" title="Back to Index">
+                                                        <Menu size={16} className="md:w-3.5 md:h-3.5" />
+                                                    </button>
+                                                    <button onClick={() => setIsSinglePage(!isSinglePage)} className="p-2 md:p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white group flex items-center justify-center relative flex-shrink-0" title={isSinglePage ? "Switch to Double Page View" : "Switch to Single Page View"}>
+                                                        <Layout size={16} className={`transition-transform md:w-3.5 md:h-3.5 ${isSinglePage ? 'rotate-90' : ''}`} />
+                                                        <span className="absolute -bottom-1 -right-1 text-[8px] md:text-[7px] font-black bg-accent text-white px-1 rounded-sm leading-none">{isSinglePage ? '1' : '2'}</span>
+                                                    </button>
+                                                    <button onClick={toggleFullscreen} className="p-2 md:p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white group flex-shrink-0" title={isFullscreen ? "Exit Fullscreen (Esc)" : "Fullscreen (F11)"}>
+                                                        {isFullscreen ? <Shrink size={16} className="md:w-3.5 md:h-3.5" /> : <Expand size={16} className="md:w-3.5 md:h-3.5" />}
+                                                    </button>
+                                                    <button onClick={() => { setShowSearch(true); setTimeout(() => document.getElementById('b-search-input')?.focus(), 100); }} className="p-2 md:p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white group flex-shrink-0" title="Search Book Contents">
+                                                        <Search size={16} className="md:w-3.5 md:h-3.5" />
+                                                    </button>
 
-                                                {/* Audio Controls */}
-                                                <div className="relative flex items-center sm:ml-2"
-                                                    onMouseEnter={() => setShowVolControls(true)}
-                                                    onMouseLeave={() => setShowVolControls(false)}>
                                                     <button 
                                                         onClick={() => setFlipMuted(!flipMuted)} 
-                                                        className={`p-2 md:p-1.5 rounded-lg bg-white/5 border border-white/10 transition-all group flex-shrink-0 relative z-10 ${flipMuted ? 'text-red-400 hover:bg-red-400/10 hover:text-red-300' : 'text-gray-400 hover:bg-white/10 hover:text-white'}`} 
+                                                        className={`p-2 md:p-1.5 rounded-lg bg-white/5 border border-white/10 transition-all group flex-shrink-0 ${flipMuted ? 'text-red-400 hover:bg-red-400/10 hover:text-red-300' : 'text-gray-400 hover:bg-white/10 hover:text-white'}`} 
                                                         title={flipMuted ? "Unmute Flip Sound" : "Mute Flip Sound"}>
                                                         {flipMuted ? <VolumeX size={16} className="md:w-3.5 md:h-3.5" /> : <Volume2 size={16} className="md:w-3.5 md:h-3.5" />}
                                                     </button>
-                                                    
-                                                    <AnimatePresence>
-                                                        {showVolControls && (
-                                                            <motion.div 
-                                                                initial={{ opacity: 0, width: 0, paddingLeft: 0, paddingRight: 0 }}
-                                                                animate={{ opacity: 1, width: 80, paddingLeft: 8, paddingRight: 8 }}
-                                                                exit={{ opacity: 0, width: 0, paddingLeft: 0, paddingRight: 0 }}
-                                                                className="hidden sm:flex absolute top-1/2 left-full -translate-y-1/2 items-center bg-[#161930] h-full border border-white/10 rounded-r-lg shadow-lg z-[5] origin-left overflow-hidden -ml-2 pl-4"
-                                                            >
-                                                                <input 
-                                                                    type="range" 
-                                                                    min="0" max="1" step="0.05" 
-                                                                    value={flipMuted ? 0 : flipVolume} 
-                                                                    onChange={(e) => {
-                                                                        const val = parseFloat(e.target.value);
-                                                                        setFlipVolume(val);
-                                                                        if (flipMuted && val > 0) setFlipMuted(false);
-                                                                        if (val === 0) setFlipMuted(true);
-                                                                    }}
-                                                                    className="w-full accent-accent h-1.5 cursor-pointer bg-white/20 rounded-full appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full"
-                                                                />
-                                                            </motion.div>
-                                                        )}
-                                                    </AnimatePresence>
                                                 </div>
-                                                
-                                                {/* Desktop-only Breadcrumbs */}
-                                                <div className="hidden lg:flex items-center gap-1 md:gap-2 text-[10px] md:text-[9px] font-black uppercase tracking-[0.2em] truncate min-w-0 pr-2 ml-4">
-                                                    <div className="flex items-center gap-1 border border-accent/30 bg-accent/10 px-2 py-0.5 rounded-full truncate shrink min-w-0 sm:max-w-none max-w-[150px]">
-                                                        <span className="text-accent truncate">{book?.title}</span>
-                                                    </div>
-                                                    <span className="text-white/40 hidden md:inline shrink-0">/</span>
-                                                    <h2 className="m-0 text-white/50 inline truncate shrink min-w-0">{selectedChapter?.title}</h2>
-                                                </div>
-                                                
-                                                {/* Mobile Space Filler */}
-                                                <div className="flex-1 sm:hidden"></div>
-                                                
-                                                {/* PROMIMENT PAGE JUMPER (Moved inside Left section on Mobile to save space) */}
-                                                <div className="sm:hidden flex items-center gap-1 bg-white/5 border border-white/10 px-2 py-1.5 rounded-xl transition-all overflow-hidden flex-shrink-0">
+
+                                                {/* Page Jumper (Mobile Only) */}
+                                                <div className="sm:hidden flex items-center gap-1 bg-white/5 border border-white/10 px-2 py-1.5 rounded-xl transition-all overflow-hidden flex-shrink-0 ml-2">
                                                     <form onSubmit={handleJumpPageSubmit} className="flex flex-row items-center gap-0.5">
                                                         <span className="text-accent text-[8px] font-black shrink-0 mr-1">PG</span>
                                                         <input 
@@ -1030,14 +996,24 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                                             className="w-7 bg-accent/10 text-accent text-[10px] font-black border-b border-accent/20 focus:border-accent focus:bg-accent/20 outline-none text-center p-0.5 rounded-sm transition-all appearance-none placeholder:text-accent/40"
                                                             onFocus={(e) => e.target.select()}
                                                         />
-                                                        <span className="text-white/30 text-[8px] shrink-0 ml-1">/ {contents.length}</span>
                                                     </form>
                                                 </div>
                                             </div>
 
-                                            {/* Right: Prev/Next & Progress Navigation (Desktop Only) */}
-                                            <div className="hidden sm:flex items-center gap-1 sm:gap-2 text-[9px] font-black uppercase tracking-[0.2em] shrink-0 justify-end mt-1 lg:mt-0 select-none flex-1 min-w-0">
-                                                <button onClick={handleFlipPrev} className="flex items-center justify-center gap-1 px-2.5 py-1.5 lg:py-1 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white group relative shrink-0">
+                                            {/* Row 2: Breadcrumbs & Desktop Right Nav */}
+                                            <div className="flex flex-wrap items-center justify-between w-full">
+                                                {/* Desktop-only Breadcrumbs */}
+                                                <div className="hidden sm:flex items-center gap-1 md:gap-2 text-[10px] md:text-[9px] font-black uppercase tracking-[0.2em] truncate min-w-0 pr-2">
+                                                    <div className="flex items-center gap-1 border border-accent/30 bg-accent/10 px-2 py-0.5 rounded-full truncate shrink min-w-0 max-w-[150px]">
+                                                        <span className="text-accent truncate">{book?.title}</span>
+                                                    </div>
+                                                    <span className="text-white/40 shrink-0">/</span>
+                                                    <h2 className="m-0 text-white/50 inline truncate shrink min-w-0">{selectedChapter?.title}</h2>
+                                                </div>
+
+                                                {/* Right: Prev/Next & Progress Navigation (Desktop Only) */}
+                                                <div className="hidden sm:flex items-center gap-1 sm:gap-2 text-[9px] font-black uppercase tracking-[0.2em] shrink-0 justify-end flex-1 min-w-0">
+                                                    <button onClick={handleFlipPrev} className="flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white group relative shrink-0">
                                                     <ArrowLeft size={10} className="group-hover:-translate-x-1 transition-transform" />
                                                     <span>Prev</span>
                                                 </button>
@@ -1071,7 +1047,8 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                                 </button>
                                             </div>
                                         </div>
-                                    )}
+                                    </div>
+                                )}
 
                                     {/* Content Section utilizing HTMLFlipBook wrapped in Pan-Zoom */}
                                     <div className={`w-full flex-1 flex flex-col items-center justify-center py-2 min-h-0 relative ${isFullscreen ? 'h-full' : ''}`}>
