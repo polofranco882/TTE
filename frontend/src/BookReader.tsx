@@ -512,9 +512,8 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
             if (pf) {
                 const currentIndex = pf.getCurrentPageIndex();
                 if (currentIndex > 0) {
-                    // Use turnToPage which is more robust than flipPrev across devices
-                    const step = isSinglePage ? 1 : 2;
-                    pf.turnToPage(Math.max(0, currentIndex - step));
+                    // Use 'top' corner to avoid mobile dynamic height calculation bugs with 'bottom'
+                    pf.flipPrev('top');
                 }
             }
         } catch (e) {
@@ -529,9 +528,8 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
             if (pf) {
                 const currentIndex = pf.getCurrentPageIndex();
                 if (currentIndex < contents.length - 1) {
-                    // Use turnToPage which is more robust than flipNext across devices
-                    const step = isSinglePage ? 1 : 2;
-                    pf.turnToPage(Math.min(contents.length - 1, currentIndex + step));
+                    // Use 'top' corner
+                    pf.flipNext('top');
                 }
             }
         } catch (e) {
