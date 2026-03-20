@@ -135,7 +135,7 @@ const Library = ({ token, userRole, onNotify, onStartReading }: { token: string;
 
                 {/* Books Grid */}
                 {loading ? (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8 md:gap-12 max-w-[1600px] mx-auto">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-[1200px] mx-auto">
                         {[1, 2, 3].map(i => (
                             <div key={i} className="h-[500px] bg-white/5 rounded-3xl animate-pulse border border-white/5"></div>
                         ))}
@@ -145,7 +145,7 @@ const Library = ({ token, userRole, onNotify, onStartReading }: { token: string;
                         variants={container}
                         initial="hidden"
                         animate="show"
-                        className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8 md:gap-10 perspective-1000 max-w-[1600px] mx-auto pb-20"
+                        className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10 perspective-1000 max-w-[1200px] mx-auto pb-20"
                     >
                         {books.map((book) => (
                             <motion.div
