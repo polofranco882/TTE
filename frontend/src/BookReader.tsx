@@ -917,7 +917,7 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className={`absolute inset-0 z-[150] bg-[#0f172a] overflow-hidden flex flex-col ${transitionClass}`}
+                        className={`fixed inset-0 z-[9999] bg-[#0f172a] overflow-hidden flex flex-col ${transitionClass}`}
                     >
                         <div className={`w-full flex-1 flex flex-col mx-auto perspective-2000`}>
 
@@ -935,11 +935,11 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                                     <button onClick={() => setViewState('INDEX')} className="p-2 md:p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white group" title="Back to Index">
                                                         <Menu size={16} className="md:w-3.5 md:h-3.5" />
                                                     </button>
-                                                    <button onClick={() => setIsSinglePage(!isSinglePage)} className="p-2 md:p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white group flex items-center justify-center relative flex-shrink-0" title={isSinglePage ? "Switch to Double Page View" : "Switch to Single Page View"}>
+                                                    <button onClick={() => setIsSinglePage(!isSinglePage)} className="hidden sm:flex p-2 md:p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white group items-center justify-center relative flex-shrink-0" title={isSinglePage ? "Switch to Double Page View" : "Switch to Single Page View"}>
                                                         <Layout size={16} className={`transition-transform md:w-3.5 md:h-3.5 ${isSinglePage ? 'rotate-90' : ''}`} />
                                                         <span className="absolute -bottom-1 -right-1 text-[8px] md:text-[7px] font-black bg-accent text-white px-1 rounded-sm leading-none">{isSinglePage ? '1' : '2'}</span>
                                                     </button>
-                                                    <button onClick={toggleFullscreen} className="p-2 md:p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white group ml-1 sm:ml-2 flex-shrink-0" title={isFullscreen ? "Exit Fullscreen (Esc)" : "Fullscreen (F11)"}>
+                                                    <button onClick={toggleFullscreen} className="hidden sm:flex p-2 md:p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white group ml-1 sm:ml-2 flex-shrink-0" title={isFullscreen ? "Exit Fullscreen (Esc)" : "Fullscreen (F11)"}>
                                                         {isFullscreen ? <Shrink size={16} className="md:w-3.5 md:h-3.5" /> : <Expand size={16} className="md:w-3.5 md:h-3.5" />}
                                                     </button>
                                                     
@@ -955,7 +955,7 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                                     </button>
 
                                                     {/* Audio Controls */}
-                                                    <div className="relative flex items-center ml-1 sm:ml-2"
+                                                    <div className="hidden sm:relative sm:flex items-center ml-1 sm:ml-2"
                                                         onMouseEnter={() => setShowVolControls(true)}
                                                         onMouseLeave={() => setShowVolControls(false)}>
                                                         <button 
@@ -990,50 +990,49 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                                         </AnimatePresence>
                                                     </div>
                                                 </div>
-
-                                                <div className="flex items-center gap-1 md:gap-2 text-[10px] md:text-[9px] font-black uppercase tracking-[0.2em] truncate min-w-0 pr-2">
+                                                
+                                                {/* Desktop-only Breadcrumbs */}
+                                                <div className="hidden sm:flex items-center gap-1 md:gap-2 text-[10px] md:text-[9px] font-black uppercase tracking-[0.2em] truncate min-w-0 pr-2">
                                                     <div className="flex items-center gap-1 border border-accent/30 bg-accent/10 px-2 py-0.5 rounded-full truncate shrink min-w-0 sm:max-w-none max-w-[150px]">
-                                                        <span className="text-accent truncate">{book.title}</span>
+                                                        <span className="text-accent truncate">{book?.title}</span>
                                                     </div>
                                                     <span className="text-white/40 hidden md:inline shrink-0">/</span>
-                                                    <h2 className="m-0 text-white/50 inline truncate shrink min-w-0">{selectedChapter.title}</h2>
+                                                    <h2 className="m-0 text-white/50 inline truncate shrink min-w-0">{selectedChapter?.title}</h2>
                                                 </div>
                                             </div>
 
                                             {/* Right: Prev/Next & Progress Navigation */}
-                                            <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] shrink-0 w-full lg:w-auto justify-between lg:justify-end mt-1 lg:mt-0 select-none">
-                                                <button onClick={() => flipBookRef.current?.pageFlip()?.flipPrev()} className="flex items-center justify-center gap-1.5 flex-1 lg:flex-none px-3 py-1.5 lg:py-1 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white group relative shrink-0">
+                                            <div className="flex items-center gap-1 sm:gap-2 text-[9px] font-black uppercase tracking-[0.2em] shrink-0 w-full lg:w-auto justify-between lg:justify-end mt-1 lg:mt-0 select-none">
+                                                <button onClick={() => flipBookRef.current?.pageFlip()?.flipPrev()} className="flex items-center justify-center gap-1 px-2.5 py-1.5 lg:py-1 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white group relative shrink-0">
                                                     <ArrowLeft size={10} className="group-hover:-translate-x-1 transition-transform" />
-                                                    Prev
+                                                    <span className="hidden sm:inline">Prev</span>
                                                 </button>
 
                                                 {/* PROMIMENT PAGE JUMPER */}
-                                                <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-1.5 rounded-xl hover:border-accent/40 transition-all group/jumper">
-                                                    <div className="flex items-center gap-1.5 opacity-70 px-1 shrink-0">
-                                                        <span className="hidden sm:inline text-white/50">Prog: {Math.round(((contents.findIndex(c => c.title === selectedChapter.title) + 1) / contents.length) * 100)}%</span>
-                                                        <span className="w-1 h-1 rounded-full bg-white/20 hidden sm:inline mx-1"></span>
+                                                <div className="flex items-center gap-2 sm:gap-3 bg-white/5 border border-white/10 px-2 sm:px-4 py-1.5 rounded-xl hover:border-accent/40 transition-all group/jumper overflow-hidden">
+                                                    <div className="hidden sm:flex items-center gap-1.5 opacity-70 px-1 shrink-0">
+                                                        <span className="text-white/50">Prog: {Math.round(((contents.findIndex(c => c.title === selectedChapter.title) + 1) / contents.length) * 100)}%</span>
+                                                        <span className="w-1 h-1 rounded-full bg-white/20 mx-1"></span>
                                                     </div>
                                                     
                                                     <form onSubmit={handleJumpPageSubmit} className="flex flex-row items-center gap-1">
-                                                        <span className="text-accent text-[11px] lg:text-[10px] font-black">PAGE</span>
+                                                        <span className="text-accent text-[10px] font-black shrink-0">PG</span>
                                                         <input 
                                                             type="text"
                                                             placeholder={String(selectedChapter?.page_number || '')}
                                                             value={jumpPageInput}
                                                             onChange={(e) => setJumpPageInput(e.target.value)}
-                                                            className="w-10 bg-accent/10 text-accent text-[12px] lg:text-[11px] font-black border-b-2 border-accent/20 focus:border-accent focus:bg-accent/20 outline-none text-center p-1 rounded-sm transition-all appearance-none placeholder:text-accent/40"
+                                                            className="w-8 sm:w-10 bg-accent/10 text-accent text-[11px] font-black border-b-2 border-accent/20 focus:border-accent focus:bg-accent/20 outline-none text-center p-1 rounded-sm transition-all appearance-none placeholder:text-accent/40"
                                                             onFocus={(e) => e.target.select()}
-                                                            onBlur={() => {
-                                                                // keep it as is
-                                                            }}
+                                                            onBlur={() => {}}
                                                             title="Enter page number and press Enter"
                                                         />
-                                                        <span className="text-white/30 text-[10px] ml-1">of {contents.length}</span>
+                                                        <span className="text-white/30 text-[9px] sm:text-[10px] ml-0.5 shrink-0">/ {contents.length}</span>
                                                     </form>
                                                 </div>
 
-                                                <button onClick={() => flipBookRef.current?.pageFlip()?.flipNext()} className="flex items-center justify-center gap-1.5 flex-1 lg:flex-none px-4 py-1.5 lg:py-1 rounded-lg bg-accent/20 border border-accent/30 hover:bg-accent/30 transition-all text-accent group shadow-lg shadow-accent/10 relative shrink-0">
-                                                    Next
+                                                <button onClick={() => flipBookRef.current?.pageFlip()?.flipNext()} className="flex items-center justify-center gap-1 px-3 py-1.5 lg:py-1 rounded-lg bg-accent/20 border border-accent/30 hover:bg-accent/30 transition-all text-accent group shadow-lg shadow-accent/10 relative shrink-0">
+                                                    <span className="hidden sm:inline">Next</span>
                                                     <ArrowRight size={10} className="group-hover:translate-x-1 transition-transform" />
                                                 </button>
                                             </div>
@@ -1169,13 +1168,17 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                                                 ))}
                                                             </HTMLFlipBook>
                                                                  {/* THE MASTER CONTROLLER OVERLAY: This is the ONLY element that can trigger navigation */}
-                                                                 <div className="absolute inset-0 z-[50] pointer-events-none flex">
+                                                                 <div className="absolute inset-0 z-[500] pointer-events-none flex">
                                                                      {/* Left Navigation Zone */}
                                                                      <div 
-                                                                        className="h-full w-[5%] pointer-events-auto cursor-pointer flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"
-                                                                        onClick={(e) => {
+                                                                        className="h-full w-[15%] sm:w-[5%] pointer-events-auto cursor-pointer flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"
+                                                                        onPointerDown={(e) => {
+                                                                            e.preventDefault();
+                                                                            e.stopPropagation();
                                                                             console.log("Master Overlay: FLIP PREV", { x: e.clientX, y: e.clientY });
-                                                                            flipBookRef.current?.pageFlip()?.flipPrev();
+                                                                            if (flipBookRef.current) {
+                                                                                flipBookRef.current.pageFlip().flipPrev();
+                                                                            }
                                                                         }}
                                                                      >
                                                                         {debugNav && <div className="bg-green-500/20 w-full h-full border-r border-green-500 flex items-center justify-center text-[10px] font-bold text-white uppercase">Prev</div>}
@@ -1188,15 +1191,20 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
 
                                                                      {/* Right Navigation Zone */}
                                                                      <div 
-                                                                        className="h-full w-[5%] pointer-events-auto cursor-pointer flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"
-                                                                        onClick={(e) => {
+                                                                        className="h-full w-[15%] sm:w-[5%] pointer-events-auto cursor-pointer flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"
+                                                                        onPointerDown={(e) => {
+                                                                            e.preventDefault();
+                                                                            e.stopPropagation();
                                                                             console.log("Master Overlay: FLIP NEXT", { x: e.clientX, y: e.clientY });
-                                                                            flipBookRef.current?.pageFlip()?.flipNext();
+                                                                            if (flipBookRef.current) {
+                                                                                flipBookRef.current.pageFlip().flipNext();
+                                                                            }
                                                                         }}
                                                                      >
                                                                         {debugNav && <div className="bg-green-500/20 w-full h-full border-l border-green-500 flex items-center justify-center text-[10px] font-bold text-white uppercase">Next</div>}
                                                                      </div>
                                                                  </div>
+
                                                             </div>
                                                         </TransformComponent>
                                                     </>
