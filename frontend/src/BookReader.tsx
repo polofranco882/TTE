@@ -1126,9 +1126,10 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                                                     mobileScrollSupport={true}
                                                                     usePortrait={isSinglePage}
                                                                     
-                                                                    // Disable user-driven click/drag to flip pages - we control page turning programmatically
+                                                                    // disableFlipByClick prevents clicking the page center from turning pages
+                                                                    // useMouseEvents must be true so the internal animation engine can work (flipPrev relies on it)
                                                                     disableFlipByClick={true}
-                                                                    useMouseEvents={false}
+                                                                    useMouseEvents={true}
                                                                     swipeDistance={999999}
                                                                     showPageCorners={true}
                                                                     
