@@ -3,19 +3,47 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/brand-logo-192.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- iOS needs viewport-fit=cover for edge-to-edge display and to respect safe-area-inset -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Montserrat:wght@400;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <meta name="theme-color" content="#1e40af" />
+    <meta name="theme-color" content="#161930" />
+    <!-- iOS PWA meta tags -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="TTESOL Academy" />
     <link rel="apple-touch-icon" href="/brand-logo-192.png" />
+    <link rel="apple-touch-icon" sizes="512x512" href="/brand-logo-512.png" />
     <title>TTESOL Academy</title>
+    <!-- Unlock AudioContext on first user gesture (iOS Safari requires this) -->
+    <script>
+      (function () {
+        var unlocked = false;
+        function unlock() {
+          if (unlocked) return;
+          unlocked = true;
+          var ctx = new (window.AudioContext || window.webkitAudioContext)();
+          var buf = ctx.createBuffer(1, 1, 22050);
+          var src = ctx.createBufferSource();
+          src.buffer = buf;
+          src.connect(ctx.destination);
+          src.start(0);
+          ctx.resume();
+          document.removeEventListener('touchstart', unlock, true);
+          document.removeEventListener('touchend', unlock, true);
+          document.removeEventListener('click', unlock, true);
+        }
+        document.addEventListener('touchstart', unlock, true);
+        document.addEventListener('touchend', unlock, true);
+        document.addEventListener('click', unlock, true);
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
+

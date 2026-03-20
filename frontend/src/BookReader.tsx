@@ -294,8 +294,7 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
             const x = clientX - rect.left;
             const totalWidth = rect.width;
             
-            // Margins for navigation (12% of total width)
-            const margin = totalWidth * 0.05; 
+            const margin = totalWidth * 0.12; // Wider margin for touch (fat finger accuracy)
             const isNearEdge = x < margin || x > (totalWidth - margin);
 
             if (!isNearEdge) {
@@ -314,8 +313,9 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
         };
 
         // Attach to document with CAPTURE phase for ultimate priority
+        // NOTE: touchstart must be passive:true on iOS to prevent scroll jank (we don't call preventDefault)
         document.addEventListener('mousedown', interceptor, { capture: true });
-        document.addEventListener('touchstart', interceptor, { capture: true, passive: false });
+        document.addEventListener('touchstart', interceptor, { capture: true, passive: true });
         document.addEventListener('pointerdown', interceptor, { capture: true });
         document.addEventListener('click', interceptor, { capture: true });
 

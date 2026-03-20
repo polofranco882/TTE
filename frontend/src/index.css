@@ -9,8 +9,78 @@
 }
 
 @layer base {
+  /* iOS Safari: set --vh to actual visible viewport height via JS fallback */
+  :root {
+    --vh: 1vh;
+    --sat: env(safe-area-inset-top, 0px);
+    --sab: env(safe-area-inset-bottom, 0px);
+    --sal: env(safe-area-inset-left, 0px);
+    --sar: env(safe-area-inset-right, 0px);
+  }
+
+  html, body {
+    height: 100%;
+    /* Prevent iOS rubber-band scroll from breaking fixed layouts */
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+    /* Prevent iOS text selection on long press */
+    -webkit-touch-callout: none;
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-primary);
+    /* Remove iOS tap highlight flash */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Buttons and interactive elements */
+  button, a, [role="button"] {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    cursor: pointer;
+  }
+
+  /* Allow text selection in inputs */
+  input, textarea {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+
+  /* Scrollable containers: momentum scrolling on iOS */
+  .overflow-y-auto, .overflow-auto, .overflow-scroll {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* iOS: Fix 100vh bug — use dvh when supported, fall back to --vh */
+  .h-screen {
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  .min-h-screen {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  /* Fixed fullscreen containers: account for safe-area */
+  .fixed.inset-0 {
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* Hide scrollbars on mobile while keeping scroll */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* -webkit-backdrop-filter for iOS Safari (<14) */
+  .backdrop-blur-xl, .backdrop-blur-md, .backdrop-blur-sm {
+    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(24px);
   }
 }
