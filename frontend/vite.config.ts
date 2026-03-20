@@ -13,8 +13,8 @@ export default defineConfig({
         name: 'TTESOL Academy',
         short_name: 'TTESOL',
         description: 'Interactive educational platform for English learning.',
-        theme_color: '#1e40af',
-        background_color: '#ffffff',
+        theme_color: '#0d1f5c',
+        background_color: '#0d1f5c',
         display: 'standalone',
         orientation: 'portrait',
         icons: [
@@ -34,6 +34,12 @@ export default defineConfig({
       }
     })
   ],
+  // Target older browsers: Samsung Galaxy S9 era (Chrome 67-70, Android 8-10)
+  build: {
+    target: ['es2019', 'chrome67', 'edge18', 'firefox62', 'safari12'],
+    sourcemap: false,
+    minify: 'esbuild',
+  },
   server: {
     port: 3002,
     strictPort: true,
@@ -48,3 +54,4 @@ export default defineConfig({
     }
   }
 })
+

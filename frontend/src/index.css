@@ -2,86 +2,75 @@
 
 @theme {
   /* TTESOL English Academy brand colors */
-  --color-primary: #0d1f5c;     /* deep navy */
-  --color-secondary: #1a3a9c;   /* medium navy */
-  --color-accent: #cc1e1e;      /* TTESOL red */
-  --color-light: #a4b4d8;       /* light blue-gray */
-  --color-background: #f0f2f8;  /* off-white with blue tint */
+  --color-primary: #0d1f5c;
+  --color-secondary: #1a3a9c;
+  --color-accent: #cc1e1e;
+  --color-light: #a4b4d8;
+  --color-background: #f0f2f8;
 }
 
-@layer base {
-  /* iOS Safari: set --vh to actual visible viewport height via JS fallback */
-  :root {
-    --vh: 1vh;
-    --sat: env(safe-area-inset-top, 0px);
-    --sab: env(safe-area-inset-bottom, 0px);
-    --sal: env(safe-area-inset-left, 0px);
-    --sar: env(safe-area-inset-right, 0px);
-  }
+/* ── Base styles: NO @layer so they work on Chrome 70+ / Samsung Galaxy S9 ── */
 
-  html, body {
-    height: 100%;
-    /* Prevent iOS rubber-band scroll from breaking fixed layouts */
-    overscroll-behavior: none;
-    -webkit-overflow-scrolling: touch;
-    /* Prevent iOS text selection on long press */
-    -webkit-touch-callout: none;
-  }
+:root {
+  --vh: 1vh;
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+}
 
-  body {
-    background-color: var(--color-background);
-    color: var(--color-primary);
-    /* Remove iOS tap highlight flash */
-    -webkit-tap-highlight-color: transparent;
-  }
+html {
+  height: 100%;
+  overscroll-behavior: none;
+}
 
-  /* Buttons and interactive elements */
-  button, a, [role="button"] {
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-    cursor: pointer;
-  }
+body {
+  height: 100%;
+  background-color: var(--color-background);
+  color: var(--color-primary);
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
 
-  /* Allow text selection in inputs */
-  input, textarea {
-    -webkit-user-select: text;
-    user-select: text;
-  }
+#root {
+  height: 100%;
+  min-height: 100vh;
+}
 
-  /* Scrollable containers: momentum scrolling on iOS */
-  .overflow-y-auto, .overflow-auto, .overflow-scroll {
-    -webkit-overflow-scrolling: touch;
-  }
+button,
+a,
+[role="button"] {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  cursor: pointer;
+}
 
-  /* iOS: Fix 100vh bug — use dvh when supported, fall back to --vh */
-  .h-screen {
-    height: 100vh;
-    height: 100dvh;
-  }
+input,
+textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
 
-  .min-h-screen {
-    min-height: 100vh;
-    min-height: 100dvh;
-  }
+/* Momentum scrolling on iOS */
+.overflow-y-auto,
+.overflow-auto,
+.overflow-scroll {
+  -webkit-overflow-scrolling: touch;
+}
 
-  /* Fixed fullscreen containers: account for safe-area */
-  .fixed.inset-0 {
-    padding-top: env(safe-area-inset-top, 0px);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
+/* Scrollbar hide utility */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
 
-  /* Hide scrollbars on mobile while keeping scroll */
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* -webkit-backdrop-filter for iOS Safari (<14) */
-  .backdrop-blur-xl, .backdrop-blur-md, .backdrop-blur-sm {
-    -webkit-backdrop-filter: blur(24px);
-    backdrop-filter: blur(24px);
-  }
+/* Backdrop-filter with webkit prefix for Safari */
+.backdrop-blur-xl,
+.backdrop-blur-md,
+.backdrop-blur-sm {
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
 }
