@@ -24,159 +24,247 @@ const WelcomeScreen = ({ onStartLearning, settings, userRole, onUpdateSettings }
 
   const isAdmin = userRole === 'admin' || userRole === 'manager';
 
-  const titleTop = localSettings.welcome_title_top || 'Welcome to the';
-  const titleMain = localSettings.welcome_title_main || 'TTESOL';
+  const titleTop    = localSettings.welcome_title_top    || 'Welcome to the';
+  const titleMain   = localSettings.welcome_title_main   || 'TTESOL';
   const titleAccent = localSettings.welcome_title_accent || 'English Academy';
-  const description = localSettings.welcome_description || 'Your English journey starts here...';
+  const description = localSettings.welcome_description  || 'Start speaking. Start growing. Start today.';
 
   const f1Title = localSettings.feature1_title || 'Interactive Books';
-  const f1Desc = localSettings.feature1_desc || 'Engaging reading experience with AI.';
+  const f1Desc  = localSettings.feature1_desc  || 'Engaging reading experience with AI';
   const f2Title = localSettings.feature2_title || 'Expert Content';
-  const f2Desc = localSettings.feature2_desc || 'Curated for all levels by professionals.';
+  const f2Desc  = localSettings.feature2_desc  || 'Curated for all levels by professionals';
   const f3Title = localSettings.feature3_title || 'Fast Progress';
-  const f3Desc = localSettings.feature3_desc || 'Adaptive platform for rapid growth.';
+  const f3Desc  = localSettings.feature3_desc  || 'Personalized lessons for quick success';
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-[#0a0c10]">
-      {/* Premium Background Effects */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-accent/20 rounded-full blur-[120px] animate-pulse"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-orange-600/10 rounded-full blur-[120px]"></div>
+    <div className="flex-1 flex flex-col items-center justify-center relative overflow-hidden min-h-screen"
+         style={{ background: 'linear-gradient(160deg, #0a1a4a 0%, #0d2260 40%, #0a1a4a 100%)' }}>
+
+      {/* ─── Animated USA flag stripes background ─── */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Diagonal white stripes (USA flag) */}
+        {[...Array(8)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute left-0 right-0 opacity-[0.04]"
+            style={{
+              top: `${i * 12.5}%`,
+              height: i % 2 === 0 ? '7%' : '5.5%',
+              background: i % 2 === 0 ? 'white' : '#cc1e1e',
+              transform: 'skewY(-3deg)',
+            }}
+          />
+        ))}
+        {/* Blue canton (stars field) */}
+        <div className="absolute top-0 left-0 w-1/2 h-[38%] opacity-5"
+             style={{ background: 'radial-gradient(circle, #1a3a9c 0%, transparent 70%)' }} />
+        {/* Top radial glow — red */}
+        <div className="absolute top-[-15%] right-[-10%] w-[60%] h-[60%] rounded-full"
+             style={{ background: 'radial-gradient(circle, rgba(180,30,30,0.18) 0%, transparent 70%)' }} />
+        {/* Bottom radial glow — navy */}
+        <div className="absolute bottom-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full"
+             style={{ background: 'radial-gradient(circle, rgba(13,34,96,0.6) 0%, transparent 70%)' }} />
+        {/* Subtle star sparkles */}
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={`star-${i}`}
+            className="absolute rounded-full bg-white animate-pulse"
+            style={{
+              width: `${Math.random() * 2 + 1}px`,
+              height: `${Math.random() * 2 + 1}px`,
+              top: `${Math.random() * 45}%`,
+              left: `${Math.random() * 45}%`,
+              opacity: 0.3 + Math.random() * 0.4,
+              animationDelay: `${Math.random() * 3}s`,
+              animationDuration: `${2 + Math.random() * 3}s`,
+            }}
+          />
+        ))}
       </div>
 
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="max-w-3xl w-full"
+        transition={{ duration: 0.7, ease: 'easeOut' }}
+        className="relative z-10 max-w-2xl w-full text-center px-6 py-10"
       >
-        {/* Brand Logo Header */}
+        {/* ─── Brand Logo ─── */}
         <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
+          initial={{ scale: 0.7, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="flex justify-center mb-10"
+          transition={{ duration: 0.6, type: 'spring', damping: 12 }}
+          className="flex justify-center mb-8"
         >
-          <div className="p-1 rounded-full bg-white shadow-2xl shadow-accent/20 border-4 border-white/10 ring-8 ring-accent/5">
-            <img src="/brand-logo-512.png" alt="TTESOL Logo" className="w-24 h-24 object-contain" />
+          <div className="relative">
+            {/* Outer rotating ring */}
+            <div
+              className="absolute inset-0 rounded-full animate-spin"
+              style={{
+                border: '3px solid transparent',
+                borderTopColor: '#cc1e1e',
+                borderRightColor: 'transparent',
+                animationDuration: '8s',
+              }}
+            />
+            {/* Logo shell */}
+            <div
+              className="relative w-32 h-32 rounded-full flex items-center justify-center shadow-2xl"
+              style={{
+                background: 'linear-gradient(145deg, #1a3a9c, #0d2260)',
+                border: '4px solid #cc1e1e',
+                boxShadow: '0 0 32px rgba(204,30,30,0.5), 0 0 64px rgba(13,34,96,0.6)',
+              }}
+            >
+              <img src="/brand-logo-512.png" alt="TTESOL Logo" className="w-24 h-24 object-contain rounded-full" />
+            </div>
           </div>
         </motion.div>
 
-        {/* Hero Section */}
+        {/* ─── Hero Text / Edit Mode ─── */}
         {isEditing ? (
-          <div className="space-y-4 mb-10 text-left bg-white/5 p-6 rounded-3xl border border-white/10 backdrop-blur-xl">
+          <div className="space-y-4 mb-8 text-left p-6 rounded-3xl border border-white/10 backdrop-blur-xl"
+               style={{ background: 'rgba(13,34,96,0.6)' }}>
             <div>
-              <label className="text-xs font-bold text-accent uppercase tracking-widest block mb-2">Top Title</label>
-              <input 
-                value={titleTop}
+              <label className="text-xs font-bold text-red-400 uppercase tracking-widest block mb-2">Top Label</label>
+              <input value={titleTop}
                 onChange={e => setLocalSettings({...localSettings, welcome_title_top: e.target.value})}
-                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-white outline-none focus:border-accent"
-              />
+                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-white outline-none focus:border-red-500" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-bold text-accent uppercase tracking-widest block mb-2">Main Title</label>
-                <input 
-                  value={titleMain}
+                <label className="text-xs font-bold text-red-400 uppercase tracking-widest block mb-2">Main Title</label>
+                <input value={titleMain}
                   onChange={e => setLocalSettings({...localSettings, welcome_title_main: e.target.value})}
-                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-white outline-none focus:border-accent"
-                />
+                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-white outline-none focus:border-red-500" />
               </div>
               <div>
-                <label className="text-xs font-bold text-accent uppercase tracking-widest block mb-2">Accent Title</label>
-                <input 
-                  value={titleAccent}
+                <label className="text-xs font-bold text-red-400 uppercase tracking-widest block mb-2">Accent Title</label>
+                <input value={titleAccent}
                   onChange={e => setLocalSettings({...localSettings, welcome_title_accent: e.target.value})}
-                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-white outline-none focus:border-accent"
-                />
+                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-white outline-none focus:border-red-500" />
               </div>
             </div>
             <div>
-              <label className="text-xs font-bold text-accent uppercase tracking-widest block mb-2">Description</label>
-              <textarea 
-                rows={3}
-                value={description}
+              <label className="text-xs font-bold text-red-400 uppercase tracking-widest block mb-2">Tagline</label>
+              <textarea rows={2} value={description}
                 onChange={e => setLocalSettings({...localSettings, welcome_description: e.target.value})}
-                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-white outline-none focus:border-accent resize-none"
-              />
+                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-white outline-none focus:border-red-500 resize-none" />
             </div>
-
-            {/* Features Edit Section */}
-            <div className="pt-4 border-t border-white/10 mt-4">
-              <h4 className="text-sm font-black text-white uppercase tracking-widest mb-4">Features Section</h4>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="space-y-3 bg-white/5 p-4 rounded-2xl border border-white/5">
-                  <div className="bg-accent/20 w-8 h-8 rounded-lg flex items-center justify-center text-accent mb-2"><BookOpen size={16} /></div>
-                  <input placeholder="Title 1" value={f1Title} onChange={e => setLocalSettings({...localSettings, feature1_title: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:border-accent outline-none" />
-                  <textarea placeholder="Description 1" rows={2} value={f1Desc} onChange={e => setLocalSettings({...localSettings, feature1_desc: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:border-accent outline-none resize-none" />
-                </div>
-                <div className="space-y-3 bg-white/5 p-4 rounded-2xl border border-white/5">
-                  <div className="bg-orange-500/20 w-8 h-8 rounded-lg flex items-center justify-center text-orange-500 mb-2"><Star size={16} /></div>
-                  <input placeholder="Title 2" value={f2Title} onChange={e => setLocalSettings({...localSettings, feature2_title: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:border-accent outline-none" />
-                  <textarea placeholder="Description 2" rows={2} value={f2Desc} onChange={e => setLocalSettings({...localSettings, feature2_desc: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:border-accent outline-none resize-none" />
-                </div>
-                <div className="space-y-3 bg-white/5 p-4 rounded-2xl border border-white/5">
-                  <div className="bg-blue-500/20 w-8 h-8 rounded-lg flex items-center justify-center text-blue-500 mb-2"><GraduationCap size={16} /></div>
-                  <input placeholder="Title 3" value={f3Title} onChange={e => setLocalSettings({...localSettings, feature3_title: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:border-accent outline-none" />
-                  <textarea placeholder="Description 3" rows={2} value={f3Desc} onChange={e => setLocalSettings({...localSettings, feature3_desc: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:border-accent outline-none resize-none" />
-                </div>
+            {/* Feature edit blocks */}
+            <div className="pt-4 border-t border-white/10">
+              <h4 className="text-sm font-black text-white uppercase tracking-widest mb-4">Feature Cards</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {[
+                  { icon: <BookOpen size={14}/>, key: 'feature1', t: f1Title, d: f1Desc },
+                  { icon: <Star size={14}/>,     key: 'feature2', t: f2Title, d: f2Desc },
+                  { icon: <GraduationCap size={14}/>, key: 'feature3', t: f3Title, d: f3Desc },
+                ].map(({icon, key, t, d}) => (
+                  <div key={key} className="space-y-2 bg-white/5 p-3 rounded-2xl border border-white/5">
+                    <div className="bg-red-800/30 w-7 h-7 rounded-lg flex items-center justify-center text-red-300">{icon}</div>
+                    <input placeholder="Title" value={t}
+                      onChange={e => setLocalSettings({...localSettings, [`${key}_title`]: e.target.value})}
+                      className="w-full bg-black/30 border border-white/10 rounded-lg px-2 py-1 text-xs text-white focus:border-red-500 outline-none" />
+                    <textarea placeholder="Desc" rows={2} value={d}
+                      onChange={e => setLocalSettings({...localSettings, [`${key}_desc`]: e.target.value})}
+                      className="w-full bg-black/30 border border-white/10 rounded-lg px-2 py-1 text-xs text-white focus:border-red-500 outline-none resize-none" />
+                  </div>
+                ))}
               </div>
             </div>
-
-            <div className="flex gap-2 justify-end pt-4 border-t border-white/5 mt-4">
-              <button onClick={() => setIsEditing(false)} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors">
-                <X size={16} /> Cancel
+            <div className="flex gap-2 justify-end pt-2">
+              <button onClick={() => setIsEditing(false)} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors text-sm">
+                <X size={14}/> Cancel
               </button>
-              <button onClick={handleSave} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-accent text-white hover:bg-accent/80 transition-colors font-bold">
-                <Save size={16} /> Save Changes
+              <button onClick={handleSave} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-700 hover:bg-red-600 text-white transition-colors font-bold text-sm">
+                <Save size={14}/> Save
               </button>
             </div>
           </div>
         ) : (
           <>
-            <h1 className="text-5xl md:text-8xl font-black text-white mb-8 tracking-tighter leading-[0.9] uppercase drop-shadow-2xl">
-              <span className="text-sm md:text-xl font-bold tracking-[0.5em] text-accent/80 mb-4 block animate-pulse">{titleTop}</span>
-              <span className="bg-clip-text text-transparent bg-gradient-to-br from-white via-white to-white/40">{titleMain}</span> <br />
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-accent via-orange-400 to-orange-600">
-                {titleAccent}
-              </span>
+            {/* Eyebrow label */}
+            <p className="text-xs sm:text-sm font-bold tracking-[0.35em] text-blue-200/80 uppercase mb-2 animate-pulse">
+              {titleTop}
+            </p>
+
+            {/* Main hero headline */}
+            <h1 className="text-6xl sm:text-7xl md:text-8xl font-black uppercase leading-none tracking-tight drop-shadow-2xl mb-1">
+              <span className="text-white drop-shadow-[0_2px_8px_rgba(255,255,255,0.3)]">{titleMain}</span>
             </h1>
-            
-            <p className="text-lg md:text-xl text-gray-400 mb-12 font-medium max-w-xl mx-auto leading-relaxed border-l-2 border-accent/30 pl-6 italic">
-              "{description}"
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase leading-none tracking-tight drop-shadow-2xl mb-6"
+                style={{ color: '#e8372a', textShadow: '0 2px 16px rgba(232,55,42,0.5)' }}>
+              {titleAccent}
+            </h2>
+
+            {/* Divider stripe */}
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <div className="h-[2px] w-12 bg-white/30 rounded-full" />
+              <Star size={14} className="text-yellow-400 fill-yellow-400" />
+              <div className="h-[2px] flex-1 max-w-[80px] bg-red-600 rounded-full" />
+              <Star size={14} className="text-yellow-400 fill-yellow-400" />
+              <div className="h-[2px] w-12 bg-white/30 rounded-full" />
+            </div>
+
+            {/* Tagline */}
+            <p className="text-base sm:text-lg text-blue-100/80 font-medium italic mb-8 max-w-md mx-auto leading-relaxed">
+              {description}
             </p>
           </>
         )}
 
-        {/* Call to action */}
+        {/* ─── CTA Button ─── */}
         <motion.button
-          whileHover={{ scale: 1.05, boxShadow: "0 20px 25px -5px rgb(252 144 57 / 0.3)" }}
-          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(200,30,30,0.45)' }}
+          whileTap={{ scale: 0.97 }}
           onClick={onStartLearning}
-          className="bg-gradient-to-r from-accent to-orange-600 text-white px-10 py-5 rounded-2xl font-bold text-xl shadow-2xl shadow-accent/20 flex items-center gap-3 group mx-auto"
+          className="inline-flex items-center gap-3 text-white font-bold text-lg px-10 py-4 rounded-2xl shadow-2xl mx-auto mb-12 group"
+          style={{
+            background: 'linear-gradient(135deg, #cc1e1e 0%, #991515 100%)',
+            boxShadow: '0 8px 32px rgba(180,20,20,0.4)',
+            border: '1px solid rgba(255,255,255,0.15)',
+          }}
         >
-          Start My Journey
-          <ChevronRight className="group-hover:translate-x-1 transition-transform" />
+          Start YOUR Journey
+          <ChevronRight className="group-hover:translate-x-1 transition-transform" size={20} />
         </motion.button>
 
-        {/* Stats or Features */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20">
+        {/* ─── Feature Cards ─── */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
-            { title: f1Title, desc: f1Desc, icon: <BookOpen size={24} />, color: 'accent' },
-            { title: f2Title, desc: f2Desc, icon: <Star size={24} />, color: 'orange-500' },
-            { title: f3Title, desc: f3Desc, icon: <GraduationCap size={24} />, color: 'blue-500' }
-          ].map((feature, i) => (
+            { title: f1Title, desc: f1Desc, icon: <BookOpen size={22} />, accent: false },
+            { title: f2Title, desc: f2Desc, icon: <Star size={22} />,     accent: true  },
+            { title: f3Title, desc: f3Desc, icon: <GraduationCap size={22} />, accent: false },
+          ].map((feat, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              whileHover={{ y: -5, backgroundColor: 'rgba(255,255,255,0.08)' }}
-              transition={{ delay: 0.5 + (i * 0.1) }}
-              className="bg-white/[0.03] backdrop-blur-md border border-white/10 p-8 rounded-[2rem] transition-all text-left group"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 + i * 0.12 }}
+              whileHover={{ y: -4 }}
+              className="rounded-2xl p-5 text-center"
+              style={{
+                background: feat.accent
+                  ? 'linear-gradient(135deg, #8b1212 0%, #cc1e1e 100%)'
+                  : 'rgba(255,255,255,0.07)',
+                border: `1px solid ${feat.accent ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.1)'}`,
+                backdropFilter: 'blur(12px)',
+              }}
             >
-              <div className={`bg-${feature.color}/20 w-12 h-12 rounded-xl flex items-center justify-center text-${feature.color} mb-6 group-hover:scale-110 transition-transform`}>{feature.icon}</div>
-              <h3 className="text-white font-black text-xl mb-2 tracking-tight line-clamp-1">{feature.title}</h3>
-              <p className="text-gray-500 text-sm leading-relaxed line-clamp-2">{feature.desc}</p>
+              <div className="flex justify-center mb-3">
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center"
+                  style={{
+                    background: feat.accent ? 'rgba(255,255,255,0.15)' : 'rgba(200,30,30,0.2)',
+                    color: feat.accent ? 'white' : '#e06060',
+                  }}
+                >
+                  {feat.icon}
+                </div>
+              </div>
+              <h3 className="text-white font-black text-sm mb-1 uppercase tracking-wide">{feat.title}</h3>
+              <p className="text-xs leading-relaxed" style={{ color: feat.accent ? 'rgba(255,255,255,0.8)' : 'rgba(200,220,255,0.6)' }}>
+                {feat.desc}
+              </p>
             </motion.div>
           ))}
         </div>
@@ -186,12 +274,13 @@ const WelcomeScreen = ({ onStartLearning, settings, userRole, onUpdateSettings }
       {isAdmin && !isEditing && (
         <motion.button
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          animate={{ opacity: 0.6 }}
+          whileHover={{ opacity: 1 }}
           onClick={() => setIsEditing(true)}
-          className="absolute top-8 right-8 flex items-center gap-2 bg-white/5 hover:bg-white/10 text-white/50 hover:text-white px-4 py-2 rounded-full border border-white/10 transition-all backdrop-blur-md group"
+          className="absolute top-6 right-6 flex items-center gap-2 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white px-4 py-2 rounded-full border border-white/10 transition-all backdrop-blur-md group z-20"
         >
-          <Edit2 size={16} className="group-hover:text-accent transition-colors" />
-          <span className="text-xs font-bold tracking-widest uppercase">Edit Content</span>
+          <Edit2 size={14} className="group-hover:text-red-400 transition-colors" />
+          <span className="text-xs font-bold tracking-widest uppercase">Edit</span>
         </motion.button>
       )}
     </div>
