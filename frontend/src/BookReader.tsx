@@ -512,8 +512,12 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
             if (pf) {
                 const currentIndex = pf.getCurrentPageIndex();
                 if (currentIndex > 0) {
-                    // Use 'top' corner to avoid mobile dynamic height calculation bugs with 'bottom'
-                    pf.flipPrev('top');
+                    // Portrait (single page) mode does not support the corner parameter the same way
+                    if (isSinglePage) {
+                        pf.flipPrev();
+                    } else {
+                        pf.flipPrev('top');
+                    }
                 }
             }
         } catch (e) {
@@ -528,8 +532,11 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
             if (pf) {
                 const currentIndex = pf.getCurrentPageIndex();
                 if (currentIndex < contents.length - 1) {
-                    // Use 'top' corner
-                    pf.flipNext('top');
+                    if (isSinglePage) {
+                        pf.flipNext();
+                    } else {
+                        pf.flipNext('top');
+                    }
                 }
             }
         } catch (e) {
