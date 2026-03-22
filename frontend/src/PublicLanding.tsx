@@ -10,11 +10,17 @@ interface PublicLandingProps {
 }
 
 // ─── Helper: YouTube URL → embed URL ──────────────────────────────────────
+function getVideoType(url: string): 'youtube' | 'direct' | 'unknown' {
+    if (!url) return 'unknown';
+    if (url.includes('youtube.com') || url.includes('youtu.be') || url.includes('youtube-nocookie.com')) return 'youtube';
+    if (url.startsWith('data:video/') || url.match(/\.(mp4|webm|ogg)$/i) || url.startsWith('/api/media/')) return 'direct';
+    return 'unknown';
+}
+
 function toEmbedUrl(url: string): string {
     if (!url) return '';
-    if (url.includes('embed')) return url;
     const match = url.match(/(?:youtu\.be\/|v=|v\/|embed\/|shorts\/)([A-Za-z0-9_-]{11})/);
-    if (match) return `https://www.youtube.com/embed/${match[1]}`;
+    if (match) return `https://www.youtube-nocookie.com/embed/${match[1]}?autoplay=1&rel=0`;
     return url;
 }
 
@@ -285,8 +291,24 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
                         {activeVideo && (
                             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center p-4" onClick={() => setActiveVideo(null)}>
                                 <button className="absolute top-6 right-6 text-white/70 hover:text-white p-2"><X size={28} /></button>
-                                <div className="w-full max-w-4xl aspect-video rounded-2xl overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
-                                    <iframe src={toEmbedUrl(activeVideo.video_url)} className="w-full h-full" allow="autoplay; fullscreen" allowFullScreen title={activeVideo.title} />
+                                <div className="w-full max-w-4xl aspect-video rounded-2xl overflow-hidden shadow-2xl bg-black" onClick={e => e.stopPropagation()}>
+                                    {getVideoType(activeVideo.video_url) === 'youtube' ? (
+                                        <iframe 
+                                            src={toEmbedUrl(activeVideo.video_url)} 
+                                            className="w-full h-full" 
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                            allowFullScreen 
+                                            title={activeVideo.title} 
+                                        />
+                                    ) : (
+                                        <video 
+                                            src={activeVideo.video_url} 
+                                            controls 
+                                            autoPlay 
+                                            className="w-full h-full"
+                                            title={activeVideo.title}
+                                        />
+                                    )}
                                 </div>
                             </motion.div>
                         )}
