@@ -55,6 +55,9 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
     const courses = cms?.courses || {};
     const footer = cms?.footer || {};
     const seo = cms?.seo || {};
+    const gallery = cms?.gallery || {};
+    const videos = cms?.videos || {};
+    const testimonials = cms?.testimonials || {};
 
     const c = (section: any, field: string, fallback = '') =>
         (section && section[field] != null && section[field] !== '') ? section[field] : fallback;
@@ -213,8 +216,8 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
                 <section id="gallery" className="py-24 bg-surface">
                     <div className="max-w-7xl mx-auto px-6">
                         <div className="text-center mb-14">
-                            <span className="text-accent font-bold text-sm uppercase tracking-widest mb-2 block flex items-center justify-center gap-2"><Images className="w-4 h-4" /> Our Gallery</span>
-                            <h2 className="text-4xl md:text-5xl font-serif font-bold text-primary">Campus & Community</h2>
+                            <span className="text-accent font-bold text-sm uppercase tracking-widest mb-2 block flex items-center justify-center gap-2"><Images className="w-4 h-4" /> {c(gallery, 'sectionSubtitle', 'Our Gallery')}</span>
+                            <h2 className="text-4xl md:text-5xl font-serif font-bold text-primary">{c(gallery, 'sectionTitle', 'Campus & Community')}</h2>
                         </div>
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                             {modules.gallery.map((img, i) => (
@@ -252,8 +255,8 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
                 <section id="videos" className="py-24 bg-primary">
                     <div className="max-w-7xl mx-auto px-6">
                         <div className="text-center mb-14">
-                            <span className="text-accent font-bold text-sm uppercase tracking-widest mb-2 block flex items-center justify-center gap-2"><Film className="w-4 h-4" /> Videos</span>
-                            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white">See TTESOL in Action</h2>
+                            <span className="text-accent font-bold text-sm uppercase tracking-widest mb-2 block flex items-center justify-center gap-2"><Film className="w-4 h-4" /> {c(videos, 'sectionSubtitle', 'Videos')}</span>
+                            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white">{c(videos, 'sectionTitle', 'See TTESOL in Action')}</h2>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {modules.videos.map((video, i) => (
@@ -321,8 +324,8 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
                 <section id="testimonials" className="py-24 bg-surface-low">
                     <div className="max-w-7xl mx-auto px-6">
                         <div className="text-center mb-14">
-                            <span className="text-accent font-bold text-sm uppercase tracking-widest mb-2 block">{c(about, 'title', 'Student Voices')}</span>
-                            <h2 className="text-4xl md:text-5xl font-serif font-bold text-primary">What Our Students Say</h2>
+                            <span className="text-accent font-bold text-sm uppercase tracking-widest mb-2 block">{c(testimonials, 'sectionSubtitle', 'Student Voices')}</span>
+                            <h2 className="text-4xl md:text-5xl font-serif font-bold text-primary">{c(testimonials, 'sectionTitle', 'What Our Students Say')}</h2>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {modules.testimonials.map((t, i) => (

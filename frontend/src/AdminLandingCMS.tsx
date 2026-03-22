@@ -22,9 +22,9 @@ const SECTIONS = [
     { id: 'courses',      label: 'Cursos Destacados',  icon: <BookOpen size={18} />,       translatable: true },
     { id: 'footer',       label: 'Footer',             icon: <LayoutTemplate size={18} />, translatable: true },
     { id: 'seo',          label: 'SEO & Metadata',     icon: <Search size={18} />,         translatable: true },
-    { id: 'testimonials', label: 'Testimonios',        icon: <MessageSquare size={18} />,  translatable: false },
-    { id: 'gallery',      label: 'Galería',            icon: <Images size={18} />,         translatable: false },
-    { id: 'videos',       label: 'Videos',             icon: <Video size={18} />,          translatable: false },
+    { id: 'testimonials', label: 'Testimonios',        icon: <MessageSquare size={18} />,  translatable: true },
+    { id: 'gallery',      label: 'Galería',            icon: <Images size={18} />,         translatable: true },
+    { id: 'videos',       label: 'Videos',             icon: <Video size={18} />,          translatable: true },
     { id: 'contact',      label: 'Contacto & Mapa',    icon: <PhoneCall size={18} />,      translatable: false },
     { id: 'banners',      label: 'Banners Promo',      icon: <ImageIcon size={18} />,      translatable: false },
     { id: 'languages',    label: 'Idiomas',            icon: <Globe size={18} />,          translatable: false },
@@ -39,6 +39,9 @@ const SECTION_KEY_FIELDS: Record<string, string[]> = {
     courses: ['sectionSubtitle', 'sectionTitle', 'learnMore', 'viewAll', 'course1Title', 'course1Desc', 'course2Title', 'course2Desc', 'course3Title', 'course3Desc'],
     footer:  ['description', 'platformTitle', 'legalTitle', 'link_courses', 'link_library', 'link_privacy', 'link_terms', 'copyright'],
     seo:     ['metaTitle', 'metaDescription', 'keywords'],
+    gallery: ['sectionTitle', 'sectionSubtitle'],
+    videos:  ['sectionTitle', 'sectionSubtitle'],
+    testimonials: ['sectionTitle', 'sectionSubtitle'],
 };
 
 const LANG_META: Record<string, { label: string; flag: string }> = {
@@ -411,6 +414,42 @@ const AdminLandingCMS = ({ token, onNotify }: AdminLandingCMSProps) => {
                         </div>
                     </div>
                 );
+            case 'gallery':
+                return (
+                    <div className="space-y-6">
+                        <div className="grid grid-cols-2 gap-4">
+                            {renderTransInput('sectionSubtitle', 'Section Subtitle')}
+                            {renderTransInput('sectionTitle', 'Section Title')}
+                        </div>
+                        <hr className="border-gray-100" />
+                        <p className="text-sm text-gray-500 mb-4">Upload gallery images. You can group them by album/category.</p>
+                        <LandingModulesCRUD module="gallery" token={token} onNotify={onNotify} availableLangs={availableLangs} />
+                    </div>
+                );
+            case 'videos':
+                return (
+                    <div className="space-y-6">
+                        <div className="grid grid-cols-2 gap-4">
+                            {renderTransInput('sectionSubtitle', 'Section Subtitle')}
+                            {renderTransInput('sectionTitle', 'Section Title')}
+                        </div>
+                        <hr className="border-gray-100" />
+                        <p className="text-sm text-gray-500 mb-4">Add featured videos. Paste a YouTube embed URL or direct video link.</p>
+                        <LandingModulesCRUD module="videos" token={token} onNotify={onNotify} availableLangs={availableLangs} />
+                    </div>
+                );
+            case 'testimonials':
+                return (
+                    <div className="space-y-6">
+                        <div className="grid grid-cols-2 gap-4">
+                            {renderTransInput('sectionSubtitle', 'Section Subtitle')}
+                            {renderTransInput('sectionTitle', 'Section Title')}
+                        </div>
+                        <hr className="border-gray-100" />
+                        <p className="text-sm text-gray-500 mb-4">Add student testimonials. Each item can have its quote translated per language.</p>
+                        <LandingModulesCRUD module="testimonials" token={token} onNotify={onNotify} availableLangs={availableLangs} />
+                    </div>
+                );
             case 'seo':
                 return (
                     <div className="space-y-5">
@@ -484,34 +523,13 @@ const AdminLandingCMS = ({ token, onNotify }: AdminLandingCMSProps) => {
                             <p className="text-sm text-gray-500">Languages are auto-detected from the Translations module.</p>
                         </div>
                     );
-                case 'testimonials':
-                return (
-                    <div>
-                        <p className="text-sm text-gray-500 mb-4">Add student testimonials. Each item can have its quote translated per language.</p>
-                        <LandingModulesCRUD module="testimonials" token={token} onNotify={onNotify} availableLangs={availableLangs} />
-                    </div>
-                );
-            case 'gallery':
-                return (
-                    <div>
-                        <p className="text-sm text-gray-500 mb-4">Upload gallery images. You can group them by album/category.</p>
-                        <LandingModulesCRUD module="gallery" token={token} onNotify={onNotify} availableLangs={availableLangs} />
-                    </div>
-                );
-            case 'videos':
-                return (
-                    <div>
-                        <p className="text-sm text-gray-500 mb-4">Add featured videos. Paste a YouTube embed URL or direct video link.</p>
-                        <LandingModulesCRUD module="videos" token={token} onNotify={onNotify} availableLangs={availableLangs} />
-                    </div>
-                );
-            case 'banners':
-                return (
-                    <div>
-                        <p className="text-sm text-gray-500 mb-4">Create promotional banners shown on the landing page.</p>
-                        <LandingModulesCRUD module="banners" token={token} onNotify={onNotify} availableLangs={availableLangs} />
-                    </div>
-                );
+                case 'banners':
+                    return (
+                        <div>
+                            <p className="text-sm text-gray-500 mb-4">Create promotional banners shown on the landing page.</p>
+                            <LandingModulesCRUD module="banners" token={token} onNotify={onNotify} availableLangs={availableLangs} />
+                        </div>
+                    );
                 default:
                     return renderListPrompt(title, `Manage ${title} items here. List editor coming soon.`);
             }
