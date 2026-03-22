@@ -37,6 +37,7 @@
     overscroll-behavior: none;
     -webkit-text-size-adjust: 100%;
     font-family: var(--font-sans);
+    scroll-behavior: smooth;
   }
 
   body {

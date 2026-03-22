@@ -79,6 +79,8 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
                     </div>
                     <div className="hidden md:flex items-center gap-8 text-sm font-bold tracking-wide text-gray-300">
                         <a href="#about" className="hover:text-white transition-colors">{c(h, 'nav_about', 'About Us')}</a>
+                        {modules.gallery.length > 0 && <a href="#gallery" className="hover:text-white transition-colors">{c(h, 'nav_gallery', 'Gallery')}</a>}
+                        {modules.videos.length > 0 && <a href="#videos" className="hover:text-white transition-colors">{c(h, 'nav_videos', 'Videos')}</a>}
                         <a href="#courses" className="hover:text-white transition-colors">{c(h, 'nav_courses', 'Courses')}</a>
                         <a href="#testimonials" className="hover:text-white transition-colors">{c(h, 'nav_testimonials', 'Testimonials')}</a>
                     </div>

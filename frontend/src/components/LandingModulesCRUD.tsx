@@ -26,7 +26,7 @@ const emptyItem = (module: string) => {
         case 'banners':      return { title: '', subtitle: '', description: '', cta_text: '', cta_url: '', image_url: '', bg_color: '#09194F', display_order: 0, is_active: true };
         case 'gallery':      return { image_url: '', caption: '', alt_text: '', album: 'General', display_order: 0, is_active: true };
         case 'videos':       return { title: '', description: '', video_url: '', thumbnail_url: '', display_order: 0, is_active: true };
-        case 'testimonials': return { author_name: '', author_role: '', author_avatar: '', rating: 5, display_order: 0, is_active: true };
+        case 'testimonials': return { author_name: '', author_role: '', author_avatar: '', quote: '', rating: 5, display_order: 0, is_active: true };
         default:             return {};
     }
 };
@@ -173,15 +173,15 @@ const LandingModulesCRUD = ({ module, token, onNotify, availableLangs }: Landing
             {module === 'banners' && (
                 <div className="space-y-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <Field label="Title (EN default)" value={formData.title} onChange={v => setFormData((p: any) => ({...p, title: v}))} />
-                        <Field label="Subtitle (EN default)" value={formData.subtitle} onChange={v => setFormData((p: any) => ({...p, subtitle: v}))} />
+                        <Field label="Title (EN default)" value={formData.title} onChange={(v: string) => setFormData((p: any) => ({...p, title: v}))} />
+                        <Field label="Subtitle (EN default)" value={formData.subtitle} onChange={(v: string) => setFormData((p: any) => ({...p, subtitle: v}))} />
                     </div>
-                    <Field label="Description" textarea value={formData.description} onChange={v => setFormData((p: any) => ({...p, description: v}))} />
+                    <Field label="Description" textarea value={formData.description} onChange={(v: string) => setFormData((p: any) => ({...p, description: v}))} />
                     <div className="grid grid-cols-2 gap-4">
-                        <Field label="CTA Button Text" value={formData.cta_text} onChange={v => setFormData((p: any) => ({...p, cta_text: v}))} />
-                        <Field label="CTA URL" value={formData.cta_url} onChange={v => setFormData((p: any) => ({...p, cta_url: v}))} />
+                        <Field label="CTA Button Text" value={formData.cta_text} onChange={(v: string) => setFormData((p: any) => ({...p, cta_text: v}))} />
+                        <Field label="CTA URL" value={formData.cta_url} onChange={(v: string) => setFormData((p: any) => ({...p, cta_url: v}))} />
                     </div>
-                    <ImageField label="Banner Image" value={formData.image_url} field="image_url" onChange={(v: string) => setFormData((p: any) => ({...p, image_url: v}))} onUpload={e => handleUpload(e, 'image_url')} isUploading={isUploading} />
+                    <ImageField label="Banner Image" value={formData.image_url} field="image_url" onChange={(v: string) => setFormData((p: any) => ({...p, image_url: v}))} onUpload={(e: React.ChangeEvent<HTMLInputElement>) => handleUpload(e, 'image_url')} isUploading={isUploading} />
                     <div className="flex gap-4 items-end">
                         <div className="flex-1">
                             <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-1">Background Color</label>
@@ -196,14 +196,14 @@ const LandingModulesCRUD = ({ module, token, onNotify, availableLangs }: Landing
 
             {module === 'gallery' && (
                 <div className="space-y-4">
-                    <ImageField label="Image" value={formData.image_url} field="image_url" onChange={(v: string) => setFormData((p: any) => ({...p, image_url: v}))} onUpload={e => handleUpload(e, 'image_url')} isUploading={isUploading} />
+                    <ImageField label="Image" value={formData.image_url} field="image_url" onChange={(v: string) => setFormData((p: any) => ({...p, image_url: v}))} onUpload={(e: React.ChangeEvent<HTMLInputElement>) => handleUpload(e, 'image_url')} isUploading={isUploading} />
                     <div className="grid grid-cols-2 gap-4">
-                        <Field label="Caption" value={formData.caption} onChange={v => setFormData((p: any) => ({...p, caption: v}))} />
-                        <Field label="Alt Text" value={formData.alt_text} onChange={v => setFormData((p: any) => ({...p, alt_text: v}))} />
+                        <Field label="Caption" value={formData.caption} onChange={(v: string) => setFormData((p: any) => ({...p, caption: v}))} />
+                        <Field label="Alt Text" value={formData.alt_text} onChange={(v: string) => setFormData((p: any) => ({...p, alt_text: v}))} />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                        <Field label="Album / Category" value={formData.album} onChange={v => setFormData((p: any) => ({...p, album: v}))} />
-                        <Field label="Display Order" type="number" value={String(formData.display_order || 0)} onChange={v => setFormData((p: any) => ({...p, display_order: +v}))} />
+                        <Field label="Album / Category" value={formData.album} onChange={(v: string) => setFormData((p: any) => ({...p, album: v}))} />
+                        <Field label="Display Order" type="number" value={String(formData.display_order || 0)} onChange={(v: string) => setFormData((p: any) => ({...p, display_order: +v}))} />
                     </div>
                 </div>
             )}
@@ -250,10 +250,11 @@ const LandingModulesCRUD = ({ module, token, onNotify, availableLangs }: Landing
             {module === 'testimonials' && (
                 <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
-                        <Field label="Author Name" value={formData.author_name} onChange={v => setFormData((p: any) => ({...p, author_name: v}))} />
-                        <Field label="Role / Title (EN default)" value={formData.author_role} onChange={v => setFormData((p: any) => ({...p, author_role: v}))} />
+                        <Field label="Author Name" value={formData.author_name} onChange={(v: string) => setFormData((p: any) => ({...p, author_name: v}))} />
+                        <Field label="Role / Title (EN default)" value={formData.author_role} onChange={(v: string) => setFormData((p: any) => ({...p, author_role: v}))} />
                     </div>
-                    <ImageField label="Author Avatar" value={formData.author_avatar} field="author_avatar" onChange={(v: string) => setFormData((p: any) => ({...p, author_avatar: v}))} onUpload={e => handleUpload(e, 'author_avatar')} isUploading={isUploading} />
+                    <Field label="Quote / Testimonial Text (EN default)" textarea value={formData.quote} onChange={(v: string) => setFormData((p: any) => ({...p, quote: v}))} />
+                    <ImageField label="Author Avatar" value={formData.author_avatar} field="author_avatar" onChange={(v: string) => setFormData((p: any) => ({...p, author_avatar: v}))} onUpload={(e: React.ChangeEvent<HTMLInputElement>) => handleUpload(e, 'author_avatar')} isUploading={isUploading} />
                     <div className="flex gap-4 items-end">
                         <div className="flex-1">
                             <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-1">Rating (1–5 Stars)</label>
@@ -264,7 +265,7 @@ const LandingModulesCRUD = ({ module, token, onNotify, availableLangs }: Landing
                             </div>
                         </div>
                         <div className="flex-1">
-                            <Field label="Display Order" type="number" value={String(formData.display_order || 0)} onChange={v => setFormData((p: any) => ({...p, display_order: +v}))} />
+                            <Field label="Display Order" type="number" value={String(formData.display_order || 0)} onChange={(v: string) => setFormData((p: any) => ({...p, display_order: +v}))} />
                         </div>
                     </div>
                 </div>
@@ -284,18 +285,18 @@ const LandingModulesCRUD = ({ module, token, onNotify, availableLangs }: Landing
                     <AnimatePresence mode="wait">
                         <motion.div key={activeLang} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="space-y-3">
                             {module === 'banners' && (<>
-                                <Field label="Title" value={getTrans(activeLang, 'title')} onChange={v => setTrans(activeLang, 'title', v)} placeholder={formData.title || ''} />
-                                <Field label="Subtitle" value={getTrans(activeLang, 'subtitle')} onChange={v => setTrans(activeLang, 'subtitle', v)} />
-                                <Field label="Description" textarea value={getTrans(activeLang, 'description')} onChange={v => setTrans(activeLang, 'description', v)} />
-                                <Field label="CTA Button Text" value={getTrans(activeLang, 'cta_text')} onChange={v => setTrans(activeLang, 'cta_text', v)} />
+                                <Field label="Title" value={getTrans(activeLang, 'title')} onChange={(v: string) => setTrans(activeLang, 'title', v)} placeholder={formData.title || ''} />
+                                <Field label="Subtitle" value={getTrans(activeLang, 'subtitle')} onChange={(v: string) => setTrans(activeLang, 'subtitle', v)} />
+                                <Field label="Description" textarea value={getTrans(activeLang, 'description')} onChange={(v: string) => setTrans(activeLang, 'description', v)} />
+                                <Field label="CTA Button Text" value={getTrans(activeLang, 'cta_text')} onChange={(v: string) => setTrans(activeLang, 'cta_text', v)} />
                             </>)}
                             {module === 'videos' && (<>
-                                <Field label="Title" value={getTrans(activeLang, 'title')} onChange={v => setTrans(activeLang, 'title', v)} placeholder={formData.title || ''} />
-                                <Field label="Description" textarea value={getTrans(activeLang, 'description')} onChange={v => setTrans(activeLang, 'description', v)} />
+                                <Field label="Title" value={getTrans(activeLang, 'title')} onChange={(v: string) => setTrans(activeLang, 'title', v)} placeholder={formData.title || ''} />
+                                <Field label="Description" textarea value={getTrans(activeLang, 'description')} onChange={(v: string) => setTrans(activeLang, 'description', v)} />
                             </>)}
                             {module === 'testimonials' && (<>
-                                <Field label="Quote / Testimonial Text" textarea value={getTrans(activeLang, 'quote')} onChange={v => setTrans(activeLang, 'quote', v)} placeholder="Enter the testimonial text in this language..." />
-                                <Field label="Author Role (translated)" value={getTrans(activeLang, 'author_role')} onChange={v => setTrans(activeLang, 'author_role', v)} placeholder={formData.author_role || ''} />
+                                <Field label="Quote / Testimonial Text" textarea value={getTrans(activeLang, 'quote')} onChange={(v: string) => setTrans(activeLang, 'quote', v)} placeholder="Enter the testimonial text in this language..." />
+                                <Field label="Author Role (translated)" value={getTrans(activeLang, 'author_role')} onChange={(v: string) => setTrans(activeLang, 'author_role', v)} placeholder={formData.author_role || ''} />
                             </>)}
                         </motion.div>
                     </AnimatePresence>

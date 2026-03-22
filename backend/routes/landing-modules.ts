@@ -277,11 +277,11 @@ router.post('/testimonials', authenticateToken, authorizeAdmin, async (req, res)
     try {
         const pageId = await getHomePageId();
         if (!pageId) return res.status(404).json({ error: 'Landing page not found' });
-        const { author_name, author_role, author_avatar, rating, display_order } = req.body;
+        const { author_name, author_role, author_avatar, rating, display_order, quote } = req.body;
         const r = await pool.query(
-            `INSERT INTO landing_testimonials (landing_page_id, author_name, author_role, author_avatar, rating, display_order)
-             VALUES ($1,$2,$3,$4,$5,$6) RETURNING *`,
-            [pageId, author_name, author_role, author_avatar, rating || 5, display_order || 0]
+            `INSERT INTO landing_testimonials (landing_page_id, author_name, author_role, author_avatar, rating, display_order, quote)
+             VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
+            [pageId, author_name, author_role, author_avatar, rating || 5, display_order || 0, quote || '']
         );
         res.json(r.rows[0]);
     } catch (err: any) { res.status(500).json({ error: err.message }); }
@@ -289,11 +289,11 @@ router.post('/testimonials', authenticateToken, authorizeAdmin, async (req, res)
 
 router.put('/testimonials/:id', authenticateToken, authorizeAdmin, async (req, res) => {
     try {
-        const { author_name, author_role, author_avatar, rating, display_order, is_active } = req.body;
+        const { author_name, author_role, author_avatar, rating, display_order, is_active, quote } = req.body;
         const r = await pool.query(
-            `UPDATE landing_testimonials SET author_name=$1,author_role=$2,author_avatar=$3,rating=$4,display_order=$5,is_active=$6,updated_at=NOW()
-             WHERE id=$7 RETURNING *`,
-            [author_name, author_role, author_avatar, rating ?? 5, display_order ?? 0, is_active ?? true, req.params.id]
+            `UPDATE landing_testimonials SET author_name=$1, author_role=$2, author_avatar=$3, rating=$4, display_order=$5, is_active=$6, quote=$7, updated_at=NOW()
+             WHERE id=$8 RETURNING *`,
+            [author_name, author_role, author_avatar, rating ?? 5, display_order ?? 0, is_active ?? true, quote || '', req.params.id]
         );
         res.json(r.rows[0]);
     } catch (err: any) { res.status(500).json({ error: err.message }); }

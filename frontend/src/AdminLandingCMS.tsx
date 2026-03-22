@@ -33,7 +33,7 @@ const SECTIONS = [
 
 // Key fields per section (used for completeness calculation)
 const SECTION_KEY_FIELDS: Record<string, string[]> = {
-    header:  ['institutionName', 'ctaText', 'nav_about', 'nav_courses', 'nav_testimonials'],
+    header:  ['institutionName', 'ctaText', 'nav_about', 'nav_courses', 'nav_gallery', 'nav_videos', 'nav_testimonials'],
     hero:    ['badgeText', 'title', 'subtitle', 'primaryCta', 'secondaryCta'],
     about:   ['title', 'mission', 'vision', 'stat1Label', 'stat2Label', 'stat3Label', 'stat4Label'],
     courses: ['sectionSubtitle', 'sectionTitle', 'learnMore', 'viewAll', 'course1Title', 'course1Desc', 'course2Title', 'course2Desc', 'course3Title', 'course3Desc'],
@@ -313,6 +313,8 @@ const AdminLandingCMS = ({ token, onNotify }: AdminLandingCMSProps) => {
                         <div className="grid grid-cols-3 gap-4">
                             {renderTransInput('nav_about', 'Nav: About')}
                             {renderTransInput('nav_courses', 'Nav: Courses')}
+                            {renderTransInput('nav_gallery', 'Nav: Gallery')}
+                            {renderTransInput('nav_videos', 'Nav: Videos')}
                             {renderTransInput('nav_testimonials', 'Nav: Testimonials')}
                         </div>
                         <hr className="border-gray-100" />
@@ -586,7 +588,7 @@ const AdminLandingCMS = ({ token, onNotify }: AdminLandingCMSProps) => {
                                     <span className={isActive ? 'text-accent' : 'text-gray-400'}>{section.icon}</span>
                                     <span className="text-sm flex-1">{section.label}</span>
                                     {section.translatable && (
-                                        <Globe size={10} className={isActive ? 'text-accent/70' : 'text-gray-300'} title="Multi-language" />
+                                        <Globe size={10} className={isActive ? 'text-accent/70' : 'text-gray-300'} />
                                     )}
                                 </button>
                             );
