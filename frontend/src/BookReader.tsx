@@ -528,41 +528,58 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
     };
 
     const handleFlipPrev = () => {
+        if (isSinglePage) {
+            const currentIndex = contents.findIndex(c => String(c.id) === String(selectedChapter?.id));
+            if (currentIndex > 0) {
+                const prevChapter = contents[currentIndex - 1];
+                setSelectedChapter(prevChapter);
+                if (flipAudioRef.current && !flipMuted) {
+                    flipAudioRef.current.currentTime = 0;
+                    flipAudioRef.current.play().catch(() => {});
+                }
+            }
+            return;
+        }
+
         if (!flipBookRef.current) return;
         try {
             const pf = flipBookRef.current.pageFlip();
             if (pf) {
                 const currentIndex = pf.getCurrentPageIndex();
                 if (currentIndex > 0) {
-                    // Portrait (single page) mode does not support the corner parameter the same way
-                    if (isSinglePage) {
-                        pf.flipPrev();
-                    } else {
-                        pf.flipPrev('top');
-                    }
+                    pf.flipPrev('top');
                 }
             }
         } catch (e) {
-            console.error("FlipPrev Error:", e);
+            console.error("Flip error:", e);
         }
     };
 
     const handleFlipNext = () => {
+        if (isSinglePage) {
+            const currentIndex = contents.findIndex(c => String(c.id) === String(selectedChapter?.id));
+            if (currentIndex < contents.length - 1) {
+                const nextChapter = contents[currentIndex + 1];
+                setSelectedChapter(nextChapter);
+                if (flipAudioRef.current && !flipMuted) {
+                    flipAudioRef.current.currentTime = 0;
+                    flipAudioRef.current.play().catch(() => {});
+                }
+            }
+            return;
+        }
+
         if (!flipBookRef.current) return;
         try {
             const pf = flipBookRef.current.pageFlip();
             if (pf) {
                 const currentIndex = pf.getCurrentPageIndex();
                 if (currentIndex < contents.length - 1) {
-                    if (isSinglePage) {
-                        pf.flipNext();
-                    } else {
-                        pf.flipNext('top');
-                    }
+                    pf.flipNext('top');
                 }
             }
         } catch (e) {
-            console.error("FlipNext Error:", e);
+            console.error("Flip error:", e);
         }
     };
 
@@ -975,6 +992,7 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                 {viewState === 'READING' && selectedChapter && (
                     <motion.div
                         key="reading"
+                        ref={bookContainerRef}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -1096,7 +1114,24 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                                 onTransformed={(_, state) => setCurrentScale(state.scale)}
                                             >
                                                 {({ zoomIn, zoomOut, resetTransform }) => (
-                                                    <>
+                                                    <div className="w-full h-full relative group">
+                                                         {/* THE MASTER CONTROLLER OVERLAY: Moved OUTSIDE TransformComponent to avoid event interference */}
+                                                         <div className="absolute inset-0 z-[500] pointer-events-none flex">
+                                                             {/* Left Navigation Zone */}
+                                                             <div 
+                                                                className="nav-zone h-full w-[17%] sm:w-[10%] pointer-events-auto cursor-pointer"
+                                                                onClick={handleFlipPrev}
+                                                             ></div>
+
+                                                             {/* Protected Central Area */}
+                                                             <div className="h-full flex-1 pointer-events-none relative"></div>
+
+                                                             {/* Right Navigation Zone */}
+                                                             <div 
+                                                                className="nav-zone h-full w-[17%] sm:w-[10%] pointer-events-auto cursor-pointer"
+                                                                onClick={handleFlipNext}
+                                                             ></div>
+                                                         </div>
                                                         {/* Fixed Zoom Controls on Screen */}
                                                         <div className="absolute top-2 right-2 z-50 flex flex-col gap-1 bg-[#161930]/80 backdrop-blur-md p-1.5 rounded-xl border border-white/10 shadow-xl">
                                                             <button title="Zoom In" onClick={() => zoomIn(0.5)} className="p-1.5 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors">
@@ -1138,99 +1173,129 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                                                 }}
                                                             >
                                                                 {/* @ts-ignore - react-pageflip typings are problematic with React 18 */}
-                                                                <HTMLFlipBook
-                                                                    width={1350}
-                                                                    height={1909}
-                                                                    size="stretch"
-                                                                    minWidth={315}
-                                                                    maxWidth={4000}
-                                                                    minHeight={400}
-                                                                    maxHeight={4000}
-                                                                    showCover={true}
-                                                                    mobileScrollSupport={true}
-                                                                    usePortrait={isSinglePage}
-                                                                    
-                                                                    // disableFlipByClick prevents clicking the page center from turning pages
-                                                                    // useMouseEvents must be true so the internal animation engine can work (flipPrev relies on it)
-                                                                    disableFlipByClick={true}
-                                                                    useMouseEvents={true}
-                                                                    swipeDistance={999999}
-                                                                    showPageCorners={true}
-                                                                    
-                                                                    ref={flipBookRef}
-                                                                    onFlip={(e: any) => {
-                                                                        const pageIdx = e.data;
-                                                                        
-                                                                        if (!isNavigatingFromTOC.current) {
-                                                                            if (flipAudioRef.current && !flipMuted) {
-                                                                                flipAudioRef.current.currentTime = 0;
-                                                                                flipAudioRef.current.play().catch(err => console.log('Audio error:', err));
-                                                                            }
-                                                                            if (contents[pageIdx]) setSelectedChapter(contents[pageIdx]);
-                                                                        }
-                                                                    }}
-                                                                    className="flip-book-container h-full w-full"
-                                                                >
-                                                                {contents.map((chapter) => (
-                                                                    <FlipbookPage
-                                                                        key={chapter.id}
-                                                                        contentItem={chapter}
-                                                                        debugNav={debugNav}
-                                                                        onInteract={(interaction: any) => {
-                                                                            if (interaction.action === 'next') flipBookRef.current?.pageFlip()?.flipNext();
-                                                                            if (interaction.action === 'link' && interaction.value) {
-                                                                                window.open(interaction.value, '_blank');
-                                                                            }
-                                                                            if (interaction.action === 'page' && interaction.value) {
-                                                                                // internal link to another page/topic inside the same book
-                                                                                const targetItem = contents.find(c => String(c.id) === String(interaction.value));
-                                                                                if (targetItem) {
-                                                                                    isNavigatingFromTOC.current = true;
-                                                                                    setSelectedChapter(targetItem);
-                                                                                }
-                                                                            }
-                                                                            const isTrue = interaction.isCorrect !== undefined ? interaction.isCorrect : interaction.correct;
-                                                                            if (isTrue !== undefined) {
-                                                                                if (isTrue) {
-                                                                                    setValidationState('correct');
-                                                                                    setValidationMessage('Excellent progress!');
-                                                                                    addXp(10);
-                                                                                    incrementStreak();
-                                                                                } else {
-                                                                                    setValidationState('incorrect');
-                                                                                    setValidationMessage('');
-                                                                                    subtractHeart();
-                                                                                    if (hearts <= 1) {
-                                                                                        setIsGameOver(true);
+                                                                {isSinglePage ? (
+                                                                    <AnimatePresence mode="wait">
+                                                                        <motion.div
+                                                                            key={selectedChapter.id}
+                                                                            initial={{ opacity: 0, x: 10 }}
+                                                                            animate={{ opacity: 1, x: 0 }}
+                                                                            exit={{ opacity: 0, x: -10 }}
+                                                                            transition={{ duration: 0.2 }}
+                                                                            className="w-full h-full"
+                                                                        >
+                                                                            <FlipbookPage
+                                                                                contentItem={selectedChapter}
+                                                                                debugNav={debugNav}
+                                                                                onInteract={(interaction: any) => {
+                                                                                    if (interaction.action === 'next') handleFlipNext();
+                                                                                    if (interaction.action === 'link' && interaction.value) {
+                                                                                        window.open(interaction.value, '_blank');
                                                                                     }
+                                                                                    if (interaction.action === 'page' && interaction.value) {
+                                                                                        const targetItem = contents.find(c => String(c.id) === String(interaction.value));
+                                                                                        if (targetItem) {
+                                                                                            isNavigatingFromTOC.current = true;
+                                                                                            setSelectedChapter(targetItem);
+                                                                                        }
+                                                                                    }
+                                                                                    const isTrue = interaction.isCorrect !== undefined ? interaction.isCorrect : interaction.correct;
+                                                                                    if (isTrue !== undefined) {
+                                                                                        if (isTrue) {
+                                                                                            setValidationState('correct');
+                                                                                            setValidationMessage('Excellent progress!');
+                                                                                            addXp(10);
+                                                                                            incrementStreak();
+                                                                                        } else {
+                                                                                            setValidationState('incorrect');
+                                                                                            setValidationMessage('');
+                                                                                            subtractHeart();
+                                                                                            if (hearts <= 1) {
+                                                                                                setIsGameOver(true);
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }}
+                                                                            />
+                                                                        </motion.div>
+                                                                    </AnimatePresence>
+                                                                ) : (
+                                                                    <HTMLFlipBook
+                                                                        width={1350}
+                                                                        height={1909}
+                                                                        size="stretch"
+                                                                        minWidth={315}
+                                                                        maxWidth={4000}
+                                                                        minHeight={400}
+                                                                        maxHeight={4000}
+                                                                        showCover={true}
+                                                                        mobileScrollSupport={true}
+                                                                        usePortrait={isSinglePage}
+                                                                        
+                                                                        // disableFlipByClick prevents clicking the page center from turning pages
+                                                                        // useMouseEvents must be true so the internal animation engine can work (flipPrev relies on it)
+                                                                        disableFlipByClick={true}
+                                                                        useMouseEvents={true}
+                                                                        swipeDistance={999999}
+                                                                        showPageCorners={true}
+                                                                        
+                                                                        ref={flipBookRef}
+                                                                        onFlip={(e: any) => {
+                                                                            const pageIdx = e.data;
+                                                                            
+                                                                            if (!isNavigatingFromTOC.current) {
+                                                                                if (flipAudioRef.current && !flipMuted) {
+                                                                                    flipAudioRef.current.currentTime = 0;
+                                                                                    flipAudioRef.current.play().catch(err => console.log('Audio error:', err));
                                                                                 }
+                                                                                if (contents[pageIdx]) setSelectedChapter(contents[pageIdx]);
                                                                             }
                                                                         }}
-                                                                    />
-                                                                ))}
-                                                            </HTMLFlipBook>
-                                                                 {/* THE MASTER CONTROLLER OVERLAY: This is the ONLY element that can trigger navigation */}
-                                                                 <div className="absolute inset-0 z-[500] pointer-events-none flex">
-                                                                     {/* Left Navigation Zone */}
-                                                                     <div 
-                                                                        className="nav-zone h-full w-[15%] sm:w-[8%] pointer-events-auto cursor-pointer"
-                                                                        onClick={handleFlipPrev}
-                                                                     ></div>
+                                                                        className="flip-book-container h-full w-full"
+                                                                    >
+                                                                    {contents.map((chapter) => (
+                                                                        <FlipbookPage
+                                                                            key={chapter.id}
+                                                                            contentItem={chapter}
+                                                                            debugNav={debugNav}
+                                                                            onInteract={(interaction: any) => {
+                                                                                if (interaction.action === 'next') flipBookRef.current?.pageFlip()?.flipNext();
+                                                                                if (interaction.action === 'link' && interaction.value) {
+                                                                                    window.open(interaction.value, '_blank');
+                                                                                }
+                                                                                if (interaction.action === 'page' && interaction.value) {
+                                                                                    // internal link to another page/topic inside the same book
+                                                                                    const targetItem = contents.find(c => String(c.id) === String(interaction.value));
+                                                                                    if (targetItem) {
+                                                                                        isNavigatingFromTOC.current = true;
+                                                                                        setSelectedChapter(targetItem);
+                                                                                    }
+                                                                                }
+                                                                                const isTrue = interaction.isCorrect !== undefined ? interaction.isCorrect : interaction.correct;
+                                                                                if (isTrue !== undefined) {
+                                                                                    if (isTrue) {
+                                                                                        setValidationState('correct');
+                                                                                        setValidationMessage('Excellent progress!');
+                                                                                        addXp(10);
+                                                                                        incrementStreak();
+                                                                                    } else {
+                                                                                        setValidationState('incorrect');
+                                                                                        setValidationMessage('');
+                                                                                        subtractHeart();
+                                                                                        if (hearts <= 1) {
+                                                                                            setIsGameOver(true);
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }}
+                                                                        />
+                                                                    ))}
+                                                                    </HTMLFlipBook>
+                                                                )}
 
-                                                                     {/* Protected Central Area (Letting events pass to the pages/blocks underneath) */}
-                                                                     <div className="h-full flex-1 pointer-events-none relative"></div>
-
-                                                                     {/* Right Navigation Zone */}
-                                                                     <div 
-                                                                        className="nav-zone h-full w-[15%] sm:w-[8%] pointer-events-auto cursor-pointer"
-                                                                        onClick={handleFlipNext}
-                                                                     ></div>
-                                                                 </div>
-
-                                                            </div>
-                                                        </TransformComponent>
-                                                    </>
-                                                )}
+                                                        </div>
+                                                    </TransformComponent>
+                                                </div>
+                                            )}
                                             </TransformWrapper>
                                         ) : (
                                             <p className="text-white/50 text-center py-12">No content available for this book.</p>
@@ -1240,7 +1305,7 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                             </div>
                             {/* Bottom Navigation Bar */}
                             {!isFullscreen && (
-                                <div className="mt-2 flex justify-between items-center bg-white/5 backdrop-blur-md rounded-xl p-2 px-1 lg:px-4 border border-white/10 shadow-premium text-white/90 pointer-events-auto pb-safe">
+                                <div className="mt-2 flex justify-between items-center bg-white/5 backdrop-blur-md rounded-xl p-2 px-1 lg:px-4 border border-white/10 shadow-premium text-white/90 pointer-events-auto pb-safe z-[1000]">
                                     <button
                                         onClick={handleFlipPrev}
                                         className="touch-target flex items-center justify-center gap-1.5 px-4 py-3 sm:py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all font-bold text-[12px] sm:text-[10px] uppercase tracking-widest text-gray-400 hover:text-white group w-[100px] sm:w-[120px] lg:w-auto flex-shrink-0"
