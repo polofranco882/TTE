@@ -1006,7 +1006,7 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                         <div className="flex flex-col gap-y-2 mb-1 border-b border-white/5 pb-2 pt-1 px-2 md:px-4 pointer-events-auto">
                                             {/* Row 1: All Nav Icons Scrollable + Mobile Page Jumper */}
                                             <div className="flex items-center justify-between w-full">
-                                                <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink mx-1 pb-1">
+                                                <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink mx-1 pb-1 pl-14 sm:pl-0">
                                                     <button onClick={onBack} className="p-2 md:p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-gray-400 hover:text-white group flex-shrink-0" title="Return to Library">
                                                         <BookOpen size={16} className="md:w-3.5 md:h-3.5" />
                                                     </button>
