@@ -1,0 +1,3901 @@
+{
+  "config": {
+    "configFile": "C:\\APP_WEB\\TTE\\playwright.config.ts",
+    "rootDir": "C:/APP_WEB/TTE/tests",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 2
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/APP_WEB/TTE/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "desktop-chromium",
+        "name": "desktop-chromium",
+        "testDir": "C:/APP_WEB/TTE/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/APP_WEB/TTE/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "desktop-webkit",
+        "name": "desktop-webkit",
+        "testDir": "C:/APP_WEB/TTE/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/APP_WEB/TTE/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "mobile-iphone-14",
+        "name": "mobile-iphone-14",
+        "testDir": "C:/APP_WEB/TTE/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/APP_WEB/TTE/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "mobile-iphone-se",
+        "name": "mobile-iphone-se",
+        "testDir": "C:/APP_WEB/TTE/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/APP_WEB/TTE/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "mobile-iphone-14-landscape",
+        "name": "mobile-iphone-14-landscape",
+        "testDir": "C:/APP_WEB/TTE/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/APP_WEB/TTE/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "tablet-ipad",
+        "name": "tablet-ipad",
+        "testDir": "C:/APP_WEB/TTE/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/APP_WEB/TTE/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "tablet-ipad-landscape",
+        "name": "tablet-ipad-landscape",
+        "testDir": "C:/APP_WEB/TTE/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/APP_WEB/TTE/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "mobile-android",
+        "name": "mobile-android",
+        "testDir": "C:/APP_WEB/TTE/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "playwright-report",
+          "open": "never"
+        }
+      ],
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "playwright-report/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "runAgents": "none",
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.58.2",
+    "workers": 2,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "auth\\login.spec.ts",
+      "file": "auth/login.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Auth — Login Form Visibility",
+          "file": "auth/login.spec.ts",
+          "line": 16,
+          "column": 6,
+          "specs": [
+            {
+              "title": "login form opens and email input is in viewport",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4246,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:15.877Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "231ca1f0f4db3e4958c3-24cdce3234d51f0114a5",
+              "file": "auth/login.spec.ts",
+              "line": 18,
+              "column": 9
+            },
+            {
+              "title": "password input is visible and accessible",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4176,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:20.333Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "231ca1f0f4db3e4958c3-f2904b5cfc4d7ab78f38",
+              "file": "auth/login.spec.ts",
+              "line": 40,
+              "column": 9
+            },
+            {
+              "title": "submit button is tappable on mobile",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4273,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:24.520Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "231ca1f0f4db3e4958c3-17d5993c52a574b752fd",
+              "file": "auth/login.spec.ts",
+              "line": 58,
+              "column": 9
+            },
+            {
+              "title": "login form has no horizontal overflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4399,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:28.804Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "231ca1f0f4db3e4958c3-a1e1ee7628ca06ea8538",
+              "file": "auth/login.spec.ts",
+              "line": 81,
+              "column": 9
+            },
+            {
+              "title": "login form opens and email input is in viewport",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 3164,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:26.365Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "231ca1f0f4db3e4958c3-0a5c7d4b2bbfe4e4a67d",
+              "file": "auth/login.spec.ts",
+              "line": 18,
+              "column": 9
+            },
+            {
+              "title": "password input is visible and accessible",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 3091,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:29.597Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "231ca1f0f4db3e4958c3-f73d656d57999e102891",
+              "file": "auth/login.spec.ts",
+              "line": 40,
+              "column": 9
+            },
+            {
+              "title": "submit button is tappable on mobile",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 3114,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:32.699Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "231ca1f0f4db3e4958c3-e3763e34f6e304d553b0",
+              "file": "auth/login.spec.ts",
+              "line": 58,
+              "column": 9
+            },
+            {
+              "title": "login form has no horizontal overflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 3274,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:35.822Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "231ca1f0f4db3e4958c3-92914c7ce09d5d50756c",
+              "file": "auth/login.spec.ts",
+              "line": 81,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "Auth — Keyboard / Input Interaction (Mobile)",
+          "file": "auth/login.spec.ts",
+          "line": 96,
+          "column": 6,
+          "specs": [
+            {
+              "title": "filling email input does not cause layout shift",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 7071,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:33.217Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "231ca1f0f4db3e4958c3-53538bf16b7e59b4b3a5",
+              "file": "auth/login.spec.ts",
+              "line": 98,
+              "column": 9
+            },
+            {
+              "title": "modal container stays within viewport after input focus",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4320,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:40.301Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "231ca1f0f4db3e4958c3-a4706223a5c1d31da017",
+              "file": "auth/login.spec.ts",
+              "line": 124,
+              "column": 9
+            },
+            {
+              "title": "filling email input does not cause layout shift",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 4443,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:39.106Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "231ca1f0f4db3e4958c3-d2468b8d3ddf8583fac9",
+              "file": "auth/login.spec.ts",
+              "line": 98,
+              "column": 9
+            },
+            {
+              "title": "modal container stays within viewport after input focus",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 3080,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:43.558Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "231ca1f0f4db3e4958c3-a959b37854c76e70c344",
+              "file": "auth/login.spec.ts",
+              "line": 124,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "Auth — Error Messages",
+          "file": "auth/login.spec.ts",
+          "line": 148,
+          "column": 6,
+          "specs": [
+            {
+              "title": "error message visible when wrong credentials used",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 8306,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:44.632Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "231ca1f0f4db3e4958c3-c5e281a8c272474aa05d",
+              "file": "auth/login.spec.ts",
+              "line": 150,
+              "column": 9
+            },
+            {
+              "title": "error message visible when wrong credentials used",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 5412,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:46.648Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "231ca1f0f4db3e4958c3-79891d8c73e0dbfd894b",
+              "file": "auth/login.spec.ts",
+              "line": 150,
+              "column": 9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "books\\book-reader.spec.ts",
+      "file": "books/book-reader.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Book Reader — Layout & Visibility",
+          "file": "books/book-reader.spec.ts",
+          "line": 24,
+          "column": 6,
+          "specs": [
+            {
+              "title": "book canvas is visible in viewport on desktop",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1708,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:15.848Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-33b201433e6a20fd3191",
+              "file": "books/book-reader.spec.ts",
+              "line": 26,
+              "column": 9
+            },
+            {
+              "title": "no horizontal overflow on book reader page",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1931,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:17.639Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-92e1d6f3397c0264ac4e",
+              "file": "books/book-reader.spec.ts",
+              "line": 33,
+              "column": 9
+            },
+            {
+              "title": "book canvas is visible in viewport on desktop",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1075,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:37.644Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-136eeebe249baf043496",
+              "file": "books/book-reader.spec.ts",
+              "line": 26,
+              "column": 9
+            },
+            {
+              "title": "no horizontal overflow on book reader page",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1650,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:38.769Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-02ca37e2885013a83002",
+              "file": "books/book-reader.spec.ts",
+              "line": 33,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "Book Reader — Login and Access",
+          "file": "books/book-reader.spec.ts",
+          "line": 44,
+          "column": 6,
+          "specs": [
+            {
+              "title": "login form is visible and functional",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2623,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:19.583Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-c5fd081244d1d046b3ce",
+              "file": "books/book-reader.spec.ts",
+              "line": 46,
+              "column": 9
+            },
+            {
+              "title": "landing page loads without layout errors",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2507,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:22.217Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-0d5b8b9b29de7fd8a46b",
+              "file": "books/book-reader.spec.ts",
+              "line": 62,
+              "column": 9
+            },
+            {
+              "title": "login form is visible and functional",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1945,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:40.428Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-8a1882cb8e878a78c057",
+              "file": "books/book-reader.spec.ts",
+              "line": 46,
+              "column": 9
+            },
+            {
+              "title": "landing page loads without layout errors",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2021,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:42.382Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-00c6a6c82403da9ab2b0",
+              "file": "books/book-reader.spec.ts",
+              "line": 62,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "Book Reader — Sidebar Overlap Detection",
+          "file": "books/book-reader.spec.ts",
+          "line": 70,
+          "column": 6,
+          "specs": [
+            {
+              "title": "sidebar does not overlap book content area",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2160,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:24.734Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-98502d60779a780c0f7f",
+              "file": "books/book-reader.spec.ts",
+              "line": 72,
+              "column": 9
+            },
+            {
+              "title": "sidebar has correct CSS variable applied",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2051,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Viewport: 390px | --sidebar-width: \"0px\"\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:26.902Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-b36ed0a894354e7dcf12",
+              "file": "books/book-reader.spec.ts",
+              "line": 78,
+              "column": 9
+            },
+            {
+              "title": "sidebar does not overlap book content area",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1773,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:44.412Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-49cacfde1baf9a9ac38a",
+              "file": "books/book-reader.spec.ts",
+              "line": 72,
+              "column": 9
+            },
+            {
+              "title": "sidebar has correct CSS variable applied",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1581,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Viewport: 320px | --sidebar-width: \"0px\"\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:46.196Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-e2ce61908c972162090c",
+              "file": "books/book-reader.spec.ts",
+              "line": 78,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "Book Reader — Mobile Portrait",
+          "file": "books/book-reader.spec.ts",
+          "line": 96,
+          "column": 6,
+          "specs": [
+            {
+              "title": "page renders without horizontal scroll on mobile",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2779,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:28.965Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-8c45a7371a82e1d8dac3",
+              "file": "books/book-reader.spec.ts",
+              "line": 98,
+              "column": 9
+            },
+            {
+              "title": "content does not overflow viewport width",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1899,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:31.756Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-e835826542b38ef727d9",
+              "file": "books/book-reader.spec.ts",
+              "line": 105,
+              "column": 9
+            },
+            {
+              "title": "page renders without horizontal scroll on mobile",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2016,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:47.785Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-864a9162eb70cf6e3ce9",
+              "file": "books/book-reader.spec.ts",
+              "line": 98,
+              "column": 9
+            },
+            {
+              "title": "content does not overflow viewport width",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1557,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:49.811Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-8b091e1d65d15c1250ea",
+              "file": "books/book-reader.spec.ts",
+              "line": 105,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "Book Reader — Landscape Orientation",
+          "file": "books/book-reader.spec.ts",
+          "line": 131,
+          "column": 6,
+          "specs": [
+            {
+              "title": "no horizontal overflow in landscape",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2477,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:33.667Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-79f60890faba74cd4fc7",
+              "file": "books/book-reader.spec.ts",
+              "line": 133,
+              "column": 9
+            },
+            {
+              "title": "content reflows correctly in landscape",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2226,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Landscape viewport: 844x390\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:36.158Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-1fa1d2b42bca66a9915d",
+              "file": "books/book-reader.spec.ts",
+              "line": 141,
+              "column": 9
+            },
+            {
+              "title": "no horizontal overflow in landscape",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1916,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:51.377Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-aa2a27709699274f5516",
+              "file": "books/book-reader.spec.ts",
+              "line": 133,
+              "column": 9
+            },
+            {
+              "title": "content reflows correctly in landscape",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1695,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Landscape viewport: 844x390\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:53.303Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-5cb82dca3f94240a92fa",
+              "file": "books/book-reader.spec.ts",
+              "line": 141,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "Book Reader — Canvas & Controls Visibility",
+          "file": "books/book-reader.spec.ts",
+          "line": 156,
+          "column": 6,
+          "specs": [
+            {
+              "title": "book canvas visible in reader mode",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2065,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "ℹ️ Canvas not present on current view (user not in reader yet)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:38.397Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-93fc95d8d6fd3ce912d3",
+              "file": "books/book-reader.spec.ts",
+              "line": 158,
+              "column": 9
+            },
+            {
+              "title": "book navigation buttons (if visible) are accessible",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2440,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:40.473Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-c30664fa3f5bee3a74b6",
+              "file": "books/book-reader.spec.ts",
+              "line": 172,
+              "column": 9
+            },
+            {
+              "title": "book canvas visible in reader mode",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1842,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "ℹ️ Canvas not present on current view (user not in reader yet)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:55.008Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-9d198aff96461807ed64",
+              "file": "books/book-reader.spec.ts",
+              "line": 158,
+              "column": 9
+            },
+            {
+              "title": "book navigation buttons (if visible) are accessible",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1848,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:56.860Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-25e5e342a2afba5bedac",
+              "file": "books/book-reader.spec.ts",
+              "line": 172,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "Book Reader — Safe Area & Fixed Positioning",
+          "file": "books/book-reader.spec.ts",
+          "line": 188,
+          "column": 6,
+          "specs": [
+            {
+              "title": "bottom navigation bar not clipped by device notch",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2164,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "ℹ️ No bottom bar found on current view\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:42.924Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-5b5f2c4a214bf975a671",
+              "file": "books/book-reader.spec.ts",
+              "line": 190,
+              "column": 9
+            },
+            {
+              "title": "bottom navigation bar not clipped by device notch",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1700,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "ℹ️ No bottom bar found on current view\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:58.719Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2b0dd8df8ef13e1ab2ab-4d0eb9700a76905d8c9e",
+              "file": "books/book-reader.spec.ts",
+              "line": 190,
+              "column": 9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "debug_navbar.spec.ts",
+      "file": "debug_navbar.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "debug navbar button",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-iphone-14",
+              "projectName": "mobile-iphone-14",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 3335,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "BOX: {\"x\":334,\"y\":20,\"width\":40,\"height\":40}\n"
+                    },
+                    {
+                      "text": "VP: {\"width\":390,\"height\":664}\n"
+                    },
+                    {
+                      "text": "x + width: \u001b[33m374\u001b[39m\n"
+                    },
+                    {
+                      "text": "vp.width + 2: \u001b[33m392\u001b[39m\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-03-22T04:25:45.105Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ab26fa107b02f9ad5a26-a7917de168d3a1d4fae6",
+          "file": "debug_navbar.spec.ts",
+          "line": 4,
+          "column": 5
+        },
+        {
+          "title": "debug navbar button",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-iphone-se",
+              "projectName": "mobile-iphone-se",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 3035,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "BOX: {\"x\":264,\"y\":20,\"width\":40,\"height\":40}\n"
+                    },
+                    {
+                      "text": "VP: {\"width\":320,\"height\":568}\n"
+                    },
+                    {
+                      "text": "x + width: \u001b[33m304\u001b[39m\n"
+                    },
+                    {
+                      "text": "vp.width + 2: \u001b[33m322\u001b[39m\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-03-22T04:26:52.075Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ab26fa107b02f9ad5a26-aa28cf3140498809f255",
+          "file": "debug_navbar.spec.ts",
+          "line": 4,
+          "column": 5
+        }
+      ]
+    },
+    {
+      "title": "landing\\landing.spec.ts",
+      "file": "landing/landing.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Landing — Page Load",
+          "file": "landing/landing.spec.ts",
+          "line": 15,
+          "column": 6,
+          "specs": [
+            {
+              "title": "landing page loads without errors",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2596,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:48.457Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-035d70defdb898f423ea",
+              "file": "landing/landing.spec.ts",
+              "line": 17,
+              "column": 9
+            },
+            {
+              "title": "page title is set",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2238,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Page title: \"TTESOL Academy - Premium English Education Platform\"\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:51.064Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-f08cc0bf6ff4315a4a0d",
+              "file": "landing/landing.spec.ts",
+              "line": 35,
+              "column": 9
+            },
+            {
+              "title": "no horizontal overflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2647,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:53.314Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-1944a8ff24f86bd1559d",
+              "file": "landing/landing.spec.ts",
+              "line": 43,
+              "column": 9
+            },
+            {
+              "title": "landing page loads without errors",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2320,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:55.131Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-34344e13731c82ae5abc",
+              "file": "landing/landing.spec.ts",
+              "line": 17,
+              "column": 9
+            },
+            {
+              "title": "page title is set",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1807,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Page title: \"TTESOL Academy - Premium English Education Platform\"\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:57.464Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-62c6e93e8a263b8b6117",
+              "file": "landing/landing.spec.ts",
+              "line": 35,
+              "column": 9
+            },
+            {
+              "title": "no horizontal overflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2025,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:59.279Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-518b059691204f665027",
+              "file": "landing/landing.spec.ts",
+              "line": 43,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "Landing — Hero Section",
+          "file": "landing/landing.spec.ts",
+          "line": 50,
+          "column": 6,
+          "specs": [
+            {
+              "title": "hero headline is visible",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2902,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:55.972Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-87949224eb59f5d38f45",
+              "file": "landing/landing.spec.ts",
+              "line": 52,
+              "column": 9
+            },
+            {
+              "title": "CTA button is visible and tappable",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2834,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:58.889Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-26cc7ba3f2795964c935",
+              "file": "landing/landing.spec.ts",
+              "line": 62,
+              "column": 9
+            },
+            {
+              "title": "hero headline is visible",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2036,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:01.315Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-4e073b0359e929c7cf69",
+              "file": "landing/landing.spec.ts",
+              "line": 52,
+              "column": 9
+            },
+            {
+              "title": "CTA button is visible and tappable",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2133,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:03.360Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-02da49467437a9cdd468",
+              "file": "landing/landing.spec.ts",
+              "line": 62,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "Landing — Navbar Mobile",
+          "file": "landing/landing.spec.ts",
+          "line": 80,
+          "column": 6,
+          "specs": [
+            {
+              "title": "navbar is visible on mobile",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2535,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:01.733Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-19071bd9b818df8e7d59",
+              "file": "landing/landing.spec.ts",
+              "line": 82,
+              "column": 9
+            },
+            {
+              "title": "institution logo/name is visible in navbar",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2203,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:04.278Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-c875bd57106af0087fe1",
+              "file": "landing/landing.spec.ts",
+              "line": 93,
+              "column": 9
+            },
+            {
+              "title": "navbar is visible on mobile",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1904,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:05.502Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-5a2a3f5486c1e55d7742",
+              "file": "landing/landing.spec.ts",
+              "line": 82,
+              "column": 9
+            },
+            {
+              "title": "institution logo/name is visible in navbar",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1857,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:07.416Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-922563d994a1f5eaf734",
+              "file": "landing/landing.spec.ts",
+              "line": 93,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "Landing — Language Switcher",
+          "file": "landing/landing.spec.ts",
+          "line": 105,
+          "column": 6,
+          "specs": [
+            {
+              "title": "language switcher is accessible",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2242,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "ℹ️ Language switcher not found (may need auth or specific route)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:06.491Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-782107af29567ef04c69",
+              "file": "landing/landing.spec.ts",
+              "line": 107,
+              "column": 9
+            },
+            {
+              "title": "language switch changes page content",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 4730,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Language switch: \"Master the Language, Shape Your Future.\" → \"Welcome Back\"\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:08.746Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-35f44766eb7ad6eb4638",
+              "file": "landing/landing.spec.ts",
+              "line": 122,
+              "column": 9
+            },
+            {
+              "title": "language switcher is accessible",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1836,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "ℹ️ Language switcher not found (may need auth or specific route)\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:09.281Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-021a4ce8f5a1cdc7c83c",
+              "file": "landing/landing.spec.ts",
+              "line": 107,
+              "column": 9
+            },
+            {
+              "title": "language switch changes page content",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 3818,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Language switch: \"Master the Language, Shape Your Future.\" → \"Welcome Back\"\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:11.128Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-1070a98b6cdc60459645",
+              "file": "landing/landing.spec.ts",
+              "line": 122,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "Landing — Responsive Sections",
+          "file": "landing/landing.spec.ts",
+          "line": 145,
+          "column": 6,
+          "specs": [
+            {
+              "title": "courses section is visible",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2933,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:13.486Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-53911d5ac0ce8107f3a8",
+              "file": "landing/landing.spec.ts",
+              "line": 147,
+              "column": 9
+            },
+            {
+              "title": "footer is visible and not clipped",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 3221,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:16.430Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-13cde9e30dde3560eb23",
+              "file": "landing/landing.spec.ts",
+              "line": 160,
+              "column": 9
+            },
+            {
+              "title": "courses section is visible",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2448,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:14.957Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-c8fe6bc7eccf88cd8780",
+              "file": "landing/landing.spec.ts",
+              "line": 147,
+              "column": 9
+            },
+            {
+              "title": "footer is visible and not clipped",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2735,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:17.413Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-3712435a0475f0852a87",
+              "file": "landing/landing.spec.ts",
+              "line": 160,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "Landing — Dynamic Sections (Banners, Gallery, Videos)",
+          "file": "landing/landing.spec.ts",
+          "line": 174,
+          "column": 6,
+          "specs": [
+            {
+              "title": "promotional banners render without overflow if present",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2614,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "ℹ️ No banners configured yet — skipping\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:19.666Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-c607b0aa98fe9a065770",
+              "file": "landing/landing.spec.ts",
+              "line": 176,
+              "column": 9
+            },
+            {
+              "title": "gallery images render within grid (if present)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2993,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:22.293Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-006b4325f22905af980c",
+              "file": "landing/landing.spec.ts",
+              "line": 189,
+              "column": 9
+            },
+            {
+              "title": "promotional banners render without overflow if present",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2268,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "ℹ️ No banners configured yet — skipping\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:20.156Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-a04a7a624884be672af3",
+              "file": "landing/landing.spec.ts",
+              "line": 176,
+              "column": 9
+            },
+            {
+              "title": "gallery images render within grid (if present)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2734,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:22.432Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "95f6796e9f8910792695-037c800c3d436f19876e",
+              "file": "landing/landing.spec.ts",
+              "line": 189,
+              "column": 9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "layout\\responsive.spec.ts",
+      "file": "layout/responsive.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Layout — No Horizontal Overflow",
+          "file": "layout/responsive.spec.ts",
+          "line": 17,
+          "column": 6,
+          "specs": [
+            {
+              "title": "no horizontal scroll on landing page",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2681,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:52.960Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-f90f4d4624982aa6aa49",
+              "file": "layout/responsive.spec.ts",
+              "line": 19,
+              "column": 9
+            },
+            {
+              "title": "body width matches viewport width",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2170,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:55.651Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-eb2bf4fed95102adc764",
+              "file": "layout/responsive.spec.ts",
+              "line": 26,
+              "column": 9
+            },
+            {
+              "title": "no horizontal scroll on landing page",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2002,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:00.434Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-dacf88bc6ba773794e82",
+              "file": "layout/responsive.spec.ts",
+              "line": 19,
+              "column": 9
+            },
+            {
+              "title": "body width matches viewport width",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1542,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:02.447Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-fd019204c0e19ee1c8af",
+              "file": "layout/responsive.spec.ts",
+              "line": 26,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "Layout — Navigation & Header",
+          "file": "layout/responsive.spec.ts",
+          "line": 36,
+          "column": 6,
+          "specs": [
+            {
+              "title": "header/navbar is visible and within viewport",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2461,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:25:57.833Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-aea5915a19142da4157e",
+              "file": "layout/responsive.spec.ts",
+              "line": 38,
+              "column": 9
+            },
+            {
+              "title": "main CTA button is visible and not clipped",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2620,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:00.306Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-b262c267e5890063bb34",
+              "file": "layout/responsive.spec.ts",
+              "line": 48,
+              "column": 9
+            },
+            {
+              "title": "no elements extend beyond right edge of screen",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2131,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:02.943Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-d65df08834131396ac30",
+              "file": "layout/responsive.spec.ts",
+              "line": 60,
+              "column": 9
+            },
+            {
+              "title": "header/navbar is visible and within viewport",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1862,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:03.998Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-8a622a328347219272f2",
+              "file": "layout/responsive.spec.ts",
+              "line": 38,
+              "column": 9
+            },
+            {
+              "title": "main CTA button is visible and not clipped",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1910,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:05.869Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-c811129793ddbb4f1b42",
+              "file": "layout/responsive.spec.ts",
+              "line": 48,
+              "column": 9
+            },
+            {
+              "title": "no elements extend beyond right edge of screen",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1825,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:07.790Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-e2387dd2aa50cb3c8cf7",
+              "file": "layout/responsive.spec.ts",
+              "line": 60,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "Layout — Responsive Breakpoints",
+          "file": "layout/responsive.spec.ts",
+          "line": 85,
+          "column": 6,
+          "specs": [
+            {
+              "title": "no overflow @ mobile-small (320x568)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2346,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:05.084Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-cee2a904ce2a6b1cd4be",
+              "file": "layout/responsive.spec.ts",
+              "line": 97,
+              "column": 13
+            },
+            {
+              "title": "no overflow @ iphone-14 (390x844)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2441,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:07.443Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-33bc3c85390dab819d0a",
+              "file": "layout/responsive.spec.ts",
+              "line": 97,
+              "column": 13
+            },
+            {
+              "title": "no overflow @ iphone-plus (430x932)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2539,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:09.898Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-48b6bb8c145af1878141",
+              "file": "layout/responsive.spec.ts",
+              "line": 97,
+              "column": 13
+            },
+            {
+              "title": "no overflow @ tablet (768x1024)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3093,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:12.448Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-8facec1a812980b5f273",
+              "file": "layout/responsive.spec.ts",
+              "line": 97,
+              "column": 13
+            },
+            {
+              "title": "no overflow @ tablet-wide (1024x768)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3566,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:15.553Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-b5c6dc1ce62a4044a716",
+              "file": "layout/responsive.spec.ts",
+              "line": 97,
+              "column": 13
+            },
+            {
+              "title": "no overflow @ desktop (1440x900)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3877,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:19.130Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-f4e982ed2c8d6d6a14ac",
+              "file": "layout/responsive.spec.ts",
+              "line": 97,
+              "column": 13
+            },
+            {
+              "title": "no overflow @ mobile-small (320x568)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1897,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:09.626Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-66d0bbb4f50495ab58a4",
+              "file": "layout/responsive.spec.ts",
+              "line": 97,
+              "column": 13
+            },
+            {
+              "title": "no overflow @ iphone-14 (390x844)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1993,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:11.532Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-fcd84660fadfa315004d",
+              "file": "layout/responsive.spec.ts",
+              "line": 97,
+              "column": 13
+            },
+            {
+              "title": "no overflow @ iphone-plus (430x932)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2028,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:13.533Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-3b009b609f2b9e7951ff",
+              "file": "layout/responsive.spec.ts",
+              "line": 97,
+              "column": 13
+            },
+            {
+              "title": "no overflow @ tablet (768x1024)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2151,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:15.569Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-672deaf09350fee33222",
+              "file": "layout/responsive.spec.ts",
+              "line": 97,
+              "column": 13
+            },
+            {
+              "title": "no overflow @ tablet-wide (1024x768)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2355,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:17.728Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-7f6668f47c50d6f9f251",
+              "file": "layout/responsive.spec.ts",
+              "line": 97,
+              "column": 13
+            },
+            {
+              "title": "no overflow @ desktop (1440x900)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2625,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:20.093Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-ddf6569812fe53da5f07",
+              "file": "layout/responsive.spec.ts",
+              "line": 97,
+              "column": 13
+            }
+          ]
+        },
+        {
+          "title": "Layout — Sidebar Behavior",
+          "file": "layout/responsive.spec.ts",
+          "line": 107,
+          "column": 6,
+          "specs": [
+            {
+              "title": "sidebar does not cover content on mobile",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2140,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:23.017Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-df8908734d05af611e3d",
+              "file": "layout/responsive.spec.ts",
+              "line": 109,
+              "column": 9
+            },
+            {
+              "title": "correct sidebar state on narrow viewport",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1694,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:25.166Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-d21a7f87aebb9d728494",
+              "file": "layout/responsive.spec.ts",
+              "line": 115,
+              "column": 9
+            },
+            {
+              "title": "sidebar does not cover content on mobile",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1838,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:22.730Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-f18355ada2026066c9e9",
+              "file": "layout/responsive.spec.ts",
+              "line": 109,
+              "column": 9
+            },
+            {
+              "title": "correct sidebar state on narrow viewport",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1534,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:24.579Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-c67cc300e706817d49e9",
+              "file": "layout/responsive.spec.ts",
+              "line": 115,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "Layout — Portrait vs Landscape",
+          "file": "layout/responsive.spec.ts",
+          "line": 139,
+          "column": 6,
+          "specs": [
+            {
+              "title": "portrait to landscape: no overflow occurs",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2910,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:26.869Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-eb0bf4b2ff2d39b6a70a",
+              "file": "layout/responsive.spec.ts",
+              "line": 141,
+              "column": 9
+            },
+            {
+              "title": "layout reflows correctly after orientation change",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2876,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:29.788Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-03e15a772adfb691d09f",
+              "file": "layout/responsive.spec.ts",
+              "line": 156,
+              "column": 9
+            },
+            {
+              "title": "portrait to landscape: no overflow occurs",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2414,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:26.120Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-485e72b9e72d083bc9a5",
+              "file": "layout/responsive.spec.ts",
+              "line": 141,
+              "column": 9
+            },
+            {
+              "title": "layout reflows correctly after orientation change",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2562,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:28.542Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-a39de491e40d7d9563ec",
+              "file": "layout/responsive.spec.ts",
+              "line": 156,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "Layout — Overlapping Panels Detection",
+          "file": "layout/responsive.spec.ts",
+          "line": 175,
+          "column": 6,
+          "specs": [
+            {
+              "title": "modals and panels are centered and not clipped",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3961,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:26:32.674Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-9c1dbfe304353f27b30f",
+              "file": "layout/responsive.spec.ts",
+              "line": 177,
+              "column": 9
+            },
+            {
+              "title": "modals and panels are centered and not clipped",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-se",
+                  "projectName": "mobile-iphone-se",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2974,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T04:27:31.111Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-9b60a9c731a7e5c1591f",
+              "file": "layout/responsive.spec.ts",
+              "line": 177,
+              "column": 9
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-03-22T04:25:14.627Z",
+    "duration": 139624.585,
+    "expected": 100,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

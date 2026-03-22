@@ -1,76 +1,166 @@
 @import "tailwindcss";
 
 @theme {
-  /* TTESOL English Academy brand colors */
-  --color-primary: #0d1f5c;
-  --color-secondary: #1a3a9c;
-  --color-accent: #cc1e1e;
-  --color-light: #a4b4d8;
-  --color-background: #f0f2f8;
+  /* Premium TTESOL Scholarly Curator Theme */
+  --color-primary: #09194F;        /* Deep Navy */
+  --color-primary-light: #2E49AC;  /* Royal Blue */
+  --color-secondary: #1B2F84;      /* Blue medio */
+  --color-secondary-dark: #0D277F; /* Blue complementario */
+  --color-accent: #AC2425;         /* Institutional Red (CTA) */
+  --color-accent-dark: #900B14;
+  --color-accent-light: #E9514B;
+  --color-light: #B1B3D8;          /* Soft Silver / Light Gray */
+  --color-background: #F8F8FB;     /* Off White / Main Background */
+  --color-surface: #FFFFFF;        /* Pure White Cards */
+  --color-surface-dark: #2F3133;   /* For dark mode / inverse areas */
+  --color-surface-low: #F3F3F6;    /* Secondary layers */
+  
+  --font-sans: 'Manrope', system-ui, sans-serif;
+  --font-heading: 'Noto Serif', serif;
+  --font-serif: 'Noto Serif', serif;
 }
 
-/* ── Base styles: NO @layer so they work on Chrome 70+ / Samsung Galaxy S9 ── */
+@layer base {
+  :root {
+    --vh: 1vh;
+    --dvh: 1dvh;
+    --sat: env(safe-area-inset-top, 0px);
+    --sab: env(safe-area-inset-bottom, 0px);
+    --sal: env(safe-area-inset-left, 0px);
+    --sar: env(safe-area-inset-right, 0px);
+    /* sidebar width mirrored here for non-tailwind consumers */
+    --sidebar-width: 0px;
+  }
 
-:root {
-  --vh: 1vh;
-  --sat: env(safe-area-inset-top, 0px);
-  --sab: env(safe-area-inset-bottom, 0px);
+  html {
+    height: 100%;
+    overscroll-behavior: none;
+    -webkit-text-size-adjust: 100%;
+    font-family: var(--font-sans);
+  }
+
+  body {
+    height: 100%;
+    background-color: var(--color-background);
+    color: var(--color-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+    overflow-x: hidden;
+  }
+
+  #root {
+    height: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+
+  button,
+  a,
+  [role="button"] {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    cursor: pointer;
+    outline: none;
+  }
+
+  input,
+  textarea {
+    -webkit-user-select: auto;
+    user-select: auto;
+    font-family: var(--font-sans);
+  }
 }
 
-html {
-  height: 100%;
-  overscroll-behavior: none;
-}
+@layer utilities {
+  .scroll-momentum {
+    -webkit-overflow-scrolling: touch;
+  }
 
-body {
-  height: 100%;
-  background-color: var(--color-background);
-  color: var(--color-primary);
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-  overscroll-behavior: none;
-  -webkit-overflow-scrolling: touch;
-}
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 
-#root {
-  height: 100%;
-  min-height: 100vh;
-}
+  .shadow-premium {
+    box-shadow: 0px 12px 32px rgba(9, 25, 79, 0.06);
+  }
+  
+  .shadow-premium-hover {
+    box-shadow: 0px 24px 64px rgba(9, 25, 79, 0.12);
+  }
 
-button,
-a,
-[role="button"] {
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-  cursor: pointer;
-}
+  .backdrop-blur-xl {
+    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(24px);
+  }
+  .backdrop-blur-md {
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+  .backdrop-blur-sm {
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+  }
 
-input,
-textarea {
-  -webkit-user-select: text;
-  user-select: text;
-}
+  /* Reader: full screen canvas that correctly excludes the sidebar on desktop */
+  .reader-fullscreen {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: var(--sidebar-width, 0px);
+    z-index: 9999;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding-top: var(--sat, 0px);
+    padding-bottom: var(--sab, 0px);
+  }
 
-/* Momentum scrolling on iOS */
-.overflow-y-auto,
-.overflow-auto,
-.overflow-scroll {
-  -webkit-overflow-scrolling: touch;
-}
+  /* Mobile: fix 100vh on mobile browsers (browser chrome changes height) */
+  .h-screen-mobile {
+    height: calc(var(--vh, 1dvh) * 100);
+  }
+  
+  /* Safe area aware padding for iPhone notch / home indicator */
+  .pb-safe {
+    padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);
+  }
+  .pt-safe {
+    padding-top: max(env(safe-area-inset-top, 0px), 0px);
+  }
+  .pl-safe {
+    padding-left: max(env(safe-area-inset-left, 0px), 0px);
+  }
+  .pr-safe {
+    padding-right: max(env(safe-area-inset-right, 0px), 0px);
+  }
 
-/* Scrollbar hide utility */
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
+  /* Touch targets: ensure minimum 44px for iOS accessibility */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content:  center;
+  }
 
-/* Backdrop-filter with webkit prefix for Safari */
-.backdrop-blur-xl,
-.backdrop-blur-md,
-.backdrop-blur-sm {
-  -webkit-backdrop-filter: blur(24px);
-  backdrop-filter: blur(24px);
+  /* Prevent layout shift when virtual keyboard appears */
+  .keyboard-stable {
+    position: sticky;
+    bottom: 0;
+  }
 }

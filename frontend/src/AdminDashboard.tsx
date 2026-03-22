@@ -6,6 +6,7 @@ import {
 } from 'recharts';
 import { Users, BookOpen, Activity, TrendingUp, AlertCircle } from 'lucide-react';
 import { type NotificationType } from './components/Notification';
+import { useTranslation } from 'react-i18next';
 
 interface BookStat {
     name: string;
@@ -25,6 +26,7 @@ interface KPI {
 const COLORS = ['#b7672a', '#50677c', '#FFBB28', '#FF8042'];
 
 const AdminDashboard = ({ token, onNotify }: { token: string; onNotify: (msg: string, type: NotificationType) => void }) => {
+    const { t } = useTranslation();
     const [data, setData] = useState<KPI | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -55,28 +57,28 @@ const AdminDashboard = ({ token, onNotify }: { token: string; onNotify: (msg: st
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-8"
             >
-                <h1 className="text-3xl font-bold text-primary">Executive Dashboard</h1>
-                <p className="text-secondary">Real-time insights on user engagement and reading progress.</p>
+                <h1 className="text-4xl font-serif font-bold text-primary tracking-tight">{t('dashboard.admin.title', 'Executive Dashboard')}</h1>
+                <p className="text-secondary mt-2">{t('dashboard.admin.subtitle', 'Real-time insights on user engagement and reading progress.')}</p>
             </motion.div>
 
             {/* KPI Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 <KPICard
-                    title="Total Users"
+                    title={t('dashboard.kpi.totalUsers', 'Total Users')}
                     value={data.totalUsers}
                     icon={<Users className="w-6 h-6 text-white" />}
                     color="bg-primary"
                     delay={0.1}
                 />
                 <KPICard
-                    title="Active Readers (24h)"
+                    title={t('dashboard.kpi.activeReaders', 'Active Readers (24h)')}
                     value={data.activeUsers24h}
                     icon={<Activity className="w-6 h-6 text-white" />}
                     color="bg-accent"
                     delay={0.2}
                 />
                 <KPICard
-                    title="Total Assignments"
+                    title={t('dashboard.kpi.totalAssignments', 'Total Assignments')}
                     value={data.totalAssignments}
                     icon={<BookOpen className="w-6 h-6 text-white" />}
                     color="bg-secondary"
@@ -91,11 +93,11 @@ const AdminDashboard = ({ token, onNotify }: { token: string; onNotify: (msg: st
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.4 }}
-                    className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100"
+                    className="bg-surface p-6 rounded-2xl shadow-premium border border-black/5"
                 >
-                    <h3 className="text-lg font-bold text-primary mb-6 flex items-center gap-2">
+                    <h3 className="text-xl font-serif font-bold text-primary mb-6 flex items-center gap-2">
                         <TrendingUp className="w-5 h-5 text-accent flex-shrink-0" />
-                        <span className="truncate">Book Completion Rates</span>
+                        <span className="truncate">{t('dashboard.charts.completionRates', 'Book Completion Rates')}</span>
                     </h3>
                     <div className="h-[250px] sm:h-[300px] w-full">
                         <ResponsiveContainer width="100%" height="100%">
@@ -120,11 +122,11 @@ const AdminDashboard = ({ token, onNotify }: { token: string; onNotify: (msg: st
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.5 }}
-                    className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100"
+                    className="bg-surface p-6 rounded-2xl shadow-premium border border-black/5"
                 >
-                    <h3 className="text-lg font-bold text-primary mb-6 flex items-center gap-2">
+                    <h3 className="text-xl font-serif font-bold text-primary mb-6 flex items-center gap-2">
                         <AlertCircle className="w-5 h-5 text-secondary" />
-                        Overall Assignment Status
+                        {t('dashboard.charts.assignmentStatus', 'Overall Assignment Status')}
                     </h3>
                     <div className="h-[300px] w-full flex justify-center items-center">
                         <ResponsiveContainer width="100%" height="100%">
@@ -166,19 +168,19 @@ const KPICard = ({ title, value, icon, color, delay }: KPICardProps) => (
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay }}
-        className="bg-white p-6 rounded-2xl shadow-sm hover:shadow-lg transition-shadow border border-gray-100 relative overflow-hidden group"
+        className="bg-surface p-6 rounded-2xl shadow-premium hover:shadow-premium-hover transition-all duration-300 border border-black/5 relative overflow-hidden group"
     >
-        <div className={`absolute top - 0 right - 0 p - 4 opacity - 10 group - hover: opacity - 20 transition - opacity`}>
-            <div className={`p - 4 rounded - full ${color} `}></div>
+        <div className={`absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity`}>
+            <div className={`p-16 rounded-full ${color}`}></div>
         </div>
 
-        <div className="flex items-center gap-4">
-            <div className={`${color} p - 3 rounded - xl shadow - lg shadow - gray - 200`}>
+        <div className="flex items-center gap-5">
+            <div className={`${color} p-4 rounded-xl shadow-lg shadow-black/5`}>
                 {icon}
             </div>
             <div>
-                <p className="text-secondary text-sm font-medium">{title}</p>
-                <h4 className="text-2xl font-bold text-primary mt-1">{value}</h4>
+                <p className="text-gray-500 text-xs font-bold uppercase tracking-wider">{title}</p>
+                <h4 className="text-3xl font-serif font-bold text-primary mt-1">{value}</h4>
             </div>
         </div>
     </motion.div>

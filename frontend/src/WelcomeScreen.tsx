@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { BookOpen, Star, GraduationCap, ChevronRight, Edit2, Save, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface WelcomeScreenProps {
   onStartLearning: () => void;
@@ -10,6 +11,7 @@ interface WelcomeScreenProps {
 }
 
 const WelcomeScreen = ({ onStartLearning, settings, userRole, onUpdateSettings }: WelcomeScreenProps) => {
+  const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [localSettings, setLocalSettings] = useState(settings);
 
@@ -38,7 +40,7 @@ const WelcomeScreen = ({ onStartLearning, settings, userRole, onUpdateSettings }
 
   return (
     <div className="flex-1 flex flex-col items-center justify-center relative overflow-hidden min-h-screen"
-         style={{ background: 'linear-gradient(160deg, #0a1a4a 0%, #0d2260 40%, #0a1a4a 100%)' }}>
+         style={{ background: 'linear-gradient(160deg, var(--color-primary) 0%, var(--color-secondary) 40%, var(--color-primary) 100%)' }}>
 
       {/* ─── Animated USA flag stripes background ─── */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -57,7 +59,7 @@ const WelcomeScreen = ({ onStartLearning, settings, userRole, onUpdateSettings }
         ))}
         {/* Blue canton (stars field) */}
         <div className="absolute top-0 left-0 w-1/2 h-[38%] opacity-5"
-             style={{ background: 'radial-gradient(circle, #1a3a9c 0%, transparent 70%)' }} />
+             style={{ background: 'radial-gradient(circle, var(--color-secondary) 0%, transparent 70%)' }} />
         {/* Top radial glow — red */}
         <div className="absolute top-[-15%] right-[-10%] w-[60%] h-[60%] rounded-full"
              style={{ background: 'radial-gradient(circle, rgba(180,30,30,0.18) 0%, transparent 70%)' }} />
@@ -108,14 +110,14 @@ const WelcomeScreen = ({ onStartLearning, settings, userRole, onUpdateSettings }
             />
             {/* Logo shell */}
             <div
-              className="relative w-32 h-32 rounded-full flex items-center justify-center shadow-2xl"
+              className="relative w-36 h-36 rounded-full flex items-center justify-center shadow-premium"
               style={{
-                background: 'linear-gradient(145deg, #1a3a9c, #0d2260)',
-                border: '4px solid #cc1e1e',
+                background: 'linear-gradient(145deg, var(--color-secondary), var(--color-primary))',
+                border: '4px solid var(--color-accent)',
                 boxShadow: '0 0 32px rgba(204,30,30,0.5), 0 0 64px rgba(13,34,96,0.6)',
               }}
             >
-              <img src="/brand-logo-512.png" alt="TTESOL Logo" className="w-24 h-24 object-contain rounded-full" />
+              <img src="/Logo.png" alt="TTESOL Logo" className="w-24 h-auto object-contain drop-shadow-md" />
             </div>
           </div>
         </motion.div>
@@ -132,27 +134,27 @@ const WelcomeScreen = ({ onStartLearning, settings, userRole, onUpdateSettings }
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-bold text-red-400 uppercase tracking-widest block mb-2">Main Title</label>
+                <label className="text-xs font-bold text-red-400 uppercase tracking-widest block mb-2">{t('common.mainTitle', 'Main Title')}</label>
                 <input value={titleMain}
                   onChange={e => setLocalSettings({...localSettings, welcome_title_main: e.target.value})}
                   className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-white outline-none focus:border-red-500" />
               </div>
               <div>
-                <label className="text-xs font-bold text-red-400 uppercase tracking-widest block mb-2">Accent Title</label>
+                <label className="text-xs font-bold text-red-400 uppercase tracking-widest block mb-2">{t('common.accentTitle', 'Accent Title')}</label>
                 <input value={titleAccent}
                   onChange={e => setLocalSettings({...localSettings, welcome_title_accent: e.target.value})}
                   className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-white outline-none focus:border-red-500" />
               </div>
             </div>
             <div>
-              <label className="text-xs font-bold text-red-400 uppercase tracking-widest block mb-2">Tagline</label>
+              <label className="text-xs font-bold text-red-400 uppercase tracking-widest block mb-2">{t('common.tagline', 'Tagline')}</label>
               <textarea rows={2} value={description}
                 onChange={e => setLocalSettings({...localSettings, welcome_description: e.target.value})}
                 className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-white outline-none focus:border-red-500 resize-none" />
             </div>
             {/* Feature edit blocks */}
             <div className="pt-4 border-t border-white/10">
-              <h4 className="text-sm font-black text-white uppercase tracking-widest mb-4">Feature Cards</h4>
+              <h4 className="text-sm font-black text-white uppercase tracking-widest mb-4">{t('dashboard.featureCards', 'Feature Cards')}</h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
                   { icon: <BookOpen size={14}/>, key: 'feature1', t: f1Title, d: f1Desc },
@@ -173,10 +175,10 @@ const WelcomeScreen = ({ onStartLearning, settings, userRole, onUpdateSettings }
             </div>
             <div className="flex gap-2 justify-end pt-2">
               <button onClick={() => setIsEditing(false)} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors text-sm">
-                <X size={14}/> Cancel
+                <X size={14}/> {t('common.cancel', 'Cancel')}
               </button>
               <button onClick={handleSave} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-700 hover:bg-red-600 text-white transition-colors font-bold text-sm">
-                <Save size={14}/> Save
+                <Save size={14}/> {t('common.save', 'Save')}
               </button>
             </div>
           </div>
@@ -191,8 +193,8 @@ const WelcomeScreen = ({ onStartLearning, settings, userRole, onUpdateSettings }
             <h1 className="text-6xl sm:text-7xl md:text-8xl font-black uppercase leading-none tracking-tight drop-shadow-2xl mb-1">
               <span className="text-white drop-shadow-[0_2px_8px_rgba(255,255,255,0.3)]">{titleMain}</span>
             </h1>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase leading-none tracking-tight drop-shadow-2xl mb-6"
-                style={{ color: '#e8372a', textShadow: '0 2px 16px rgba(232,55,42,0.5)' }}>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase leading-none tracking-tight drop-shadow-2xl mb-6 text-accent"
+                style={{ textShadow: '0 2px 16px rgba(204,30,30,0.5)' }}>
               {titleAccent}
             </h2>
 
@@ -217,14 +219,13 @@ const WelcomeScreen = ({ onStartLearning, settings, userRole, onUpdateSettings }
           whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(200,30,30,0.45)' }}
           whileTap={{ scale: 0.97 }}
           onClick={onStartLearning}
-          className="inline-flex items-center gap-3 text-white font-bold text-lg px-10 py-4 rounded-2xl shadow-2xl mx-auto mb-12 group"
+          className="inline-flex items-center gap-3 text-white font-bold text-lg px-10 py-4 rounded-2xl shadow-premium hover:shadow-premium-hover mx-auto mb-12 group transition-all"
           style={{
-            background: 'linear-gradient(135deg, #cc1e1e 0%, #991515 100%)',
-            boxShadow: '0 8px 32px rgba(180,20,20,0.4)',
+            background: 'linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%)',
             border: '1px solid rgba(255,255,255,0.15)',
           }}
         >
-          Start YOUR Journey
+          {t('dashboard.startJourney', 'Start YOUR Journey')}
           <ChevronRight className="group-hover:translate-x-1 transition-transform" size={20} />
         </motion.button>
 
@@ -244,7 +245,7 @@ const WelcomeScreen = ({ onStartLearning, settings, userRole, onUpdateSettings }
               className="rounded-2xl p-5 text-center"
               style={{
                 background: feat.accent
-                  ? 'linear-gradient(135deg, #8b1212 0%, #cc1e1e 100%)'
+                  ? 'linear-gradient(135deg, var(--color-accent-dark) 0%, var(--color-accent) 100%)'
                   : 'rgba(255,255,255,0.07)',
                 border: `1px solid ${feat.accent ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.1)'}`,
                 backdropFilter: 'blur(12px)',
@@ -280,7 +281,7 @@ const WelcomeScreen = ({ onStartLearning, settings, userRole, onUpdateSettings }
           className="absolute top-6 right-6 flex items-center gap-2 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white px-4 py-2 rounded-full border border-white/10 transition-all backdrop-blur-md group z-20"
         >
           <Edit2 size={14} className="group-hover:text-red-400 transition-colors" />
-          <span className="text-xs font-bold tracking-widest uppercase">Edit</span>
+          <span className="text-xs font-bold tracking-widest uppercase">{t('common.edit', 'Edit')}</span>
         </motion.button>
       )}
     </div>

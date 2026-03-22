@@ -30,6 +30,10 @@ const reportRoutes = require('./routes/reports').default || require('./routes/re
 const adminRoutes = require('./routes/admin').default || require('./routes/admin');
 const aiRoutes = require('./routes/ai').default || require('./routes/ai');
 const settingsRoutes = require('./routes/settings').default || require('./routes/settings');
+const landingRoutes = require('./routes/landing').default || require('./routes/landing');
+const landingModulesRoutes = require('./routes/landing-modules').default || require('./routes/landing-modules');
+const mediaRoutes = require('./routes/media').default || require('./routes/media');
+const i18nRoutes = require('./routes/i18n').default || require('./routes/i18n');
 
 app.use('/auth', authRoutes);
 app.use('/books', bookRoutes);
@@ -37,6 +41,10 @@ app.use('/reports', reportRoutes);
 app.use('/admin', adminRoutes);
 app.use('/ai', aiRoutes);
 app.use('/settings', settingsRoutes);
+app.use('/landing', landingRoutes);
+app.use('/landing-modules', landingModulesRoutes);
+app.use('/media', mediaRoutes);
+app.use('/i18n', i18nRoutes);
 
 // Protected Route Example
 app.get('/protected', (req, res) => {

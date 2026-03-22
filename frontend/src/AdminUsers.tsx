@@ -235,7 +235,7 @@ const AdminUsers = ({ token, onNotify }: AdminUsersProps) => {
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
-                            className="bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full border border-gray-100"
+                            className="bg-white rounded-2xl shadow-premium p-6 max-w-sm w-full border border-gray-100"
                         >
                             <h3 className="text-xl font-bold text-gray-800 mb-2">
                                 {confirmModal.currentStatus === 'inactive' ? 'Activate Book' : 'Deactivate Book'}
@@ -282,7 +282,7 @@ const AdminUsers = ({ token, onNotify }: AdminUsersProps) => {
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
-                            className="bg-white rounded-2xl shadow-xl p-6 max-w-md w-full border border-gray-100"
+                            className="bg-white rounded-2xl shadow-premium p-6 max-w-md w-full border border-gray-100"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div className="flex items-center gap-3 mb-6">
@@ -374,7 +374,7 @@ const AdminUsers = ({ token, onNotify }: AdminUsersProps) => {
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
-                            className="bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full border border-gray-100"
+                            className="bg-white rounded-2xl shadow-premium p-6 max-w-sm w-full border border-gray-100"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div className="flex items-center gap-3 mb-4">
@@ -549,8 +549,8 @@ const AdminUsers = ({ token, onNotify }: AdminUsersProps) => {
                                             whileHover={{ scale: 1.05 }}
                                             whileTap={{ scale: 0.95 }}
                                             onClick={() => handleBookClick(book)}
-                                            className={`relative aspect-[2/3] rounded-xl shadow-md overflow-hidden cursor-pointer group transition-all duration-300 ${book.assignment_status === 'assigned'
-                                                ? 'ring-4 ring-green-500/50 shadow-green-500/20'
+                                            className={`relative aspect-[2/3] rounded-xl shadow-premium hover:shadow-premium-hover overflow-hidden cursor-pointer group transition-all duration-300 ${book.assignment_status === 'assigned'
+                                                ? 'ring-4 ring-green-500/50'
                                                 : 'grayscale opacity-70 hover:opacity-100 hover:grayscale-0'
                                                 }`}
                                         >

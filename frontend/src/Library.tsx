@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { BookOpen, Search, Filter, Star, Edit3 } from 'lucide-react';
 import { type NotificationType } from './components/Notification';
 import EditBookModal from './components/EditBookModal';
+import { useTranslation } from 'react-i18next';
 // Loading from src/assets as requested
 import bgLogin from './assets/final-login-bg.png';
 
@@ -18,6 +19,7 @@ interface BookItem {
 }
 
 const Library = ({ token, userRole, onNotify, onStartReading }: { token: string; userRole: string | null; onNotify: (msg: string, type: NotificationType) => void; onStartReading: (bookId: number) => void }) => {
+    const { t } = useTranslation();
     const [books, setBooks] = useState<BookItem[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -92,8 +94,8 @@ const Library = ({ token, userRole, onNotify, onStartReading }: { token: string;
     return (
         <div className="relative min-h-screen overflow-hidden">
             {/* Animated Background */}
-            <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a]">
-                <div className="absolute inset-0 opacity-20 bg-cover bg-center animate-pulse-slow" style={{ backgroundImage: `url(${bgLogin})` }}></div>
+            <div className="absolute inset-0 z-0 bg-gradient-to-br from-primary via-secondary to-primary-light">
+                <div className="absolute inset-0 opacity-10 bg-cover bg-center animate-pulse-slow" style={{ backgroundImage: `url(${bgLogin})` }}></div>
                 {/* Floating particles omitted for brevity in replace, keeping the concept */}
             </div>
 
@@ -108,13 +110,13 @@ const Library = ({ token, userRole, onNotify, onStartReading }: { token: string;
                     >
                         <div className="flex items-center gap-3 mb-4 justify-center xl:justify-start">
                             <div className="h-1 w-12 bg-accent rounded-full"></div>
-                            <span className="text-accent uppercase tracking-[0.3em] text-xs md:text-sm font-bold">Educational Portal</span>
+                            <span className="text-accent uppercase tracking-[0.3em] text-xs md:text-sm font-bold">{t('books.library.portal', 'Educational Portal')}</span>
                         </div>
-                        <h1 className="text-5xl md:text-7xl font-black text-white mb-4 tracking-tighter drop-shadow-2xl">
-                            LIBRARY
+                        <h1 className="text-5xl md:text-7xl font-serif font-bold text-white mb-4 tracking-tighter drop-shadow-2xl">
+                            {t('books.library.title', 'LIBRARY')}
                         </h1>
                         <p className="text-gray-400 max-w-lg text-base md:text-lg font-light mx-auto xl:mx-0">
-                            Dive into a world of knowledge. Select a book to start your journey.
+                            {t('books.library.subtitle', 'Dive into a world of knowledge. Select a book to start your journey.')}
                         </p>
                     </motion.div>
 
@@ -123,7 +125,7 @@ const Library = ({ token, userRole, onNotify, onStartReading }: { token: string;
                             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                             <input
                                 type="text"
-                                placeholder="Search..."
+                                placeholder={t('common.search', 'Search...')}
                                 className="w-full pl-12 pr-4 py-3 rounded-xl bg-transparent text-white placeholder-gray-500 focus:bg-white/5 transition-all outline-none"
                             />
                         </div>
@@ -156,7 +158,7 @@ const Library = ({ token, userRole, onNotify, onStartReading }: { token: string;
                                     scale: 1.01,
                                     transition: { duration: 0.4, ease: "easeOut" }
                                 }}
-                                className={`group relative bg-white/5 backdrop-blur-md rounded-3xl shadow-2xl hover:shadow-[0_20px_60px_rgba(8,_112,_184,_0.25)] transition-all duration-500 overflow-hidden border border-white/10 flex flex-col sm:flex-row h-auto sm:h-[350px] md:h-[400px] lg:h-[420px] ${book.status === 'inactive' ? 'opacity-60 grayscale' : ''}`}
+                                className={`group relative bg-white/5 backdrop-blur-md rounded-3xl shadow-premium hover:shadow-premium-hover transition-all duration-500 overflow-hidden border border-white/10 flex flex-col sm:flex-row h-auto sm:h-[350px] md:h-[400px] lg:h-[420px] ${book.status === 'inactive' ? 'opacity-60 grayscale' : ''}`}
                             >
                                 {/* Admin Edit Badge */}
                                 {(userRole === 'admin' || userRole === 'manager') && (
@@ -191,9 +193,9 @@ const Library = ({ token, userRole, onNotify, onStartReading }: { token: string;
                                 </div>
 
                                 {/* Content */}
-                                <div className="p-6 md:p-8 flex-1 flex flex-col justify-center bg-gradient-to-b from-transparent to-[#0f172a]/50">
+                                <div className="p-6 md:p-8 flex-1 flex flex-col justify-center bg-gradient-to-b from-transparent to-primary/80">
                                     <div className="mb-6 md:mb-8 text-center md:text-left">
-                                        <h3 className="text-2xl md:text-3xl font-bold text-white mb-3 line-clamp-2 leading-tight drop-shadow-md">{book.title}</h3>
+                                        <h3 className="text-2xl md:text-3xl font-serif font-bold text-white mb-3 line-clamp-2 leading-tight drop-shadow-md">{book.title}</h3>
                                         <div className="flex flex-wrap justify-center md:justify-start items-center gap-4 text-xs md:text-sm text-gray-400">
                                             <span className="flex items-center gap-1.5"><Star size={14} className="text-yellow-400 fill-yellow-400" /> 4.9 Rating</span>
                                             {book.status === 'inactive' && <span className="text-red-400 font-bold uppercase tracking-widest text-[10px]">Inactive</span>}
@@ -201,15 +203,15 @@ const Library = ({ token, userRole, onNotify, onStartReading }: { token: string;
                                     </div>
 
                                     <div className="space-y-4">
-                                        <p className="text-gray-400 text-sm md:text-base line-clamp-3 mb-6 hidden md:block">
+                                        <p className="text-gray-300 text-sm md:text-base line-clamp-3 mb-6 hidden md:block">
                                             {book.details || "Experience our award-winning interactive learning platform. Master new skills with hands-on exercises and real-world examples."}
                                         </p>
 
                                         <button
                                             onClick={() => handleBookClick(book)}
-                                            className="w-full bg-white text-[#0f172a] font-bold py-3 md:py-4 rounded-xl shadow-lg hover:bg-accent hover:text-white transition-all duration-300 flex items-center justify-center gap-2 group-hover:tracking-wider text-sm md:text-base"
+                                            className="w-full bg-accent text-white font-bold py-3 md:py-4 rounded-xl shadow-premium hover:shadow-premium-hover hover:bg-accent-dark transition-all duration-300 flex items-center justify-center gap-2 group-hover:tracking-wider text-sm md:text-base tracking-wide"
                                         >
-                                            START READING
+                                            {t('books.startReading', 'START READING')}
                                         </button>
                                     </div>
                                 </div>
