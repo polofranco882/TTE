@@ -53,7 +53,7 @@ router.get('/', async (req, res) => {
         );
         // Testimonials
         const testimonialsRes = await pool.query(
-            `SELECT t.*, COALESCE(tt.quote, ''::text) as quote,
+            `SELECT t.*, COALESCE(tt.quote, t.quote::text) as quote,
                     COALESCE(tt.author_role, t.author_role::text) as author_role
              FROM landing_testimonials t
              LEFT JOIN landing_testimonial_translations tt ON tt.testimonial_id = t.id AND tt.language_code = $2
@@ -102,8 +102,8 @@ router.post('/banners', authenticateToken, authorizeAdmin, async (req, res) => {
         const { title, subtitle, description, cta_text, cta_url, image_url, bg_color, display_order } = req.body;
         const r = await pool.query(
             `INSERT INTO landing_banners (landing_page_id, title, subtitle, description, cta_text, cta_url, image_url, bg_color, display_order)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *`,
-            [pageId, title, subtitle, description, cta_text, cta_url, image_url, bg_color || '#09194F', display_order || 0]
+             VALUES ($1, $2::jsonb, $3::jsonb, $4::jsonb, $5::jsonb, $6, $7, $8, $9) RETURNING *`,
+            [pageId, JSON.stringify(title), JSON.stringify(subtitle), JSON.stringify(description), JSON.stringify(cta_text), cta_url, image_url, bg_color || '#09194F', display_order || 0]
         );
         res.json(r.rows[0]);
     } catch (err: any) { res.status(500).json({ error: err.message }); }
@@ -114,9 +114,9 @@ router.put('/banners/:id', authenticateToken, authorizeAdmin, async (req, res) =
     try {
         const { title, subtitle, description, cta_text, cta_url, image_url, bg_color, display_order, is_active } = req.body;
         const r = await pool.query(
-            `UPDATE landing_banners SET title=$1,subtitle=$2,description=$3,cta_text=$4,cta_url=$5,image_url=$6,bg_color=$7,display_order=$8,is_active=$9,updated_at=NOW()
+            `UPDATE landing_banners SET title=$1::jsonb, subtitle=$2::jsonb, description=$3::jsonb, cta_text=$4::jsonb, cta_url=$5, image_url=$6, bg_color=$7, display_order=$8, is_active=$9, updated_at=NOW()
              WHERE id=$10 RETURNING *`,
-            [title, subtitle, description, cta_text, cta_url, image_url, bg_color, display_order ?? 0, is_active ?? true, req.params.id]
+            [JSON.stringify(title), JSON.stringify(subtitle), JSON.stringify(description), JSON.stringify(cta_text), cta_url, image_url, bg_color, display_order ?? 0, is_active ?? true, req.params.id]
         );
         res.json(r.rows[0]);
     } catch (err: any) { res.status(500).json({ error: err.message }); }
