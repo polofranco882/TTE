@@ -247,6 +247,28 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
+    // Fix 100vh on mobile browsers (especially iOS Safari) + handle virtual keyboard
+    useEffect(() => {
+        const updateVh = () => {
+            const vp = window.visualViewport;
+            const h = vp ? vp.height : window.innerHeight;
+            document.documentElement.style.setProperty('--vh', `${h * 0.01}px`);
+        };
+        updateVh();
+        window.addEventListener('resize', updateVh);
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', updateVh);
+            window.visualViewport.addEventListener('scroll', updateVh);
+        }
+        return () => {
+            window.removeEventListener('resize', updateVh);
+            if (window.visualViewport) {
+                window.visualViewport.removeEventListener('resize', updateVh);
+                window.visualViewport.removeEventListener('scroll', updateVh);
+            }
+        };
+    }, []);
+
     // --- DOCUMENT-LEVEL NATIVE NAVIGATION SHIELD ---
     useEffect(() => {
         if (viewState !== 'READING') return;
@@ -582,10 +604,10 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
             {/* Immersive Background */}
             <div className="absolute inset-0 z-0 overflow-hidden">
                 <div
-                    className="absolute inset-0 bg-cover bg-center scale-110 blur-2xl opacity-30 transition-all duration-1000"
+                    className="absolute inset-0 bg-cover bg-center scale-110 blur-2xl opacity-40 transition-all duration-1000"
                     style={{ backgroundImage: `url(${book.cover_image})` }}
                 ></div>
-                <div className="absolute inset-0 bg-gradient-to-b from-[#0f172a]/80 via-[#0f172a] to-[#0f172a]"></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-surface-dark/90 via-surface-dark to-surface-dark"></div>
             </div>
 
             {/* Navigation Bar */}
@@ -595,7 +617,7 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                         initial={{ y: -100, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         exit={{ y: -100, opacity: 0 }}
-                        className={`fixed top-0 right-0 z-[110] p-4 md:p-6 pb-6 flex flex-wrap justify-between items-center gap-y-4 bg-gradient-to-b from-black/80 to-transparent backdrop-blur-md ${transitionClass}`}
+                        className={`fixed top-0 right-0 z-[110] p-4 md:p-6 pb-6 pt-[calc(1rem+var(--sat))] flex flex-wrap justify-between items-center gap-y-4 bg-gradient-to-b from-black/80 to-transparent backdrop-blur-md ${transitionClass}`}
                         style={{ left: 'var(--sidebar-width)' }}
                     >
                         <motion.button
@@ -956,7 +978,7 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className={`fixed inset-0 z-[9999] bg-[#0f172a] overflow-hidden flex flex-col ${transitionClass}`}
+                        className={`reader-fullscreen bg-[#0f172a] ${transitionClass}`}
                     >
                         <div className={`w-full flex-1 flex flex-col mx-auto perspective-2000`}>
 
@@ -1105,11 +1127,13 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                                             wrapperClass="w-full h-full overflow-hidden"
                                                             wrapperStyle={{ width: '100%', height: '100%' }}
                                                             contentClass={`w-full h-full ${currentScale > 1.05 ? 'cursor-grab active:cursor-grabbing' : ''}`}
-                                                        >
-                                                            <div 
-                                                                className="relative shadow-[0_0_60px_-15px_rgba(0,0,0,0.5)] bg-white/5 overflow-visible"
+                                                        >                                                             <div 
+                                                                className="relative shadow-premium bg-white/5 overflow-visible"
                                                                 style={{ 
-                                                                    width: isSinglePage ? 'min(98vw, 92vh * (1350/1909))' : 'min(98vw, 92vh * (2700/1909))',
+                                                                    /* On large screens subtract the sidebar width from available vw so the book is never hidden under the sidebar */
+                                                                    width: isSinglePage 
+                                                                        ? 'min(calc(100vw - var(--sidebar-width, 0px)), calc((var(--vh, 1dvh) * 100 - 160px - var(--sab, 0px)) * (1350 / 1909)))' 
+                                                                        : 'min(calc(100vw - var(--sidebar-width, 0px)), calc((var(--vh, 1dvh) * 100 - 160px - var(--sab, 0px)) * (2700 / 1909)))',
                                                                     aspectRatio: isSinglePage ? '1350/1909' : '2700/1909'
                                                                 }}
                                                             >
@@ -1216,10 +1240,10 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                             </div>
                             {/* Bottom Navigation Bar */}
                             {!isFullscreen && (
-                                <div className="mt-2 flex justify-between items-center bg-white/5 backdrop-blur-md rounded-xl p-2 px-1 lg:px-4 border border-white/10 shadow-xl text-white/90 pointer-events-auto">
+                                <div className="mt-2 flex justify-between items-center bg-white/5 backdrop-blur-md rounded-xl p-2 px-1 lg:px-4 border border-white/10 shadow-premium text-white/90 pointer-events-auto pb-safe">
                                     <button
                                         onClick={handleFlipPrev}
-                                        className="flex items-center justify-center gap-1.5 px-4 py-3 sm:py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all font-bold text-[12px] sm:text-[10px] uppercase tracking-widest text-gray-400 hover:text-white group w-[100px] sm:w-[120px] lg:w-auto flex-shrink-0"
+                                        className="touch-target flex items-center justify-center gap-1.5 px-4 py-3 sm:py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all font-bold text-[12px] sm:text-[10px] uppercase tracking-widest text-gray-400 hover:text-white group w-[100px] sm:w-[120px] lg:w-auto flex-shrink-0"
                                     >
                                         <ArrowLeft size={16} className="sm:w-3 sm:h-3 group-hover:-translate-x-1 transition-transform" />
                                         Prev
@@ -1233,7 +1257,7 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
 
                                     <button
                                         onClick={handleFlipNext}
-                                        className="flex items-center justify-center gap-1.5 px-4 py-3 sm:py-2 rounded-lg bg-accent/20 border border-accent/30 hover:bg-accent/30 transition-all font-black text-[12px] sm:text-[10px] uppercase tracking-widest text-accent hover:text-orange-400 group shadow-lg shadow-accent/10 w-[100px] sm:w-[120px] lg:w-auto flex-shrink-0"
+                                        className="touch-target flex items-center justify-center gap-1.5 px-4 py-3 sm:py-2 rounded-lg bg-accent/20 border border-accent/30 hover:bg-accent/30 transition-all font-black text-[12px] sm:text-[10px] uppercase tracking-widest text-accent hover:text-orange-400 group shadow-lg shadow-accent/10 w-[100px] sm:w-[120px] lg:w-auto flex-shrink-0"
                                     >
                                         Next
                                         <ArrowRight size={16} className="sm:w-3 sm:h-3 group-hover:translate-x-1 transition-transform" />

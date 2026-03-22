@@ -41,7 +41,7 @@ export default function Notification({ message, type, isVisible, onClose }: Noti
         }
     };
 
-    const mainStyles = "fixed top-8 left-0 right-0 mx-auto z-50 flex items-center gap-4 px-6 py-4 rounded-2xl shadow-2xl backdrop-blur-xl border w-[90%] max-w-[400px]";
+    const mainStyles = "fixed top-8 left-0 right-0 mx-auto z-[99999] flex items-center gap-4 px-6 py-4 rounded-2xl shadow-2xl backdrop-blur-xl border w-[90%] max-w-[400px]";
 
     const getThemeStyles = () => {
         switch (type) {
@@ -61,6 +61,8 @@ export default function Notification({ message, type, isVisible, onClose }: Noti
                     animate="animate"
                     exit="exit"
                     className={`${mainStyles} ${getThemeStyles()}`}
+                    role="alert"
+                    data-testid="notification"
                 >
                     <div className="flex-shrink-0 p-1 rounded-full bg-white/5">
                         {getIcon()}

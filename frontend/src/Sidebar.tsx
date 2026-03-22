@@ -3,8 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import {
     Book, LayoutDashboard, PieChart, Settings, LogOut,
-    ChevronLeft, Menu, BookOpen, Star
+    ChevronLeft, Menu, BookOpen, Star, LayoutTemplate, Globe
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from './components/LanguageSwitcher';
 
 interface SidebarProps {
     activeTab: string;
@@ -16,6 +18,7 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen, userRole, onLogout }: SidebarProps) => {
+    const { t } = useTranslation();
     const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
     const [isEditorActive, setIsEditorActive] = useState(document.body.classList.contains('editor-active'));
 
@@ -50,13 +53,14 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen, userRole, onLogou
     if (isEditorActive) return null;
 
     const menuItems = [
-        { id: 'welcome', label: 'Welcome', icon: <Star size={20} />, roles: ['user', 'admin', 'manager'] },
-        { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} />, roles: ['admin', 'manager'] },
-        { id: 'books', label: 'Library', icon: <Book size={20} />, roles: ['user', 'admin', 'manager'] },
-        { id: 'admin-books', label: 'Manage Books', icon: <BookOpen size={20} />, roles: ['admin', 'manager'] },
-        { id: 'reports', label: 'Reports', icon: <PieChart size={20} />, roles: ['admin', 'manager'] },
-        // { id: 'users', label: 'Users', icon: <Users size={20} />, roles: ['admin'] }, // Moved to Settings
-        { id: 'settings', label: 'Settings', icon: <Settings size={20} />, roles: ['admin', 'manager', 'user'] },
+        { id: 'welcome', label: t('menu.welcome', 'Welcome'), icon: <Star size={20} />, roles: ['user', 'admin', 'manager'] },
+        { id: 'dashboard', label: t('menu.dashboard', 'Dashboard'), icon: <LayoutDashboard size={20} />, roles: ['admin', 'manager'] },
+        { id: 'landing', label: t('menu.landing', 'Landing Page'), icon: <LayoutTemplate size={20} />, roles: ['admin'] },
+        { id: 'books', label: t('menu.books', 'Library'), icon: <Book size={20} />, roles: ['user', 'admin', 'manager'] },
+        { id: 'admin-books', label: t('menu.adminBooks', 'Manage Books'), icon: <BookOpen size={20} />, roles: ['admin', 'manager'] },
+        { id: 'reports', label: t('menu.reports', 'Reports'), icon: <PieChart size={20} />, roles: ['admin', 'manager'] },
+        { id: 'languages', label: t('menu.languages', 'Translations'), icon: <Globe size={20} />, roles: ['admin'] },
+        { id: 'settings', label: t('menu.settings', 'Settings'), icon: <Settings size={20} />, roles: ['admin', 'manager', 'user'] },
     ];
 
     const filteredItems = menuItems.filter(item => !item.roles || item.roles.includes(userRole || ''));
@@ -76,24 +80,25 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen, userRole, onLogou
                 )}
             </AnimatePresence>
 
-            {/* Sidebar toggle button (Mobile/Tablet Only) */}
             <div className="lg:hidden fixed top-4 left-4 z-[150]">
                 <button
                     onClick={() => setIsOpen(!isOpen)}
-                    className="p-2.5 bg-primary text-white rounded-xl shadow-xl border border-white/10"
+                    className="p-2.5 bg-primary text-white rounded-xl shadow-premium border border-white/10 active:scale-95 transition-transform"
                 >
                     <Menu size={24} />
                 </button>
             </div>
 
             <motion.div
-                className={`fixed lg:static inset-y-0 left-0 h-screen bg-primary/95 backdrop-blur-xl text-white shadow-2xl z-[160] flex flex-col border-r border-white/10 font-sans overflow-hidden`}
+                className={`fixed lg:static inset-y-0 left-0 h-screen bg-primary/95 backdrop-blur-xl text-white shadow-premium z-[160] flex flex-col border-r border-white/10 font-sans overflow-hidden`}
                 initial={false}
                 animate={{
                     x: isMobile ? (isOpen ? 0 : -300) : 0,
-                    width: isOpen && !isMobile ? 288 : (isMobile ? 288 : 96)
+                    width: isOpen && !isMobile ? 288 : (isMobile ? 288 : 96),
+                    visibility: isMobile && !isOpen ? 'hidden' : 'visible'
                 }}
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
+                style={{ pointerEvents: isMobile && !isOpen ? 'none' : 'auto' }}
             >
                 {/* Header */}
                 <div className={`h-24 flex items-center ${isOpen ? 'justify-between px-6' : 'justify-center'} border-b border-white/10`}>
@@ -103,10 +108,10 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen, userRole, onLogou
                                 initial={{ opacity: 0, width: 0 }}
                                 animate={{ opacity: 1, width: 'auto' }}
                                 exit={{ opacity: 0, width: 0 }}
-                                className="flex items-center gap-3 font-bold text-2xl tracking-tight whitespace-nowrap overflow-hidden"
+                                className="flex items-center gap-3 font-serif font-bold text-2xl tracking-tight whitespace-nowrap overflow-hidden"
                             >
-                                <div className="bg-accent p-2 rounded-xl shadow-lg shadow-accent/20 flex-shrink-0">
-                                    <Book size={24} className="text-white" />
+                                <div className="p-1.5 rounded-xl shadow-lg shadow-black/10 flex-shrink-0 bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden">
+                                    <img src="/Logo.png" alt="TTESOL Logo" className="h-7 w-auto max-w-[40px] object-contain drop-shadow-sm" />
                                 </div>
                                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">TTESOL</span>
                             </motion.div>
@@ -137,8 +142,8 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen, userRole, onLogou
                                     if (isMobile) setIsOpen(false);
                                 }}
                                 className={`w-full relative flex items-center h-14 px-4 rounded-xl transition-all duration-300 group ${isActive
-                                    ? 'bg-accent text-white shadow-lg shadow-accent/25'
-                                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                                    ? 'bg-accent text-white shadow-premium shadow-accent/25'
+                                    : 'text-gray-400 hover:text-white hover:bg-white/5 active:scale-95'
                                     }`}
                             >
                                 <div className={`relative z-10 flex items-center gap-4 ${!isOpen && 'justify-center w-full'}`}>
@@ -172,7 +177,11 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen, userRole, onLogou
                 </div>
 
                 {/* User Profile / Logout */}
-                <div className="p-4 border-t border-white/10 bg-black/20">
+                <div className="p-4 border-t border-white/10 bg-black/20 flex flex-col gap-3">
+                    <div className={`${isOpen ? 'px-2' : 'flex justify-center'}`}>
+                        <LanguageSwitcher />
+                    </div>
+                    
                     <button
                         onClick={onLogout}
                         className={`w-full flex items-center ${isOpen ? 'justify-start px-4' : 'justify-center'} gap-3 p-3 rounded-xl hover:bg-red-500/10 hover:text-red-400 text-gray-400 transition-all group`}
@@ -187,7 +196,7 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen, userRole, onLogou
                                     exit={{ opacity: 0, width: 0 }}
                                     className="font-medium whitespace-nowrap overflow-hidden"
                                 >
-                                    Log Out
+                                    {t('menu.logout', 'Log Out')}
                                 </motion.span>
                             )}
                         </AnimatePresence>

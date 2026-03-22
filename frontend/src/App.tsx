@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Book, User, Lock, ArrowRight, Activity, Settings as SettingsIcon, Download } from 'lucide-react';
+import { User, Lock, ArrowRight, Activity, Settings as SettingsIcon, Download } from 'lucide-react';
 import AdminDashboard from './AdminDashboard';
 import Sidebar from './Sidebar';
 import Library from './Library';
@@ -8,19 +8,27 @@ import AdminUsers from './AdminUsers';
 import AdminBooks from './AdminBooks';
 import BookReader from './BookReader';
 import Settings from './Settings';
-import loginBg from './assets/final-login-bg.jpg';
+import bgLogin from './assets/final-login-bg.jpg';
 import WelcomeScreen from './WelcomeScreen';
 import Notification, { type NotificationType } from './components/Notification';
+import PublicLanding from './PublicLanding';
+import AdminLandingCMS from './AdminLandingCMS';
+import AdminTranslations from './AdminTranslations';
+import { loadTranslationsFromDB } from './i18n';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from './components/LanguageSwitcher';
 
 
 // Types
 
 function App() {
+  const { t } = useTranslation();
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   // const [books, setBooks] = useState<BookItem[]>([]); // Moved to Library
   const [loading, setLoading] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(localStorage.getItem('role'));
 
   // Notification State
@@ -53,10 +61,13 @@ function App() {
     }
   };
 
-  // Effect to handle initial redirects or checks can go here
   useEffect(() => {
     fetchSettings();
   }, [token]);
+
+  useEffect(() => {
+    loadTranslationsFromDB();
+  }, []);
 
   const login = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,7 +109,7 @@ function App() {
   };
 
   // Sidebar State
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 1024);
   const [activeTab, setActiveTab] = useState(() => {
     const role = localStorage.getItem('role');
     const token = localStorage.getItem('token');
@@ -122,6 +133,26 @@ function App() {
 
   // PWA Install Logic
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+  useEffect(() => {
+    const updateViewport = () => {
+      const vh = (window.visualViewport ? window.visualViewport.height : window.innerHeight) * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+    
+    updateViewport();
+    window.addEventListener('resize', updateViewport);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', updateViewport);
+    }
+    
+    return () => {
+      window.removeEventListener('resize', updateViewport);
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', updateViewport);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const handler = (e: any) => {
@@ -165,14 +196,18 @@ function App() {
   };
 
   if (!token) {
+    if (!showLogin) {
+      return <PublicLanding onLoginClick={() => setShowLogin(true)} />;
+    }
+
     return (
-      <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-[#0a0c10]">
+      <div className="h-screen-mobile w-full relative bg-[#0a0c10] overflow-y-auto overflow-x-hidden">
         {/* Background Image with Overlay */}
         <div
           className="absolute inset-0 bg-cover bg-center transition-all duration-1000"
-          style={{ backgroundImage: `url(${loginBg})` }}
+          style={{ backgroundImage: `url(${bgLogin})` }}
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-[#161930]/90 to-[#161930]/70 backdrop-blur-sm"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/95 to-primary/80 backdrop-blur-md"></div>
         </div>
 
         <Notification
@@ -182,91 +217,91 @@ function App() {
           onClose={closeNotification}
         />
 
-        {/* Floating Animated Elements */}
+        {/* Floating Animated Elements (Subtle Blur) */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-          {[...Array(5)].map((_, i) => (
-            <motion.div
-              key={i}
-              initial={{ y: 1000, opacity: 0, rotate: 0 }}
-              animate={{
-                y: -100,
-                opacity: [0, 0.5, 0],
-                rotate: 360
-              }}
-              transition={{
-                duration: 15 + Math.random() * 10,
-                repeat: Infinity,
-                ease: "linear",
-                delay: i * 2
-              }}
-              className="absolute text-white/10"
-              style={{ left: `${10 + Math.random() * 80}%` }}
-            >
-              <Book size={40 + Math.random() * 60} />
-            </motion.div>
-          ))}
+          {/* Subtle Royal Blue Glow */}
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-light/30 rounded-full blur-[128px]"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-secondary/20 rounded-full blur-[128px]"></div>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="bg-white/10 backdrop-blur-xl p-10 rounded-3xl shadow-2xl w-full max-w-md border border-white/20 relative z-10"
-        >
-          <div className="flex justify-center mb-8">
+        {/* Scrollable Container */}
+        <div className="absolute inset-0 z-10 flex flex-col items-center p-4 overflow-y-auto custom-scrollbar">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="bg-surface p-8 md:p-10 rounded-2xl shadow-premium w-full max-w-md md:max-w-none [width:min(448px,calc(100vw-32px))] border border-black/5 mt-auto mb-auto shrink-0 relative"
+          >
+          <div className="absolute top-6 right-6">
+            <LanguageSwitcher />
+          </div>
+
+          <button 
+             onClick={() => setShowLogin(false)}
+             className="absolute top-8 left-6 text-gray-400 hover:text-primary transition-colors flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest"
+          >
+             <ArrowRight className="w-3 h-3 rotate-180" /> {t('common.back', 'HOME')}
+          </button>
+
+          <div className="flex justify-center mb-6">
             <motion.div
               animate={{ rotate: [0, 5, -5, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="p-0 rounded-full shadow-2xl border-4 border-white/20 overflow-hidden bg-white"
+              className="p-1 rounded-2xl mt-4"
             >
-              <img src="/brand-logo-512.png" alt="TTESOL Logo" className="w-24 h-24 object-contain" />
+              {/* TTESOL abstract logo or text */}
+              <div className="w-24 h-20 rounded-xl flex items-center justify-center shadow-premium-hover bg-white/5 border border-white/10 p-3">
+                <img src="/Logo.png" alt="TTESOL Logo" className="w-full h-full object-contain filter drop-shadow-md" />
+              </div>
             </motion.div>
           </div>
 
-          <div className="text-center mb-10">
-            <h1 className="text-4xl font-black text-white mb-2 tracking-tighter drop-shadow-2xl">TTESOL</h1>
-            <p className="text-gray-300 font-medium">Interactive learning platform.</p>
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-serif font-bold text-primary mb-2 tracking-tight">{t('login.title', 'Welcome Back')}</h1>
+            <p className="text-gray-500 font-sans text-sm">{t('login.subtitle', 'Sign in to your account')}</p>
           </div>
 
-          <form onSubmit={login} className="space-y-6">
-            <div className="space-y-2">
+          <form onSubmit={login} className="space-y-5">
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">{t('login.email', 'Email Address')}</label>
               <div className="relative group">
-                <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-accent transition-colors" />
+                <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-primary transition-colors" />
                 <input
                   type="email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 rounded-xl border border-white/10 bg-black/20 focus:bg-black/40 focus:border-accent focus:ring-4 focus:ring-accent/20 transition-all outline-none text-white placeholder-gray-500"
-                  placeholder="user@ttesol.com"
+                  className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 bg-background focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-primary font-medium placeholder-gray-400"
+                  placeholder="admin@ttesol.com"
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">{t('login.password', 'Password')}</label>
               <div className="relative group">
-                <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-accent transition-colors" />
+                <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-primary transition-colors" />
                 <input
                   type="password"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 rounded-xl border border-white/10 bg-black/20 focus:bg-black/40 focus:border-accent focus:ring-4 focus:ring-accent/20 transition-all outline-none text-white placeholder-gray-500"
-                  placeholder="••••••••"
+                  className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 bg-background focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-primary font-medium placeholder-gray-400"
+                  placeholder="password123"
                 />
               </div>
             </div>
 
             <motion.button
-              whileHover={{ scale: 1.03 }}
+              whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-accent to-orange-500 text-white py-4 rounded-xl font-bold text-lg shadow-xl shadow-accent/30 hover:shadow-accent/50 transition-all flex items-center justify-center gap-2 group"
+              className="w-full bg-accent hover:bg-accent-dark text-white py-4 rounded-xl font-bold text-sm uppercase tracking-wide shadow-premium hover:shadow-premium-hover transition-all flex items-center justify-center gap-2 group mt-2"
             >
               {loading ? (
-                <Activity className="w-6 h-6 animate-spin" />
+                <Activity className="w-5 h-5 animate-spin" />
               ) : (
                 <>
-                  Start Learning <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  {t('login.signIn', 'Secure Login')} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </>
               )}
             </motion.button>
@@ -275,27 +310,26 @@ function App() {
               <motion.button
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                whileHover={{ scale: 1.02 }}
+                whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={installPWA}
                 type="button"
-                className="w-full bg-white/5 hover:bg-white/10 text-white py-3 rounded-xl font-medium text-sm border border-white/10 transition-all flex items-center justify-center gap-2 group mt-2"
+                className="w-full bg-surface-low hover:bg-gray-200 text-primary py-3 rounded-xl font-medium text-sm transition-all flex items-center justify-center gap-2 group mt-2"
               >
-                <button type="button" className="flex items-center gap-2">
-                  <Download className="w-4 h-4 text-accent" />
-                  Install App on this device
-                </button>
+                <Download className="w-4 h-4 text-accent" />
+                Install App on this device
               </motion.button>
             )}
           </form>
 
-          <div className="mt-8 pt-6 border-t border-white/10">
-            <div className="flex justify-between text-xs text-gray-400">
-              <span className="hover:text-white transition-colors cursor-pointer">Admin Access</span>
-              <span className="hover:text-white transition-colors cursor-pointer">Forgot Password?</span>
+          <div className="mt-8 pt-6 border-t border-gray-100">
+            <div className="flex justify-between text-xs font-semibold text-gray-400">
+              <span className="hover:text-primary transition-colors cursor-pointer">Admin Access Only</span>
+              <span className="hover:text-primary transition-colors cursor-pointer">{t('login.forgotPassword', 'Forgot Password')}</span>
             </div>
           </div>
         </motion.div>
+        </div>
       </div>
     );
   }
@@ -353,6 +387,22 @@ function App() {
       return <AdminUsers token={token} onNotify={showNotification} />;
     }
 
+    if (activeTab === 'landing' && userRole === 'admin') {
+      return (
+        <div className="flex-1 h-full min-h-[700px]">
+          <AdminLandingCMS token={token} onNotify={showNotification} />
+        </div>
+      );
+    }
+
+    if (activeTab === 'languages' && userRole === 'admin') {
+      return (
+        <div className="flex-1 h-full min-h-[700px]">
+          <AdminTranslations token={token} onNotify={showNotification} />
+        </div>
+      );
+    }
+
     if (activeTab === 'admin-books' && (userRole === 'admin' || userRole === 'manager')) {
       return (
         <div className="p-0 md:p-4 h-full flex flex-col pt-4 md:pt-12">
@@ -382,7 +432,7 @@ function App() {
 
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="h-screen-mobile w-full bg-background flex overflow-hidden">
       <style>{`
         :root {
           --sidebar-width: 0px;
@@ -408,7 +458,7 @@ function App() {
         setActiveTab={handleTabChange}
       />
 
-      <main className="flex-1 min-w-0 h-screen overflow-y-auto overflow-x-hidden p-4 pt-16 lg:p-8 flex flex-col relative z-0 transition-all duration-300">
+      <main className="flex-1 min-w-0 h-[100dvh] overflow-y-auto overflow-x-hidden p-4 pt-16 lg:p-8 flex flex-col relative z-0 transition-all duration-300">
         <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col">
           {renderContent()}
         </div>
