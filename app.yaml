@@ -1,0 +1,41 @@
+# DigitalOcean App Spec (app.yaml)
+# This file defines the TTE app with its backend and frontend components.
+
+name: tte-app
+region: nyc
+services:
+  - name: backend
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    source_dir: backend
+    dockerfile_path: Dockerfile
+    envs:
+      - key: DATABASE_URL
+        scope: RUN_AND_BUILD_TIME
+        value: "postgresql://doadmin:YOUR_PASSWORD@db-postgresql-nyc1-33885-do-user-34754065-0.m.db.ondigitalocean.com:25060/tte?sslmode=require"
+      - key: DB_SCHEMA
+        scope: RUN_AND_BUILD_TIME
+        value: "app"
+      - key: PORT
+        scope: RUN_AND_BUILD_TIME
+        value: "5000"
+      - key: NODE_ENV
+        scope: RUN_AND_BUILD_TIME
+        value: "production"
+    http_port: 5000
+    routes:
+      - path: /api
+        preserve_path_prefix: true
+
+static_sites:
+  - name: frontend
+    source_dir: frontend
+    dockerfile_path: Dockerfile
+    build_command: npm run build
+    output_dir: dist
+    envs:
+      - key: VITE_API_URL
+        scope: RUN_AND_BUILD_TIME
+        value: "/api"
+    routes:
+      - path: /

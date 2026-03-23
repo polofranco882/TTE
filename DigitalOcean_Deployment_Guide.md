@@ -3,34 +3,31 @@
 This guide outlines the process to "version" (deploy) the latest development state to your DigitalOcean production environment.
 
 ## Phase 1: Database Synchronization (COMPLETED)
-We have already performed the database initialization and data transfer.
+The database has been initialized and synced.
 - **Host:** `db-postgresql-nyc1-33885-do-user-34754065-0.m.db.ondigitalocean.com`
 - **Database:** `tte`
 - **Schema:** `app`
-- **Tables & Data:** Initialized and synced with current local development state.
 
-## Phase 2: Updating Backend Code
-The backend must be updated to handle the new `badge_text` in banners and point to the `app` schema.
+## Phase 2 & 3: Updating Code (COMPLETED)
+The latest code and assets have been pushed to GitHub.
+- **Branch:** `main`
+- **Status:** Pushed to GitHub. DigitalOcean should start a new build automatically.
 
-**Status:** Ready but blocked by GitHub branch protection.
-**Next Action (Step 1):** You must run this command in your computer's terminal:
-```powershell
-git push origin deploy-updates:main --force
-```
+## Phase 4: Production Configuration (REQUIRED ACTION)
+Final configuration requires updating your environment variables in the DigitalOcean App Platform dashboard.
 
-## Phase 3: Updating Frontend Code
-The frontend must be updated to display the new banner content and use the localized values.
-
-**Status:** Ready (same repo as backend).
-**Next Action:** Triggered automatically once Phase 2 is complete.
-
-## Phase 4: Production Configuration (DigitalOcean Dashboard)
-Final configuration requires updating your environment variables in the DigitalOcean App Platform.
-
-**Action (Step 2):** In your DigitalOcean App Platform setting, update:
-- `DATABASE_URL`: `postgresql://doadmin:REDACTED_BY_GIT_PROTECTION@db-postgresql-nyc1-33885-do-user-34754065-0.m.db.ondigitalocean.com:25060/tte?sslmode=require`
-- `PORT`: `5000` (ensure this matches your ingress settings)
+**Action (Step 1):** In your DigitalOcean App Platform settings, update/add:
+- `DATABASE_URL`: `postgresql://doadmin:YOUR_PASSWORD@db-postgresql-nyc1-33885-do-user-34754065-0.m.db.ondigitalocean.com:25060/tte?sslmode=require`
+- `PORT`: `5000`
 - `DB_SCHEMA`: `app`
+- `NODE_ENV`: `production`
+
+**Note:** You must replace `YOUR_PASSWORD` with the actual password for the `doadmin` user.
+
+## Phase 5: Verification
+1.  Check `https://tte-app-fueza.ondigitalocean.app/`
+2.  Verify "Global English" banner and Spanish badge appear correctly.
+3.  Ensure the 500 internal server error on `/api/settings` is resolved.
 
 ## Phase 5: Verification
 1.  Check `https://tte-app-fueza.ondigitalocean.app/`
