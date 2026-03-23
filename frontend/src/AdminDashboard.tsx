@@ -25,7 +25,7 @@ interface KPI {
 
 const COLORS = ['#b7672a', '#50677c', '#FFBB28', '#FF8042'];
 
-const AdminDashboard = ({ token, onNotify }: { token: string; onNotify: (msg: string, type: NotificationType) => void }) => {
+const AdminDashboard = ({ token, onNotify, onUnauthorized }: { token: string; onNotify: (msg: string, type: NotificationType) => void; onUnauthorized: () => void }) => {
     const { t } = useTranslation();
     const [data, setData] = useState<KPI | null>(null);
     const [loading, setLoading] = useState(true);
@@ -34,14 +34,22 @@ const AdminDashboard = ({ token, onNotify }: { token: string; onNotify: (msg: st
         fetch('/api/reports/kpi', {
             headers: { Authorization: `Bearer ${token} ` }
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.status === 401) {
+                    onUnauthorized();
+                    throw new Error('Unauthorized');
+                }
+                return res.json();
+            })
             .then(data => {
                 setData(data);
                 setLoading(false);
             })
             .catch(err => {
-                console.error(err);
-                onNotify('Failed to load dashboard metrics', 'error');
+                if (err.message !== 'Unauthorized') {
+                    console.error(err);
+                    onNotify('Failed to load dashboard metrics', 'error');
+                }
                 setLoading(false);
             });
     }, [token]);

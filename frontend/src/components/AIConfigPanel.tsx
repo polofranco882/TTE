@@ -4,11 +4,12 @@ import { Save, Eye, EyeOff, Shield, Zap } from 'lucide-react';
 interface AIConfigPanelProps {
     token: string;
     onNotify: (msg: string, type: 'success' | 'error' | 'info') => void;
+    onUnauthorized: () => void;
 }
 
 const API = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3000';
 
-const AIConfigPanel: React.FC<AIConfigPanelProps> = ({ token, onNotify }) => {
+const AIConfigPanel: React.FC<AIConfigPanelProps> = ({ token, onNotify, onUnauthorized }) => {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [showKey, setShowKey] = useState(false);
@@ -32,6 +33,10 @@ const AIConfigPanel: React.FC<AIConfigPanelProps> = ({ token, onNotify }) => {
             const res = await fetch(`${API}/api/ai/config`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
+            if (res.status === 401) {
+                onUnauthorized();
+                return;
+            }
             if (res.ok) {
                 const data = await res.json();
                 if (data) {
@@ -72,6 +77,10 @@ const AIConfigPanel: React.FC<AIConfigPanelProps> = ({ token, onNotify }) => {
                     max_size_mb: maxSizeMb,
                 }),
             });
+            if (res.status === 401) {
+                onUnauthorized();
+                return;
+            }
             if (res.ok) {
                 onNotify('AI configuration saved successfully!', 'success');
                 setApiKey('');

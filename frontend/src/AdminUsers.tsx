@@ -23,9 +23,10 @@ interface UserBook {
 interface AdminUsersProps {
     token: string;
     onNotify: (msg: string, type: NotificationType) => void;
+    onUnauthorized: () => void;
 }
 
-const AdminUsers = ({ token, onNotify }: AdminUsersProps) => {
+const AdminUsers = ({ token, onNotify, onUnauthorized }: AdminUsersProps) => {
     const [users, setUsers] = useState<User[]>([]);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [userBooks, setUserBooks] = useState<UserBook[]>([]);
@@ -43,6 +44,10 @@ const AdminUsers = ({ token, onNotify }: AdminUsersProps) => {
             const res = await fetch('/api/admin/users', {
                 headers: { Authorization: `Bearer ${token}` }
             });
+            if (res.status === 401) {
+                onUnauthorized();
+                return;
+            }
             if (res.ok) {
                 const data = await res.json();
                 setUsers(data);
@@ -70,6 +75,10 @@ const AdminUsers = ({ token, onNotify }: AdminUsersProps) => {
             const res = await fetch(`/api/admin/users/${userId}/books`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
+            if (res.status === 401) {
+                onUnauthorized();
+                return;
+            }
             if (res.ok) {
                 const data = await res.json();
                 setUserBooks(data);
@@ -111,6 +120,10 @@ const AdminUsers = ({ token, onNotify }: AdminUsersProps) => {
                 },
                 body: JSON.stringify(newUserForm)
             });
+            if (res.status === 401) {
+                onUnauthorized();
+                return;
+            }
             if (res.ok) {
                 onNotify('User created successfully', 'success');
                 setCreateModal(false);
@@ -150,6 +163,10 @@ const AdminUsers = ({ token, onNotify }: AdminUsersProps) => {
                 },
                 body: JSON.stringify({ newPassword })
             });
+            if (res.status === 401) {
+                onUnauthorized();
+                return;
+            }
             if (res.ok) {
                 onNotify(`Password reset successfully for ${resetModal.userName}`, 'success');
                 setResetModal(null);
@@ -200,6 +217,11 @@ const AdminUsers = ({ token, onNotify }: AdminUsersProps) => {
                 },
                 body: JSON.stringify({ bookId, status: newStatus })
             });
+
+            if (res.status === 401) {
+                onUnauthorized();
+                return;
+            }
 
             if (res.ok) {
                 onNotify(`Book ${newStatus === 'assigned' ? 'activated' : 'deactivated'}`, 'success');

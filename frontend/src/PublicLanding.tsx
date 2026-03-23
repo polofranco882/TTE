@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, BookOpen, Users, Globe, PlayCircle, Star, ChevronRight, Quote, X, Film, Images } from 'lucide-react';
+import { ArrowRight, BookOpen, Users, Globe, PlayCircle, Star, ChevronRight, ChevronLeft, Quote, X, Film, Images } from 'lucide-react';
 import bgHero from './assets/final-login-bg.jpg';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from './components/LanguageSwitcher';
@@ -32,6 +32,8 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
     });
     const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
     const [activeVideo, setActiveVideo] = useState<any | null>(null);
+    const [showPromo, setShowPromo] = useState(false);
+    const [activeBannerIdx, setActiveBannerIdx] = useState(0);
 
     const fetchAll = useCallback((lang: string) => {
         const langCode = lang.split('-')[0].toLowerCase();
@@ -48,6 +50,21 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
 
     useEffect(() => { fetchAll(i18n.language || 'en'); }, []);
     useEffect(() => { fetchAll(i18n.language || 'en'); }, [i18n.language, fetchAll]);
+
+    useEffect(() => {
+        if (modules.banners.length > 0) {
+            setShowPromo(true);
+            setActiveBannerIdx(0);
+        }
+    }, [modules.banners]);
+
+    useEffect(() => {
+        if (!showPromo || modules.banners.length <= 1) return;
+        const timer = setInterval(() => {
+            setActiveBannerIdx(prev => (prev + 1) % modules.banners.length);
+        }, 15000);
+        return () => clearInterval(timer);
+    }, [showPromo, modules.banners.length]);
 
     const h = cms?.header   || {};
     const hero = cms?.hero    || {};
@@ -136,38 +153,7 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
                 </div>
             </section>
 
-            {/* ── Promotional Banners (dynamic) ─────────────────────────── */}
-            {modules.banners.length > 0 && (
-                <section className="py-8 bg-surface-low">
-                    <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                        {modules.banners.map((banner, i) => (
-                            <motion.div
-                                key={banner.id}
-                                initial={{ opacity: 0, y: 16 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: i * 0.08 }}
-                                className="relative rounded-2xl overflow-hidden shadow-premium min-h-[200px] flex flex-col justify-between p-8"
-                                style={{ backgroundColor: banner.bg_color || '#09194F' }}
-                            >
-                                {banner.image_url && (
-                                    <img src={banner.image_url} alt={banner.title} className="absolute inset-0 w-full h-full object-cover opacity-20" />
-                                )}
-                                <div className="relative z-10">
-                                    {banner.title && <h3 className="text-2xl font-serif font-bold text-white mb-2">{banner.title}</h3>}
-                                    {banner.subtitle && <p className="text-white/80 font-bold text-sm mb-3">{banner.subtitle}</p>}
-                                    {banner.description && <p className="text-white/60 text-sm leading-relaxed">{banner.description}</p>}
-                                </div>
-                                {banner.cta_text && (
-                                    <a href={banner.cta_url || '#'} onClick={!banner.cta_url ? (e) => { e.preventDefault(); onLoginClick(); } : undefined}
-                                        className="relative z-10 mt-6 inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white font-bold px-5 py-2.5 rounded-xl text-sm uppercase tracking-widest transition-all self-start border border-white/20">
-                                        {banner.cta_text} <ArrowRight className="w-4 h-4" />
-                                    </a>
-                                )}
-                            </motion.div>
-                        ))}
-                    </div>
-                </section>
-            )}
+            {/* ── Removed static banners: implementation moved to Promo Popup ── */}
 
             {/* ── Stats Banner ──────────────────────────────────────────── */}
             <section id="about" className="relative -mt-4 z-30 max-w-7xl mx-auto px-6">
@@ -395,6 +381,122 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
                     {c(footer, 'copyright', `© ${new Date().getFullYear()} TTESOL Academy. All rights reserved.`)}
                 </div>
             </footer>
+
+            {/* ── Promotional Popup Carousel ───────────────────────────── */}
+            <AnimatePresence>
+                {showPromo && modules.banners.length > 0 && (
+                    <motion.div 
+                        initial={{ opacity: 0 }} 
+                        animate={{ opacity: 1 }} 
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-primary/40 backdrop-blur-md"
+                        onClick={() => setShowPromo(false)}
+                    >
+                        <motion.div 
+                            initial={{ scale: 0.9, y: 20 }}
+                            animate={{ scale: 1, y: 0 }}
+                            exit={{ scale: 0.9, y: 20 }}
+                            className="relative w-full max-w-4xl bg-surface rounded-3xl overflow-hidden shadow-premium-dark flex flex-col md:flex-row min-h-[400px]"
+                            onClick={e => e.stopPropagation()}
+                        >
+                            {/* Close Button */}
+                            <button 
+                                onClick={() => setShowPromo(false)}
+                                className="absolute top-4 right-4 z-[110] p-2 rounded-full bg-black/20 hover:bg-black/40 text-white transition-all backdrop-blur-md"
+                            >
+                                <X size={24} />
+                            </button>
+
+                            {/* Carousel Content */}
+                            <div className="flex-1 relative flex flex-col md:flex-row overflow-hidden">
+                                {modules.banners.map((banner, idx) => (
+                                    <AnimatePresence mode="wait" key={banner.id}>
+                                        {idx === activeBannerIdx && (
+                                            <motion.div 
+                                                initial={{ opacity: 0, x: 20 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                exit={{ opacity: 0, x: -20 }}
+                                                transition={{ duration: 0.4 }}
+                                                className="absolute inset-0 flex flex-col md:flex-row"
+                                            >
+                                                {/* Banner Image */}
+                                                <div className="w-full md:w-1/2 relative bg-primary-dark">
+                                                    {banner.image_url ? (
+                                                        <img src={banner.image_url} alt={banner.title} className="w-full h-full object-cover" />
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary to-accent opacity-50">
+                                                            <Images className="w-20 h-20 text-white" />
+                                                        </div>
+                                                    )}
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent md:hidden" />
+                                                </div>
+
+                                                {/* Banner Text */}
+                                                <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center" style={{ backgroundColor: banner.bg_color || '#ffffff' }}>
+                                                    <div className="mb-4">
+                                                        <span className="inline-block py-1 px-3 rounded-full bg-accent/10 border border-accent/20 text-accent text-[10px] font-bold uppercase tracking-widest mb-4">
+                                                            {c(hero, 'badgeText', 'Exclusive Promotion')}
+                                                        </span>
+                                                        <h2 className={`text-3xl md:text-4xl font-serif font-bold mb-3 ${(!banner.bg_color || banner.bg_color === '#ffffff' || banner.bg_color.toLowerCase() === '#fff') ? 'text-primary' : 'text-white'}`}>
+                                                            {banner.title}
+                                                        </h2>
+                                                        <p className={`text-lg font-bold mb-4 ${(!banner.bg_color || banner.bg_color === '#ffffff' || banner.bg_color.toLowerCase() === '#fff') ? 'text-accent' : 'text-white/90'}`}>
+                                                            {banner.subtitle}
+                                                        </p>
+                                                        <p className={`line-clamp-4 leading-relaxed ${(!banner.bg_color || banner.bg_color === '#ffffff' || banner.bg_color.toLowerCase() === '#fff') ? 'text-gray-600' : 'text-white/70'}`}>
+                                                            {banner.description}
+                                                        </p>
+                                                    </div>
+                                                    <div className="mt-auto">
+                                                        {banner.cta_text && (
+                                                            <a 
+                                                                href={banner.cta_url || '#'} 
+                                                                onClick={!banner.cta_url ? (e) => { e.preventDefault(); setShowPromo(false); onLoginClick(); } : undefined}
+                                                                className="inline-flex items-center gap-2 bg-accent hover:bg-accent-dark text-white font-bold px-8 py-4 rounded-xl text-sm uppercase tracking-widest transition-all shadow-premium"
+                                                            >
+                                                                {banner.cta_text} <ArrowRight className="w-5 h-5" />
+                                                            </a>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                ))}
+                            </div>
+
+                            {/* Carousel Controls */}
+                            {modules.banners.length > 1 && (
+                                <>
+                                    <button 
+                                        onClick={() => setActiveBannerIdx(prev => (prev - 1 + modules.banners.length) % modules.banners.length)}
+                                        className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/20 hover:bg-black/40 text-white backdrop-blur-sm transition-all z-[110]"
+                                    >
+                                        <ChevronLeft size={24} />
+                                    </button>
+                                    <button 
+                                        onClick={() => setActiveBannerIdx(prev => (prev + 1) % modules.banners.length)}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/20 hover:bg-black/40 text-white backdrop-blur-sm transition-all z-[110]"
+                                    >
+                                        <ChevronRight size={24} />
+                                    </button>
+                                    
+                                    {/* Dots */}
+                                    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-[110]">
+                                        {modules.banners.map((_, idx) => (
+                                            <button 
+                                                key={idx}
+                                                onClick={() => setActiveBannerIdx(idx)}
+                                                className={`w-2.5 h-2.5 rounded-full transition-all ${idx === activeBannerIdx ? 'bg-accent w-8' : 'bg-black/40'}`}
+                                            />
+                                        ))}
+                                    </div>
+                                </>
+                            )}
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };

@@ -6,6 +6,7 @@ import { type NotificationType } from './components/Notification';
 interface AdminTranslationsProps {
     token: string;
     onNotify: (msg: string, type: NotificationType) => void;
+    onUnauthorized: () => void;
 }
 
 interface TranslationKey {
@@ -16,7 +17,7 @@ interface TranslationKey {
     [languageName: string]: any;
 }
 
-export default function AdminTranslations({ token, onNotify }: AdminTranslationsProps) {
+export default function AdminTranslations({ token, onNotify, onUnauthorized }: AdminTranslationsProps) {
     const [translations, setTranslations] = useState<TranslationKey[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -35,6 +36,10 @@ export default function AdminTranslations({ token, onNotify }: AdminTranslations
             const res = await fetch('/api/i18n/admin/keys', {
                 headers: { Authorization: `Bearer ${token}` }
             });
+            if (res.status === 401) {
+                onUnauthorized();
+                return;
+            }
             if (res.ok) {
                 const data = await res.json();
                 setTranslations(data);
@@ -51,7 +56,7 @@ export default function AdminTranslations({ token, onNotify }: AdminTranslations
 
     const languageKeys = translations.length > 0 
         ? Object.keys(translations[0]).filter(k => !['key', 'module', 'is_active', 'updated_at'].includes(k)) 
-        : ['en', 'es', 'pt'];
+        : ['en', 'es', 'pt', 'zh', 'ja', 'fr', 'it', 'ht'];
 
     const filteredKeys = translations.filter(t => {
         let matchesSearch = t.key.toLowerCase().includes(searchTerm.toLowerCase());
@@ -90,6 +95,11 @@ export default function AdminTranslations({ token, onNotify }: AdminTranslations
                 body: JSON.stringify(editingKey)
             });
 
+            if (res.status === 401) {
+                onUnauthorized();
+                return;
+            }
+
             if (res.ok) {
                 onNotify('Translation saved successfully!', 'success');
                 fetchTranslations();
@@ -114,6 +124,11 @@ export default function AdminTranslations({ token, onNotify }: AdminTranslations
                 headers: { Authorization: `Bearer ${token}` }
             });
             
+            if (res.status === 401) {
+                onUnauthorized();
+                return;
+            }
+
             if (res.ok) {
                 onNotify('Key deleted', 'success');
                 fetchTranslations();
@@ -191,6 +206,11 @@ export default function AdminTranslations({ token, onNotify }: AdminTranslations
                                             {lang === 'en' ? '🇬🇧 English (Default)' : 
                                              lang === 'es' ? '🇪🇸 Español' : 
                                              lang === 'pt' ? '🇵🇹 Português' : 
+                                             lang === 'zh' ? '🇨🇳 中文 (Chinese)' : 
+                                             lang === 'ja' ? '🇯🇵 日本語 (Japanese)' : 
+                                             lang === 'fr' ? '🇫🇷 Français (French)' : 
+                                             lang === 'it' ? '🇮🇹 Italiano (Italian)' : 
+                                             lang === 'ht' ? '🇭🇹 Kreyòl (Haitian)' : 
                                              `🌐 ${lang.toUpperCase()}`}
                                         </th>
                                     ))}
@@ -296,6 +316,11 @@ export default function AdminTranslations({ token, onNotify }: AdminTranslations
                                             <span>{lang === 'en' ? 'English (Fallback)' : 
                                                    lang === 'es' ? 'Español' : 
                                                    lang === 'pt' ? 'Português' : 
+                                                   lang === 'zh' ? '中文 (Chinese)' : 
+                                                   lang === 'ja' ? '日本語 (Japanese)' : 
+                                                   lang === 'fr' ? 'Français (French)' : 
+                                                   lang === 'it' ? 'Italiano (Italian)' : 
+                                                   lang === 'ht' ? 'Kreyòl (Haitian)' : 
                                                    lang.toUpperCase()}</span>
                                             {lang === 'en' && <span className="text-red-400">*</span>}
                                         </label>

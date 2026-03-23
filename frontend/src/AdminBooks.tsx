@@ -22,9 +22,10 @@ interface BookItem {
 interface AdminBooksProps {
     token: string;
     onNotify: (msg: string, type: NotificationType) => void;
+    onUnauthorized: () => void;
 }
 
-const AdminBooks = ({ token, onNotify }: AdminBooksProps) => {
+const AdminBooks = ({ token, onNotify, onUnauthorized }: AdminBooksProps) => {
     const [books, setBooks] = useState<BookItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -39,6 +40,10 @@ const AdminBooks = ({ token, onNotify }: AdminBooksProps) => {
             const res = await fetch('/api/books', {
                 headers: { Authorization: `Bearer ${token}` }
             });
+            if (res.status === 401) {
+                onUnauthorized();
+                return;
+            }
             if (res.ok) {
                 const data = await res.json();
                 setBooks(data);
@@ -84,6 +89,10 @@ const AdminBooks = ({ token, onNotify }: AdminBooksProps) => {
                 },
                 body: JSON.stringify({ order })
             });
+            if (res.status === 401) {
+                onUnauthorized();
+                return;
+            }
             if (res.ok) {
                 onNotify('Order saved successfully! Library now reflects this order.', 'success');
                 setOrderChanged(false);

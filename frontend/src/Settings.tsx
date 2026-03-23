@@ -10,9 +10,10 @@ interface SettingsProps {
     token: string;
     userRole: string | null;
     onNotify: (msg: string, type: NotificationType) => void;
+    onUnauthorized: () => void;
 }
 
-const Settings = ({ token, userRole, onNotify }: SettingsProps) => {
+const Settings = ({ token, userRole, onNotify, onUnauthorized }: SettingsProps) => {
     const [activeSection, setActiveSection] = useState<'profile' | 'users' | 'books' | 'ai'>(
         userRole === 'admin' ? 'users' : 'profile'
     );
@@ -105,7 +106,7 @@ const Settings = ({ token, userRole, onNotify }: SettingsProps) => {
                             <h3 className="text-2xl font-bold text-gray-800 mb-1">User Management</h3>
                             <p className="text-gray-500">Control user access and book assignments.</p>
                         </div>
-                        <AdminUsers token={token} onNotify={onNotify} />
+                        <AdminUsers token={token} onNotify={onNotify} onUnauthorized={onUnauthorized} />
                     </div>
                 )}
 
@@ -115,7 +116,7 @@ const Settings = ({ token, userRole, onNotify }: SettingsProps) => {
                             <h3 className="text-2xl font-bold text-gray-800 mb-1">Book Catalog</h3>
                             <p className="text-gray-500">Manage system titles, covers, and descriptions.</p>
                         </div>
-                        <AdminBooks token={token} onNotify={onNotify} />
+                        <AdminBooks token={token} onNotify={onNotify} onUnauthorized={onUnauthorized} />
                     </div>
                 )}
 
@@ -125,7 +126,7 @@ const Settings = ({ token, userRole, onNotify }: SettingsProps) => {
                             <h3 className="text-2xl font-bold text-gray-800 mb-1">AI Configuration</h3>
                             <p className="text-gray-500">Configure AI provider, API keys, and generation policies.</p>
                         </div>
-                        <AIConfigPanel token={token} onNotify={onNotify} />
+                        <AIConfigPanel token={token} onNotify={onNotify} onUnauthorized={onUnauthorized} />
                     </div>
                 )}
             </div>

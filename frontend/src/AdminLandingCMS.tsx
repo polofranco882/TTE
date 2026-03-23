@@ -12,6 +12,7 @@ import LandingModulesCRUD from './components/LandingModulesCRUD';
 interface AdminLandingCMSProps {
     token: string;
     onNotify: (msg: string, type: NotificationType) => void;
+    onUnauthorized: () => void;
 }
 
 // All sections
@@ -48,9 +49,14 @@ const LANG_META: Record<string, { label: string; flag: string }> = {
     en: { label: 'English', flag: '🇺🇸' },
     es: { label: 'Español', flag: '🇪🇸' },
     pt: { label: 'Português', flag: '🇧🇷' },
+    zh: { label: '中文 (Chinese)', flag: '🇨🇳' },
+    ja: { label: '日本語 (Japanese)', flag: '🇯🇵' },
+    fr: { label: 'Français (French)', flag: '🇫🇷' },
+    it: { label: 'Italiano (Italian)', flag: '🇮🇹' },
+    ht: { label: 'Kreyòl (Haitian)', flag: '🇭🇹' },
 };
 
-const AdminLandingCMS = ({ token, onNotify }: AdminLandingCMSProps) => {
+const AdminLandingCMS = ({ token, onNotify, onUnauthorized }: AdminLandingCMSProps) => {
     const [activeSection, setActiveSection] = useState('hero');
     const [activeLang, setActiveLang] = useState('en');
     const [availableLangs, setAvailableLangs] = useState<string[]>(['en', 'es', 'pt']);
@@ -66,7 +72,10 @@ const AdminLandingCMS = ({ token, onNotify }: AdminLandingCMSProps) => {
     // ── Load available languages
     useEffect(() => {
         fetch('/api/i18n/locales', { headers: { Authorization: `Bearer ${token}` } })
-            .then(r => r.json())
+            .then(r => {
+                if (r.status === 401) onUnauthorized();
+                return r.json();
+            })
             .then(data => {
                 const langs = Object.keys(data || {}).filter(k => k !== 'en');
                 setAvailableLangs(['en', ...langs]);
@@ -77,15 +86,21 @@ const AdminLandingCMS = ({ token, onNotify }: AdminLandingCMSProps) => {
     // ── Load translations for admin
     const loadTranslations = useCallback(() => {
         fetch('/api/landing/translations', { headers: { Authorization: `Bearer ${token}` } })
-            .then(r => r.json())
+            .then(r => {
+                if (r.status === 401) onUnauthorized();
+                return r.json();
+            })
             .then(data => setTranslations(data || {}))
             .catch(err => console.error('Failed to load translations:', err));
-    }, [token]);
+    }, [token, onUnauthorized]);
 
     // ── Load base (structural) config
     const loadBase = useCallback(() => {
         fetch('/api/landing', { headers: { Authorization: `Bearer ${token}` } })
-            .then(r => r.json())
+            .then(r => {
+                if (r.status === 401) onUnauthorized();
+                return r.json();
+            })
             .then(data => {
                 if (data.landing_cms_config) {
                     setDraftSettings(JSON.parse(data.landing_cms_config));
@@ -93,7 +108,7 @@ const AdminLandingCMS = ({ token, onNotify }: AdminLandingCMSProps) => {
                 setHasUnsavedChanges(false);
             })
             .catch(err => console.error('Error fetching settings:', err));
-    }, [token]);
+    }, [token, onUnauthorized]);
 
     useEffect(() => { loadBase(); loadTranslations(); }, [loadBase, loadTranslations]);
 

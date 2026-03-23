@@ -18,6 +18,31 @@ const resources = {
     translation: {
       "common.loading": "Carregando aplicação...",
     }
+  },
+  zh: {
+    translation: {
+      "common.loading": "正在加载应用...",
+    }
+  },
+  ja: {
+    translation: {
+      "common.loading": "アプリケーションを読み込んでいます...",
+    }
+  },
+  fr: {
+    translation: {
+      "common.loading": "Chargement de l'application...",
+    }
+  },
+  it: {
+    translation: {
+      "common.loading": "Caricamento dell'applicazione...",
+    }
+  },
+  ht: {
+    translation: {
+      "common.loading": "Chaje aplikasyon an...",
+    }
   }
 };
 
@@ -27,7 +52,7 @@ i18n
   .init({
     resources,
     fallbackLng: 'en',
-    supportedLngs: ['en', 'es', 'pt'],
+    supportedLngs: ['en', 'es', 'pt', 'zh', 'ja', 'fr', 'it', 'ht'],
     interpolation: {
       escapeValue: false, // react already safes from xss
     },

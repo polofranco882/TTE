@@ -18,7 +18,13 @@ interface BookItem {
     assignment_status?: string;
 }
 
-const Library = ({ token, userRole, onNotify, onStartReading }: { token: string; userRole: string | null; onNotify: (msg: string, type: NotificationType) => void; onStartReading: (bookId: number) => void }) => {
+const Library = ({ token, userRole, onNotify, onStartReading, onUnauthorized }: { 
+    token: string; 
+    userRole: string | null; 
+    onNotify: (msg: string, type: NotificationType) => void; 
+    onStartReading: (bookId: number) => void;
+    onUnauthorized: () => void;
+}) => {
     const { t } = useTranslation();
     const [books, setBooks] = useState<BookItem[]>([]);
     const [loading, setLoading] = useState(true);
@@ -32,7 +38,13 @@ const Library = ({ token, userRole, onNotify, onStartReading }: { token: string;
         fetch('/api/books', {
             headers: { Authorization: `Bearer ${token}` }
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.status === 401) {
+                    onUnauthorized();
+                    throw new Error('Unauthorized');
+                }
+                return res.json();
+            })
             .then(data => {
                 // Filter only active books for the library view unless admin
                 const isStaff = userRole === 'admin' || userRole === 'manager';
@@ -41,8 +53,10 @@ const Library = ({ token, userRole, onNotify, onStartReading }: { token: string;
                 setLoading(false);
             })
             .catch(err => {
-                console.error(err);
-                onNotify('Failed to load library', 'error');
+                if (err.message !== 'Unauthorized') {
+                    console.error(err);
+                    onNotify('Failed to load library', 'error');
+                }
                 setLoading(false);
             });
     };
@@ -62,6 +76,8 @@ const Library = ({ token, userRole, onNotify, onStartReading }: { token: string;
                 'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({ action, metadata })
+        }).then(res => {
+            if (res.status === 401) onUnauthorized();
         }).catch(console.error);
     };
 

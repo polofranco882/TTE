@@ -52,6 +52,10 @@ function App() {
   const fetchSettings = async () => {
     try {
       const res = await fetch('/api/settings');
+      if (res.status === 401) {
+        handleUnauthorized();
+        return;
+      }
       if (res.ok) {
         const data = await res.json();
         setSettings(data);
@@ -129,6 +133,15 @@ function App() {
     setUserRole(null);
     localStorage.removeItem('token');
     localStorage.removeItem('role');
+    setActiveTab('welcome'); // Reset to welcome for next login
+    setShowLogin(false); // Reset to public landing
+  };
+
+  const handleUnauthorized = () => {
+    if (token) { // Only notify if we were previously logged in
+        logout();
+        showNotification(t('login.error_expired', 'Your session has expired. Please log in again.'), 'error');
+    }
   };
 
   // PWA Install Logic
@@ -183,6 +196,10 @@ function App() {
         },
         body: JSON.stringify({ settings: newSettings })
       });
+      if (res.status === 401) {
+        handleUnauthorized();
+        return;
+      }
       if (res.ok) {
         setSettings(newSettings);
         showNotification('Settings updated', 'success');
@@ -352,6 +369,7 @@ function App() {
           sidebarOpen={isSidebarOpen}
           onBack={() => setSelectedBookId(null)}
           onNotify={showNotification}
+          onUnauthorized={handleUnauthorized}
         />
       );
     }
@@ -369,28 +387,27 @@ function App() {
 
     if (activeTab === 'dashboard') {
       if (userRole === 'admin' || userRole === 'manager') {
-        return <AdminDashboard token={token} onNotify={showNotification} />;
+        return <AdminDashboard token={token} onNotify={showNotification} onUnauthorized={handleUnauthorized} />;
       }
-      // User default for 'dashboard' (if they somehow get here) is Library
-      return <Library token={token} userRole={userRole} onNotify={showNotification} onStartReading={setSelectedBookId} />;
+      return <Library token={token} userRole={userRole} onNotify={showNotification} onStartReading={setSelectedBookId} onUnauthorized={handleUnauthorized} />;
     }
 
     if (activeTab === 'books') {
-      return <Library token={token} userRole={userRole} onNotify={showNotification} onStartReading={setSelectedBookId} />;
+      return <Library token={token} userRole={userRole} onNotify={showNotification} onStartReading={setSelectedBookId} onUnauthorized={handleUnauthorized} />;
     }
 
     if (activeTab === 'reports' && (userRole === 'admin' || userRole === 'manager')) {
-      return <AdminDashboard token={token} onNotify={showNotification} />;
+      return <AdminDashboard token={token} onNotify={showNotification} onUnauthorized={handleUnauthorized} />;
     }
 
     if (activeTab === 'users' && userRole === 'admin') {
-      return <AdminUsers token={token} onNotify={showNotification} />;
+      return <AdminUsers token={token} onNotify={showNotification} onUnauthorized={handleUnauthorized} />;
     }
 
     if (activeTab === 'landing' && userRole === 'admin') {
       return (
         <div className="flex-1 h-full min-h-[700px]">
-          <AdminLandingCMS token={token} onNotify={showNotification} />
+          <AdminLandingCMS token={token} onNotify={showNotification} onUnauthorized={handleUnauthorized} />
         </div>
       );
     }
@@ -398,7 +415,7 @@ function App() {
     if (activeTab === 'languages' && userRole === 'admin') {
       return (
         <div className="flex-1 h-full min-h-[700px]">
-          <AdminTranslations token={token} onNotify={showNotification} />
+          <AdminTranslations token={token} onNotify={showNotification} onUnauthorized={handleUnauthorized} />
         </div>
       );
     }
@@ -411,14 +428,14 @@ function App() {
             <p className="text-sm md:text-base text-gray-400">Total control over the catalog, covers, and descriptions.</p>
           </div>
           <div className="flex-1 overflow-hidden min-h-[500px]">
-            <AdminBooks token={token} onNotify={showNotification} />
+            <AdminBooks token={token} onNotify={showNotification} onUnauthorized={handleUnauthorized} />
           </div>
         </div>
       );
     }
 
     if (activeTab === 'settings') {
-      return <Settings token={token} userRole={userRole} onNotify={showNotification} />;
+      return <Settings token={token} userRole={userRole} onNotify={showNotification} onUnauthorized={handleUnauthorized} />;
     }
 
     return (

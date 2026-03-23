@@ -199,6 +199,7 @@ interface BookReaderProps {
     sidebarOpen: boolean;
     onBack: () => void;
     onNotify: (msg: string, type: NotificationType) => void;
+    onUnauthorized: () => void;
 }
 
 // Activity icon for stats
@@ -219,7 +220,7 @@ const Activity = ({ className, size = 18 }: { className?: string; size?: number 
     </svg>
 );
 
-const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
+const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthorized }: BookReaderProps) => {
     const [book, setBook] = useState<BookItem | null>(null);
     const [contents, setContents] = useState<ContentItem[]>([]);
     const [loading, setLoading] = useState(true);
@@ -386,6 +387,10 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                 const resBooks = await fetch(`/api/books`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
+                if (resBooks.status === 401) {
+                    onUnauthorized();
+                    return;
+                }
                 if (resBooks.ok) {
                     const data = await resBooks.json();
                     const found = data.find((b: BookItem) => b.id === bookId);
@@ -396,6 +401,10 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                 const resContents = await fetch(`/api/books/${bookId}/contents`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
+                if (resContents.status === 401) {
+                    onUnauthorized();
+                    return;
+                }
                 if (resContents.ok) {
                     const data = await resContents.json();
                     setContents(data);
@@ -1133,7 +1142,7 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                                              ></div>
                                                          </div>
                                                         {/* Fixed Zoom Controls on Screen */}
-                                                        <div className="absolute top-2 right-2 z-50 flex flex-col gap-1 bg-[#161930]/80 backdrop-blur-md p-1.5 rounded-xl border border-white/10 shadow-xl">
+                                                        <div className="absolute top-2 right-2 z-[1000] flex flex-col gap-1 bg-[#161930]/80 backdrop-blur-md p-1.5 rounded-xl border border-white/10 shadow-xl">
                                                             <button title="Zoom In" onClick={() => zoomIn(0.5)} className="p-1.5 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors">
                                                                 <ZoomIn size={14} />
                                                             </button>
@@ -1149,12 +1158,19 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                                                 {isFullscreen ? <Shrink size={14} /> : <Expand size={14} />}
                                                             </button>
                                                             <div className="w-full h-[1px] bg-white/10 my-0.5" />
+                                                            <button title="Previous Page" onClick={handleFlipPrev} className="p-1.5 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors">
+                                                                <ArrowLeft size={14} />
+                                                            </button>
+                                                            <button title="Next Page" onClick={handleFlipNext} className="p-1.5 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors">
+                                                                <ArrowRight size={14} />
+                                                            </button>
+                                                            <div className="w-full h-[1px] bg-white/10 my-0.5" />
                                                             <button 
                                                                 title="Debug Navigation Zones (Alt+D)" 
                                                                 onClick={() => setDebugNav(!debugNav)} 
                                                                 className={`p-1.5 rounded-lg hover:bg-white/10 transition-colors ${debugNav ? 'text-green-500' : 'text-gray-400'}`}
                                                             >
-                                                                <ArrowRight size={14} className={debugNav ? "rotate-45" : ""} />
+                                                                <Layout size={14} />
                                                             </button>
                                                         </div>
 
@@ -1172,6 +1188,25 @@ const BookReader = ({ bookId, token, onBack, onNotify }: BookReaderProps) => {
                                                                     aspectRatio: isSinglePage ? '1350/1909' : '2700/1909'
                                                                 }}
                                                             >
+                                                                {/* Navigation Zones (Edge Clicks) */}
+                                                                <div 
+                                                                    className="absolute left-0 top-0 bottom-0 w-[5%] z-[60] cursor-pointer nav-zone group flex items-center justify-start pl-2"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        handleFlipPrev();
+                                                                    }}
+                                                                >
+                                                                    <div className="w-1 h-12 rounded-full bg-accent/0 group-hover:bg-accent/20 transition-all" />
+                                                                </div>
+                                                                <div 
+                                                                    className="absolute right-0 top-0 bottom-0 w-[5%] z-[60] cursor-pointer nav-zone group flex items-center justify-end pr-2"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        handleFlipNext();
+                                                                    }}
+                                                                >
+                                                                    <div className="w-1 h-12 rounded-full bg-accent/0 group-hover:bg-accent/20 transition-all" />
+                                                                </div>
                                                                 {/* @ts-ignore - react-pageflip typings are problematic with React 18 */}
                                                                 {isSinglePage ? (
                                                                     <AnimatePresence mode="wait">
