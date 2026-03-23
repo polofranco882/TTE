@@ -1,0 +1,208 @@
+﻿git : Pushing to https:
+//github.com/polofranco
+882/TTE.git
+En línea: 1 Carácter: 1
++ git push origin main 
+-v > push_error.txt 
+2>&1
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: (Pushing to ht   
+ tp...anco882/TTE.g    
+it:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+POST git-receive-pack 
+(6857 bytes)
+remote: error: GH013: 
+Repository rule 
+violations found for 
+refs/heads/main.       
+ 
+remote: 
+remote: - GITHUB PUSH 
+PROTECTION        
+remote:   ÔÇöÔÇöÔÇöÔÇöÔ
+ÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔÇö
+ÔÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔÇ
+öÔÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔ
+ÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔÇö
+ÔÇöÔÇöÔÇöÔÇöÔÇöÔÇö     
+   
+remote:     Resolve 
+the following 
+violations before 
+pushing again        
+remote: 
+remote:     - Push 
+cannot contain secrets 
+       
+remote: 
+remote:             
+remote:      (?) Learn 
+how to resolve a 
+blocked push        
+remote:      https://do
+cs.github.com/code-secu
+rity/secret-scanning/wo
+rking-with-secret-scann
+ing-and-push-protection
+/working-with-push-prot
+ection-from-the-command
+-line#resolving-a-block
+ed-push        
+remote:             
+remote:             
+remote:       ÔÇöÔÇö 
+Aiven Service Password 
+ÔÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔÇ
+öÔÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔ
+ÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔÇö
+ÔÇöÔÇöÔÇöÔÇöÔÇö        
+remote:        
+locations:        
+remote:          - 
+commit: 54911b041af668a
+3d4c9be0febe5e8a3c4dabc
+c9        
+remote:            
+path: backend/check_adm
+in.js:4        
+remote:          - 
+commit: 54911b041af668a
+3d4c9be0febe5e8a3c4dabc
+c9        
+remote:            
+path: backend/init_prod
+_all.js:6        
+remote:             
+remote:        (?) To 
+push, remove secret 
+from commit(s) or 
+follow this URL to 
+allow the secret.      
+  
+remote:        https://
+github.com/polofranco88
+2/TTE/security/secret-s
+canning/unblock-secret/
+3BMTUCmJn004EV6AgfXcVAt
+bBwp        
+remote:             
+remote:             
+remote:       ÔÇöÔÇö 
+Aiven Service Password 
+ÔÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔÇ
+öÔÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔ
+ÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔÇö
+ÔÇöÔÇöÔÇöÔÇöÔÇö        
+remote:        
+locations:        
+remote:          - 
+commit: 54911b041af668a
+3d4c9be0febe5e8a3c4dabc
+c9        
+remote:            
+path: 
+backend/check_tte.js:4 
+       
+remote:          - 
+commit: 54911b041af668a
+3d4c9be0febe5e8a3c4dabc
+c9        
+remote:            
+path: backend/fix_produ
+ction_final.js:5       
+ 
+remote:          - 
+commit: 54911b041af668a
+3d4c9be0febe5e8a3c4dabc
+c9        
+remote:            
+path: backend/fix_produ
+ction_final.js:6       
+ 
+remote:          - 
+commit: 54911b041af668a
+3d4c9be0febe5e8a3c4dabc
+c9        
+remote:            
+path: backend/init_prod
+_final.js:5        
+remote:          - 
+commit: 54911b041af668a
+3d4c9be0febe5e8a3c4dabc
+c9        
+remote:            
+path: backend/migrate_b
+anner_prod.js:4        
+remote:             
+remote:        (?) To 
+push, remove secret 
+from commit(s) or 
+follow this URL to 
+allow the secret.      
+  
+remote:        https://
+github.com/polofranco88
+2/TTE/security/secret-s
+canning/unblock-secret/
+3BMTUBPMqnlbW38K1GyVaef
+ZzDB        
+remote:             
+remote:             
+remote:       ÔÇöÔÇö 
+Aiven Service Password 
+ÔÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔÇ
+öÔÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔ
+ÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔÇöÔÇö
+ÔÇöÔÇöÔÇöÔÇöÔÇö        
+remote:        
+locations:        
+remote:          - 
+commit: 54911b041af668a
+3d4c9be0febe5e8a3c4dabc
+c9        
+remote:            
+path: backend/check_pro
+d.js:4        
+remote:          - 
+commit: 54911b041af668a
+3d4c9be0febe5e8a3c4dabc
+c9        
+remote:            
+path: backend/create_la
+nding_prod.js:5        
+remote:             
+remote:        (?) To 
+push, remove secret 
+from commit(s) or 
+follow this URL to 
+allow the secret.      
+  
+remote:        https://
+github.com/polofranco88
+2/TTE/security/secret-s
+canning/unblock-secret/
+3BMTU8MaxanTQcLd01hj4ym
+Tdrv        
+remote:             
+remote: 
+remote: 
+To https://github.com/p
+olofranco882/TTE.git
+ ! [remote rejected] 
+main -> main (push 
+declined due to 
+repository rule 
+violations)
+error: failed to push 
+some refs to 'https://g
+ithub.com/polofranco882
+/TTE.git'
