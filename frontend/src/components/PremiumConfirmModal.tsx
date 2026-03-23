@@ -1,89 +1,100 @@
-import React from 'react';
+
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertTriangle, Trash2, X } from 'lucide-react';
+import { AlertTriangle, X } from 'lucide-react';
 
 interface PremiumConfirmModalProps {
     isOpen: boolean;
-    onClose: () => void;
-    onConfirm: () => void;
     title: string;
-    description: string;
-    confirmText?: string;
-    cancelText?: string;
-    isDanger?: boolean;
+    message: string;
+    confirmLabel?: string;
+    cancelLabel?: string;
+    onConfirm: () => void;
+    onCancel: () => void;
+    variant?: 'danger' | 'info';
 }
 
-const PremiumConfirmModal: React.FC<PremiumConfirmModalProps> = ({
+export default function PremiumConfirmModal({
     isOpen,
-    onClose,
-    onConfirm,
     title,
-    description,
-    confirmText = 'Confirm',
-    cancelText = 'Cancel',
-    isDanger = false
-}) => {
-    if (!isOpen) return null;
-
+    message,
+    confirmLabel = 'Confirm',
+    cancelLabel = 'Cancel',
+    onConfirm,
+    onCancel,
+    variant = 'info'
+}: PremiumConfirmModalProps) {
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[100000] flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
+                    {/* Backdrop */}
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        onClick={onClose}
-                        className="absolute inset-0 bg-black/80 backdrop-blur-md"
+                        onClick={onCancel}
+                        className="absolute inset-0 bg-primary/40 backdrop-blur-sm"
                     />
 
+                    {/* Modal Content */}
                     <motion.div
-                        initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                        animate={{ scale: 1, opacity: 1, y: 0 }}
-                        exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                        className="relative w-full max-w-sm bg-[#161930]/95 backdrop-blur-xl border border-white/10 rounded-3xl shadow-[0_0_60px_-15px_rgba(0,0,0,0.5)] p-6 flex flex-col items-center text-center overflow-hidden"
+                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                        className="relative w-full max-w-md bg-surface border border-black/10 rounded-3xl shadow-premium overflow-hidden z-10"
                     >
-                        {/* Background subtle glow based on danger level */}
-                        <div className={`absolute top-0 left-0 right-0 h-32 opacity-20 blur-3xl pointer-events-none ${isDanger ? 'bg-red-500' : 'bg-accent'}`} />
+                        {/* Header Decoration */}
+                        <div className={`h-2 w-full ${variant === 'danger' ? 'bg-red-500' : 'bg-accent'}`} />
+                        
+                        <div className="p-8">
+                            <div className="flex items-start gap-4 mb-6">
+                                <div className={`p-3 rounded-2xl ${variant === 'danger' ? 'bg-red-50 text-red-500' : 'bg-accent/10 text-accent'}`}>
+                                    <AlertTriangle className="w-6 h-6" />
+                                </div>
+                                <div className="flex-1">
+                                    <h3 className="text-2xl font-serif font-bold text-primary tracking-tight">
+                                        {title}
+                                    </h3>
+                                    <p className="text-gray-500 mt-2 leading-relaxed">
+                                        {message}
+                                    </p>
+                                </div>
+                                <button 
+                                    onClick={onCancel}
+                                    className="p-2 text-gray-400 hover:text-primary transition-colors hover:bg-gray-50 rounded-lg"
+                                >
+                                    <X className="w-5 h-5" />
+                                </button>
+                            </div>
 
-                        <button
-                            onClick={onClose}
-                            className="absolute right-4 top-4 p-2 rounded-xl hover:bg-white/10 text-gray-400 hover:text-white transition-all z-10"
-                        >
-                            <X size={18} />
-                        </button>
-
-                        <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-6 relative z-10 ${isDanger ? 'bg-red-500/20 text-red-500' : 'bg-accent/20 text-accent'}`}>
-                            {isDanger ? <Trash2 size={32} /> : <AlertTriangle size={32} />}
+                            <div className="flex gap-3 mt-8">
+                                <button
+                                    onClick={onCancel}
+                                    className="flex-1 px-6 py-3.5 rounded-2xl border border-gray-200 text-gray-500 font-bold text-sm uppercase tracking-widest hover:bg-gray-50 transition-all"
+                                >
+                                    {cancelLabel}
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        onConfirm();
+                                        onCancel();
+                                    }}
+                                    className={`flex-1 px-6 py-3.5 rounded-2xl text-white font-bold text-sm uppercase tracking-widest shadow-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] ${
+                                        variant === 'danger' 
+                                            ? 'bg-red-500 hover:bg-red-600 shadow-red-500/20' 
+                                            : 'bg-accent hover:bg-accent-dark shadow-accent/20'
+                                    }`}
+                                >
+                                    {confirmLabel}
+                                </button>
+                            </div>
                         </div>
 
-                        <h3 className="text-xl font-black text-white mb-2 tracking-tight z-10">{title}</h3>
-                        <p className="text-sm text-gray-400 mb-8 z-10 leading-relaxed">
-                            {description}
-                        </p>
-
-                        <div className="w-full flex gap-3 z-10">
-                            <button
-                                onClick={onClose}
-                                className="flex-1 py-3 px-4 rounded-xl border border-white/10 font-bold text-sm tracking-wide text-gray-300 hover:bg-white/5 hover:text-white transition-all"
-                            >
-                                {cancelText}
-                            </button>
-                            <button
-                                onClick={() => {
-                                    onConfirm();
-                                    onClose();
-                                }}
-                                className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm tracking-wide text-white shadow-lg transition-transform active:scale-95 ${isDanger ? 'bg-red-500 hover:bg-red-600 shadow-red-500/20' : 'bg-accent hover:bg-orange-500 shadow-accent/20'}`}
-                            >
-                                {confirmText}
-                            </button>
-                        </div>
+                        {/* Background subtle glow */}
+                        <div className={`absolute -bottom-20 -right-20 w-40 h-40 rounded-full blur-[80px] opacity-10 ${variant === 'danger' ? 'bg-red-500' : 'bg-accent'}`} />
                     </motion.div>
                 </div>
             )}
         </AnimatePresence>
     );
-};
-
-export default PremiumConfirmModal;
+}

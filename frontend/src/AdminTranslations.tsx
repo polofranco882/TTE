@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Globe, Search, Save, Activity, LayoutTemplate, MessageSquare, Key, Trash2 } from 'lucide-react';
 import { type NotificationType } from './components/Notification';
+import PremiumConfirmModal from './components/PremiumConfirmModal';
 
 interface AdminTranslationsProps {
     token: string;
@@ -26,6 +27,9 @@ export default function AdminTranslations({ token, onNotify, onUnauthorized }: A
     // Editor State
     const [editingKey, setEditingKey] = useState<TranslationKey | null>(null);
     const [isSaving, setIsSaving] = useState(false);
+
+    // Modal state
+    const [confirmModal, setConfirmModal] = useState<{ isOpen: boolean; key: string | null }>({ isOpen: false, key: null });
 
     useEffect(() => {
         fetchTranslations();
@@ -116,8 +120,6 @@ export default function AdminTranslations({ token, onNotify, onUnauthorized }: A
     };
 
     const handleDelete = async (key: string) => {
-        if (!window.confirm(`Are you sure you want to delete ${key}? This could break parts of the UI if hard-referenced.`)) return;
-        
         try {
             const res = await fetch(`/api/i18n/admin/keys/${key}`, {
                 method: 'DELETE',
@@ -136,7 +138,7 @@ export default function AdminTranslations({ token, onNotify, onUnauthorized }: A
         } catch (err) {
             console.error(err);
         }
-    }
+    };
 
     if (isLoading) {
         return (
@@ -147,7 +149,21 @@ export default function AdminTranslations({ token, onNotify, onUnauthorized }: A
     }
 
     return (
-        <div className="flex flex-col h-full bg-background min-h-[600px] pb-10">
+        <div className="flex flex-col h-full bg-background min-h-[600px] pb-10 relative">
+            {/* Premium Confirmation Modal */}
+            <PremiumConfirmModal
+                isOpen={confirmModal.isOpen}
+                title="Delete Translation Key"
+                message={`Are you sure you want to delete the key "${confirmModal.key}"? This action is permanent and could cause UI issues if the key is still in use.`}
+                confirmLabel="Delete Forever"
+                cancelLabel="Cancel"
+                variant="danger"
+                onConfirm={() => {
+                    if (confirmModal.key) handleDelete(confirmModal.key);
+                }}
+                onCancel={() => setConfirmModal({ isOpen: false, key: null })}
+            />
+
             {/* Header */}
             <div className="flex justify-between items-center mb-6 bg-surface p-5 py-6 rounded-2xl shadow-sm border border-black/5">
                 <div className="flex items-center gap-4">
@@ -238,7 +254,10 @@ export default function AdminTranslations({ token, onNotify, onUnauthorized }: A
                                         ))}
                                         <td className="py-4 px-6 text-center">
                                             <button 
-                                                onClick={(e) => { e.stopPropagation(); handleDelete(item.key); }}
+                                                onClick={(e) => { 
+                                                    e.stopPropagation(); 
+                                                    setConfirmModal({ isOpen: true, key: item.key });
+                                                }}
                                                 className="opacity-0 group-hover:opacity-100 p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
                                             >
                                                 <Trash2 className="w-4 h-4" />

@@ -8,6 +8,8 @@ import { type NotificationType } from './Notification';
 import { optimizeImageFile } from '../utils/imageOptimizer';
 import { optimizeVideoFile } from '../utils/videoOptimizer';
 
+import PremiumConfirmModal from './PremiumConfirmModal';
+
 interface LandingModulesCRUDProps {
     module: 'banners' | 'gallery' | 'videos' | 'testimonials';
     token: string;
@@ -39,6 +41,9 @@ const LandingModulesCRUD = ({ module, token, onNotify, availableLangs }: Landing
     const [transData, setTransData] = useState<any>({});
     const [isSaving, setIsSaving] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
+
+    // Modal state
+    const [confirmModal, setConfirmModal] = useState<{ isOpen: boolean; id: number | null }>({ isOpen: false, id: null });
 
     const baseUrl = `/api/landing-modules/${module}`;
 
@@ -102,13 +107,16 @@ const LandingModulesCRUD = ({ module, token, onNotify, availableLangs }: Landing
     };
 
     const handleDelete = async (id: number) => {
-        if (!window.confirm('Delete this item?')) return;
         try {
-            await fetch(`${baseUrl}/${id}`, {
+            const r = await fetch(`${baseUrl}/${id}`, {
                 method: 'DELETE', headers: { Authorization: `Bearer ${token}` }
             });
-            onNotify('Item deleted.', 'success');
-            load();
+            if (r.ok) {
+                onNotify('Item deleted.', 'success');
+                load();
+            } else {
+                throw new Error();
+            }
         } catch { onNotify('Error deleting.', 'error'); }
     };
 
@@ -185,10 +193,10 @@ const LandingModulesCRUD = ({ module, token, onNotify, availableLangs }: Landing
                     <div className="flex gap-4 items-end">
                         <div className="flex-1">
                             <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-1">Background Color</label>
-                            <input type="color" value={formData.bg_color || '#09194F'} onChange={e => setFormData((p: any) => ({...p, bg_color: e.target.value}))} className="h-10 w-full rounded-lg border border-gray-200 cursor-pointer" />
+                            <input type="color" value={formData.bg_color || '#09194F'} onChange={(e: any) => setFormData((p: any) => ({...p, bg_color: e.target.value}))} className="h-10 w-full rounded-lg border border-gray-200 cursor-pointer" />
                         </div>
                         <div className="flex-1">
-                            <Field label="Display Order" type="number" value={String(formData.display_order || 0)} onChange={v => setFormData((p: any) => ({...p, display_order: +v}))} />
+                            <Field label="Display Order" type="number" value={String(formData.display_order || 0)} onChange={(v: string) => setFormData((p: any) => ({...p, display_order: +v}))} />
                         </div>
                     </div>
                 </div>
@@ -356,7 +364,17 @@ const LandingModulesCRUD = ({ module, token, onNotify, availableLangs }: Landing
                             {item.is_active ? <ToggleRight size={18} className="text-green-500" /> : <ToggleLeft size={18} className="text-gray-400" />}
                         </button>
                         <button onClick={() => startEdit(item)} className="p-1.5 rounded-lg bg-primary/5 hover:bg-primary/10 text-primary transition-all"><Edit3 size={15} /></button>
-                        <button onClick={() => handleDelete(item.id)} className="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-400 transition-all"><Trash2 size={15} /></button>
+                        <button 
+                            type="button"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setConfirmModal({ isOpen: true, id: item.id });
+                            }} 
+                            className="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-400 transition-all pointer-events-auto"
+                        >
+                            <Trash2 size={15} />
+                        </button>
                     </div>
                 </div>
             </div>
@@ -364,7 +382,21 @@ const LandingModulesCRUD = ({ module, token, onNotify, availableLangs }: Landing
     );
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4 relative">
+            {/* Premium Confirmation Modal */}
+            <PremiumConfirmModal
+                isOpen={confirmModal.isOpen}
+                title="Delete Item"
+                message="Are you sure you want to delete this item? This action cannot be undone and will be removed from all languages."
+                confirmLabel="Yes, Delete"
+                cancelLabel="Keep it"
+                variant="danger"
+                onConfirm={() => {
+                    if (confirmModal.id) handleDelete(confirmModal.id);
+                }}
+                onCancel={() => setConfirmModal({ isOpen: false, id: null })}
+            />
+
             {/* Add new button */}
             {editingId === null && (
                 <button onClick={startNew} className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl border-2 border-dashed border-primary/20 text-primary font-bold text-sm hover:border-primary/50 hover:bg-primary/5 transition-all">
