@@ -147,15 +147,9 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
                             </div>
 
                             <h1 className="text-4xl sm:text-5xl md:text-7xl font-serif font-bold text-white mb-8 leading-[1.05] tracking-tight">
-                                {hero.title ? (
-                                    <span dangerouslySetInnerHTML={{ __html: hero.title }} />
-                                ) : (
-                                    <>
-                                        Mastering <br />
-                                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-800">Global English</span> <br />
-                                        with Academic Rigor.
-                                    </>
-                                )}
+                                Mastering <br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-900 pr-2">Global English</span> <br />
+                                with Academic Rigor.
                             </h1>
 
                             <p className="text-lg md:text-xl text-gray-300/90 mb-12 max-w-xl font-medium leading-relaxed">
@@ -165,7 +159,7 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
                             <div className="flex flex-col sm:flex-row gap-5 items-stretch sm:items-center">
                                 <button 
                                     onClick={onLoginClick} 
-                                    className="bg-red-700 hover:bg-red-800 text-white px-10 py-5 rounded-xl font-black uppercase tracking-widest shadow-xl shadow-red-900/20 transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 min-h-[60px]"
+                                    className="bg-red-700 hover:bg-red-800 text-white px-10 py-5 rounded-xl font-black uppercase tracking-widest shadow-xl shadow-red-900/40 transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 min-h-[60px]"
                                 >
                                     {c(hero, 'primaryCta', 'Join Now')} <ArrowRight size={20} />
                                 </button>
@@ -185,16 +179,16 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
                             {/* Decorative element behind image */}
                             <div className="absolute -inset-4 bg-gradient-to-br from-accent/20 to-secondary/20 rounded-[3rem] blur-2xl -z-10 opacity-30" />
                             
-                            <div className="relative aspect-[4/5] sm:aspect-[1.1] lg:aspect-[4/5] overflow-hidden rounded-[2.5rem] sm:rounded-[4rem] shadow-2xl border border-white/10 group">
+                            <div className="relative aspect-[4/5] sm:aspect-video lg:aspect-[4/5] overflow-hidden rounded-[2.5rem] sm:rounded-[4rem] shadow-2xl border border-white/10 group">
                                 <img 
-                                    src="file:///C:/Users/user/.gemini/antigravity/brain/6ec8b50f-82fa-4cff-aa41-093eeccf8009/classroom_hero_v1_1774279726655.png" 
+                                    src="/classroom-hero.png" 
                                     alt="Classroom Education"
                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-primary/40 via-transparent to-transparent opacity-60 pointer-events-none" />
                             </div>
 
-                            {/* Floating Stats or Element? Let's add a small detail like in many premium designs */}
+                            {/* Floating Detail */}
                             <motion.div 
                                 animate={{ y: [0, -10, 0] }}
                                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
