@@ -32,7 +32,23 @@ async function sync() {
         await remoteClient.connect();
         logSync('Connected to both databases!');
 
-        const tables = ['roles', 'users', 'user_roles', 'books', 'user_books', 'book_contents', 'ai_config'];
+        const tables = [
+            'media_assets', 
+            'roles', 
+            'users', 
+            'user_roles', 
+            'books', 
+            'user_books', 
+            'book_contents', 
+            'ai_config',
+            'landing_pages',
+            'landing_sections',
+            'landing_section_translations',
+            'landing_banners',
+            'landing_banner_translations',
+            'landing_testimonial_translations',
+            'landing_gallery_images'
+        ];
 
         // Clean remote tables first (in reverse order for foreign keys)
         logSync('Cleaning remote tables...');

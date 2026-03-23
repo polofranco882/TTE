@@ -1,0 +1,2 @@
+--- ERROR LOG START ---
+SYNC ERROR: relation "app.landing_sections" does not exist
