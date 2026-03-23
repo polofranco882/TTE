@@ -1,23 +1,36 @@
-# Use node 18 alpine as base image
-FROM node:18-alpine
+# Build stage
+FROM node:18-alpine as build
 
-# Set working directory
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
+# Install dependencies including devDependencies for tsc
 RUN npm install
 
-# Copy all files
+# Copy source
 COPY . .
 
-# Install ts-node and typescript globally to run the start script
-RUN npm install -g ts-node typescript
+# Build TypeScript to JavaScript
+RUN npm run build
+
+# Production stage
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install only production dependencies
+RUN npm install --production
+
+# Copy compiled files from build stage
+COPY --from=build /app/dist ./dist
 
 # Expose port
 EXPOSE 5000
 
-# Start command
+# Start command using node (more memory efficient than ts-node)
 CMD ["npm", "start"]

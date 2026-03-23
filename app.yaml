@@ -1,12 +1,12 @@
 # DigitalOcean App Spec (app.yaml)
-# This file defines the TTE app with its backend and frontend components.
+# This file defines the TTE app with its backend and frontend components as services.
 
 name: tte-app
 region: nyc
 services:
   - name: backend
     instance_count: 1
-    instance_size_slug: basic-xxs
+    instance_size_slug: basic-xs
     source_dir: backend
     dockerfile_path: Dockerfile
     envs:
@@ -27,15 +27,15 @@ services:
       - path: /api
         preserve_path_prefix: true
 
-static_sites:
   - name: frontend
+    instance_count: 1
+    instance_size_slug: basic-xxs
     source_dir: frontend
     dockerfile_path: Dockerfile
-    build_command: npm run build
-    output_dir: dist
     envs:
       - key: VITE_API_URL
         scope: RUN_AND_BUILD_TIME
         value: "/api"
+    http_port: 80
     routes:
       - path: /
