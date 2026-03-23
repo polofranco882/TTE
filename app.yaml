@@ -9,6 +9,8 @@ services:
     instance_size_slug: basic-xs
     source_dir: backend
     dockerfile_path: Dockerfile
+    # Explicitly specify the run command to override any buildpack defaults
+    run_command: npm start
     envs:
       - key: DATABASE_URL
         scope: RUN_AND_BUILD_TIME
