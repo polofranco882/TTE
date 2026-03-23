@@ -25,7 +25,7 @@ const LANG_META: Record<string, { label: string; flag: string }> = {
 
 const emptyItem = (module: string) => {
     switch (module) {
-        case 'banners':      return { title: '', subtitle: '', description: '', cta_text: '', cta_url: '', image_url: '', bg_color: '#09194F', display_order: 0, is_active: true };
+        case 'banners':      return { title: '', subtitle: '', description: '', cta_text: '', cta_url: '', image_url: '', bg_color: '#09194F', badge_text: '', display_order: 0, is_active: true };
         case 'gallery':      return { image_url: '', caption: '', alt_text: '', album: 'General', display_order: 0, is_active: true };
         case 'videos':       return { title: '', description: '', video_url: '', thumbnail_url: '', display_order: 0, is_active: true };
         case 'testimonials': return { author_name: '', author_role: '', author_avatar: '', quote: '', rating: 5, display_order: 0, is_active: true };
@@ -184,6 +184,7 @@ const LandingModulesCRUD = ({ module, token, onNotify, availableLangs }: Landing
                         <Field label="Title (EN default)" value={formData.title} onChange={(v: string) => setFormData((p: any) => ({...p, title: v}))} />
                         <Field label="Subtitle (EN default)" value={formData.subtitle} onChange={(v: string) => setFormData((p: any) => ({...p, subtitle: v}))} />
                     </div>
+                    <Field label="Badge Text (EN default)" value={formData.badge_text} onChange={(v: string) => setFormData((p: any) => ({...p, badge_text: v}))} />
                     <Field label="Description" textarea value={formData.description} onChange={(v: string) => setFormData((p: any) => ({...p, description: v}))} />
                     <div className="grid grid-cols-2 gap-4">
                         <Field label="CTA Button Text" value={formData.cta_text} onChange={(v: string) => setFormData((p: any) => ({...p, cta_text: v}))} />
@@ -295,6 +296,7 @@ const LandingModulesCRUD = ({ module, token, onNotify, availableLangs }: Landing
                             {module === 'banners' && (<>
                                 <Field label="Title" value={getTrans(activeLang, 'title')} onChange={(v: string) => setTrans(activeLang, 'title', v)} placeholder={formData.title || ''} />
                                 <Field label="Subtitle" value={getTrans(activeLang, 'subtitle')} onChange={(v: string) => setTrans(activeLang, 'subtitle', v)} />
+                                <Field label="Badge Text" value={getTrans(activeLang, 'badge_text')} onChange={(v: string) => setTrans(activeLang, 'badge_text', v)} />
                                 <Field label="Description" textarea value={getTrans(activeLang, 'description')} onChange={(v: string) => setTrans(activeLang, 'description', v)} />
                                 <Field label="CTA Button Text" value={getTrans(activeLang, 'cta_text')} onChange={(v: string) => setTrans(activeLang, 'cta_text', v)} />
                             </>)}

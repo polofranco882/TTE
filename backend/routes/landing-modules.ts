@@ -29,7 +29,8 @@ router.get('/', async (req, res) => {
             `SELECT b.*, COALESCE(bt.title, b.title::text) as title,
                     COALESCE(bt.subtitle, b.subtitle::text) as subtitle,
                     COALESCE(bt.description, b.description::text) as description,
-                    COALESCE(bt.cta_text, b.cta_text::text) as cta_text
+                    COALESCE(bt.cta_text, b.cta_text::text) as cta_text,
+                    COALESCE(bt.badge_text, b.badge_text::text) as badge_text
              FROM landing_banners b
              LEFT JOIN landing_banner_translations bt ON bt.banner_id = b.id AND bt.language_code = $2
              WHERE b.landing_page_id = $1 AND b.is_active = TRUE
@@ -85,7 +86,7 @@ router.get('/banners', authenticateToken, authorizeAdmin, async (req, res) => {
         if (!pageId) return res.json([]);
         const result = await pool.query(
             `SELECT b.*, 
-                    (SELECT json_object_agg(language_code, json_build_object('title',title,'subtitle',subtitle,'description',description,'cta_text',cta_text))
+                    (SELECT json_object_agg(language_code, json_build_object('title',title,'subtitle',subtitle,'description',description,'cta_text',cta_text,'badge_text',badge_text))
                      FROM landing_banner_translations WHERE banner_id = b.id) as translations
              FROM landing_banners b WHERE b.landing_page_id = $1 ORDER BY display_order, id`,
             [pageId]
@@ -99,11 +100,11 @@ router.post('/banners', authenticateToken, authorizeAdmin, async (req, res) => {
     try {
         const pageId = await getHomePageId();
         if (!pageId) return res.status(404).json({ error: 'Landing page not found' });
-        const { title, subtitle, description, cta_text, cta_url, image_url, bg_color, display_order } = req.body;
+        const { title, subtitle, description, cta_text, cta_url, image_url, bg_color, display_order, badge_text } = req.body;
         const r = await pool.query(
-            `INSERT INTO landing_banners (landing_page_id, title, subtitle, description, cta_text, cta_url, image_url, bg_color, display_order)
-             VALUES ($1, $2::jsonb, $3::jsonb, $4, $5::jsonb, $6, $7, $8, $9) RETURNING *`,
-            [pageId, JSON.stringify(title), JSON.stringify(subtitle), description, JSON.stringify(cta_text), cta_url, image_url, bg_color || '#09194F', display_order || 0]
+            `INSERT INTO landing_banners (landing_page_id, title, subtitle, description, cta_text, cta_url, image_url, bg_color, display_order, badge_text)
+             VALUES ($1, $2::jsonb, $3::jsonb, $4, $5::jsonb, $6, $7, $8, $9, $10) RETURNING *`,
+            [pageId, JSON.stringify(title), JSON.stringify(subtitle), description, JSON.stringify(cta_text), cta_url, image_url, bg_color || '#09194F', display_order || 0, badge_text]
         );
         res.json(r.rows[0]);
     } catch (err: any) { res.status(500).json({ error: err.message }); }
@@ -112,11 +113,11 @@ router.post('/banners', authenticateToken, authorizeAdmin, async (req, res) => {
 // PUT /api/landing-modules/banners/:id
 router.put('/banners/:id', authenticateToken, authorizeAdmin, async (req, res) => {
     try {
-        const { title, subtitle, description, cta_text, cta_url, image_url, bg_color, display_order, is_active } = req.body;
+        const { title, subtitle, description, cta_text, cta_url, image_url, bg_color, display_order, is_active, badge_text } = req.body;
         const r = await pool.query(
-            `UPDATE landing_banners SET title=$1::jsonb, subtitle=$2::jsonb, description=$3, cta_text=$4::jsonb, cta_url=$5, image_url=$6, bg_color=$7, display_order=$8, is_active=$9, updated_at=NOW()
-             WHERE id=$10 RETURNING *`,
-            [JSON.stringify(title), JSON.stringify(subtitle), description, JSON.stringify(cta_text), cta_url, image_url, bg_color, display_order ?? 0, is_active ?? true, req.params.id]
+            `UPDATE landing_banners SET title=$1::jsonb, subtitle=$2::jsonb, description=$3, cta_text=$4::jsonb, cta_url=$5, image_url=$6, bg_color=$7, display_order=$8, is_active=$9, badge_text=$10, updated_at=NOW()
+             WHERE id=$11 RETURNING *`,
+            [JSON.stringify(title), JSON.stringify(subtitle), description, JSON.stringify(cta_text), cta_url, image_url, bg_color, display_order ?? 0, is_active ?? true, badge_text, req.params.id]
         );
         res.json(r.rows[0]);
     } catch (err: any) { res.status(500).json({ error: err.message }); }
@@ -133,12 +134,12 @@ router.delete('/banners/:id', authenticateToken, authorizeAdmin, async (req, res
 // PUT /api/landing-modules/banners/:id/translations  (upsert a language)
 router.put('/banners/:id/translations', authenticateToken, authorizeAdmin, async (req, res) => {
     try {
-        const { language_code, title, subtitle, description, cta_text } = req.body;
+        const { language_code, title, subtitle, description, cta_text, badge_text } = req.body;
         await pool.query(
-            `INSERT INTO landing_banner_translations (banner_id, language_code, title, subtitle, description, cta_text)
-             VALUES ($1,$2,$3,$4,$5,$6) ON CONFLICT (banner_id, language_code) 
-             DO UPDATE SET title=$3, subtitle=$4, description=$5, cta_text=$6`,
-            [req.params.id, language_code, title, subtitle, description, cta_text]
+            `INSERT INTO landing_banner_translations (banner_id, language_code, title, subtitle, description, cta_text, badge_text)
+             VALUES ($1,$2,$3,$4,$5,$6,$7) ON CONFLICT (banner_id, language_code) 
+             DO UPDATE SET title=$3, subtitle=$4, description=$5, cta_text=$6, badge_text=$7`,
+            [req.params.id, language_code, title, subtitle, description, cta_text, badge_text]
         );
         res.json({ message: 'Translation saved' });
     } catch (err: any) { res.status(500).json({ error: err.message }); }

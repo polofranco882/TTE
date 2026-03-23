@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS landing_banners (
     cta_url       VARCHAR(500),
     image_url     TEXT,
     bg_color      VARCHAR(50) DEFAULT '#09194F',
+    badge_text    VARCHAR(150),
     display_order INT DEFAULT 0,
     is_active     BOOLEAN DEFAULT TRUE,
     created_at    TIMESTAMP DEFAULT NOW(),
@@ -28,6 +29,7 @@ CREATE TABLE IF NOT EXISTS landing_banner_translations (
     subtitle      VARCHAR(300),
     description   TEXT,
     cta_text      VARCHAR(100),
+    badge_text    VARCHAR(150),
     UNIQUE(banner_id, language_code)
 );
 
