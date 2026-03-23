@@ -4,6 +4,7 @@ import { ArrowRight, BookOpen, Users, Globe, PlayCircle, Star, ChevronRight, Che
 import bgHero from './assets/final-login-bg.jpg';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from './components/LanguageSwitcher';
+import bgBanner from './assets/graduation_banner_bg.png';
 
 interface PublicLandingProps {
     onLoginClick: () => void;
@@ -382,119 +383,116 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
                 </div>
             </footer>
 
-            {/* ── Promotional Popup Carousel ───────────────────────────── */}
+            {/* ── Premium Promotional Popup ────────────────────────────── */}
             <AnimatePresence>
-                {showPromo && modules.banners.length > 0 && (
+                {showPromo && (
                     <motion.div 
                         data-testid="promo-popup"
                         initial={{ opacity: 0 }} 
                         animate={{ opacity: 1 }} 
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6 bg-primary/40 backdrop-blur-md"
+                        className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-primary/60 backdrop-blur-xl"
                         onClick={() => setShowPromo(false)}
                     >
                         <motion.div 
-                            initial={{ scale: 0.9, y: 20 }}
-                            animate={{ scale: 1, y: 0 }}
-                            exit={{ scale: 0.9, y: 20 }}
-                            className="relative w-full max-w-4xl bg-surface rounded-3xl overflow-hidden shadow-premium-dark flex flex-col md:flex-row min-h-[400px]"
+                            initial={{ scale: 0.95, y: 30, opacity: 0 }}
+                            animate={{ scale: 1, y: 0, opacity: 1 }}
+                            exit={{ scale: 0.95, y: 30, opacity: 0 }}
+                            className="relative w-full max-w-5xl bg-[#0a1931] rounded-[2rem] overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)] flex flex-col md:flex-row min-h-[500px] border border-white/10"
                             onClick={e => e.stopPropagation()}
                         >
                             {/* Close Button */}
                             <button 
                                 data-testid="close-promo"
                                 onClick={() => setShowPromo(false)}
-                                className="absolute top-4 right-4 z-[70] p-2 rounded-full bg-black/20 hover:bg-black/40 text-white transition-all backdrop-blur-md"
+                                className="absolute top-6 right-6 z-[120] p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all backdrop-blur-md border border-white/10"
                             >
-                                <X size={24} />
+                                <X size={20} />
                             </button>
 
-                            {/* Carousel Content */}
-                            <div className="flex-1 relative flex flex-col md:flex-row overflow-hidden">
-                                {modules.banners.map((banner, idx) => (
-                                    <AnimatePresence mode="wait" key={banner.id}>
-                                        {idx === activeBannerIdx && (
-                                            <motion.div 
-                                                initial={{ opacity: 0, x: 20 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                exit={{ opacity: 0, x: -20 }}
-                                                transition={{ duration: 0.4 }}
-                                                className="absolute inset-0 flex flex-col md:flex-row"
-                                            >
-                                                {/* Banner Image */}
-                                                <div className="w-full md:w-1/2 relative bg-primary-dark">
-                                                    {banner.image_url ? (
-                                                        <img src={banner.image_url} alt={banner.title} className="w-full h-full object-cover" />
-                                                    ) : (
-                                                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary to-accent opacity-50">
-                                                            <Images className="w-20 h-20 text-white" />
-                                                        </div>
-                                                    )}
-                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent md:hidden" />
-                                                </div>
-
-                                                {/* Banner Text */}
-                                                <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center" style={{ backgroundColor: banner.bg_color || '#ffffff' }}>
-                                                    <div className="mb-4">
-                                                        <span className="inline-block py-1 px-3 rounded-full bg-accent/10 border border-accent/20 text-accent text-[10px] font-bold uppercase tracking-widest mb-4">
-                                                            {c(hero, 'badgeText', 'Exclusive Promotion')}
-                                                        </span>
-                                                        <h2 className={`text-3xl md:text-4xl font-serif font-bold mb-3 ${(!banner.bg_color || banner.bg_color === '#ffffff' || banner.bg_color.toLowerCase() === '#fff') ? 'text-primary' : 'text-white'}`}>
-                                                            {banner.title}
-                                                        </h2>
-                                                        <p className={`text-lg font-bold mb-4 ${(!banner.bg_color || banner.bg_color === '#ffffff' || banner.bg_color.toLowerCase() === '#fff') ? 'text-accent' : 'text-white/90'}`}>
-                                                            {banner.subtitle}
-                                                        </p>
-                                                        <p className={`line-clamp-4 leading-relaxed ${(!banner.bg_color || banner.bg_color === '#ffffff' || banner.bg_color.toLowerCase() === '#fff') ? 'text-gray-600' : 'text-white/70'}`}>
-                                                            {banner.description}
-                                                        </p>
-                                                    </div>
-                                                    <div className="mt-auto">
-                                                        {banner.cta_text && (
-                                                            <a 
-                                                                href={banner.cta_url || '#'} 
-                                                                onClick={!banner.cta_url ? (e) => { e.preventDefault(); setShowPromo(false); onLoginClick(); } : undefined}
-                                                                className="inline-flex items-center gap-2 bg-accent hover:bg-accent-dark text-white font-bold px-8 py-4 rounded-xl text-sm uppercase tracking-widest transition-all shadow-premium"
-                                                            >
-                                                                {banner.cta_text} <ArrowRight className="w-5 h-5" />
-                                                            </a>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
-                                ))}
+                            {/* Left Side: Professional Image */}
+                            <div className="w-full md:w-1/2 relative min-h-[300px] md:min-h-0">
+                                <img 
+                                    src={bgBanner} 
+                                    alt="Graduation Excellence" 
+                                    className="absolute inset-0 w-full h-full object-cover"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#0a1931] hidden md:block" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-[#0a1931] to-transparent md:hidden" />
                             </div>
 
-                            {/* Carousel Controls */}
-                            {modules.banners.length > 1 && (
-                                <>
-                                    <button 
-                                        onClick={() => setActiveBannerIdx(prev => (prev - 1 + modules.banners.length) % modules.banners.length)}
-                                        className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/20 hover:bg-black/40 text-white backdrop-blur-sm transition-all z-[110]"
-                                    >
-                                        <ChevronLeft size={24} />
-                                    </button>
-                                    <button 
-                                        onClick={() => setActiveBannerIdx(prev => (prev + 1) % modules.banners.length)}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/20 hover:bg-black/40 text-white backdrop-blur-sm transition-all z-[110]"
-                                    >
-                                        <ChevronRight size={24} />
-                                    </button>
-                                    
-                                    {/* Dots */}
-                                    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-[110]">
-                                        {modules.banners.map((_, idx) => (
-                                            <button 
-                                                key={idx}
-                                                onClick={() => setActiveBannerIdx(idx)}
-                                                className={`w-2.5 h-2.5 rounded-full transition-all ${idx === activeBannerIdx ? 'bg-accent w-8' : 'bg-black/40'}`}
-                                            />
-                                        ))}
+                            {/* Right Side: Content */}
+                            <div className="w-full md:w-1/2 p-8 md:p-14 flex flex-col justify-center relative">
+                                {/* Logo Corner */}
+                                <div className="absolute top-8 right-14 hidden md:flex items-center gap-2 opacity-80">
+                                    <div className="h-8 px-2 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center">
+                                        <img src="/Logo.png" alt="Logo" className="h-4 w-auto brightness-200" />
                                     </div>
-                                </>
-                            )}
+                                    <span className="text-white font-serif font-bold text-lg tracking-tighter">ITE</span>
+                                </div>
+
+                                <div className="space-y-6">
+                                    <motion.span 
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: 0.2 }}
+                                        className="inline-block text-accent font-bold text-xs uppercase tracking-[0.2em]"
+                                    >
+                                        Excelencia en Educación de Inglés
+                                    </motion.span>
+                                    
+                                    <motion.h2 
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.3 }}
+                                        className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-white leading-[1.1] tracking-tight"
+                                    >
+                                        DOMINA EL <br />
+                                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">INGLÉS CON</span> <br />
+                                        CONFIANZA
+                                    </motion.h2>
+
+                                    <motion.p 
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ delay: 0.4 }}
+                                        className="text-white/80 font-bold text-sm uppercase tracking-widest"
+                                    >
+                                        Tu Futuro Global Empieza Aquí
+                                    </motion.p>
+
+                                    <motion.p 
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ delay: 0.5 }}
+                                        className="text-gray-400 text-sm leading-relaxed max-w-sm"
+                                    >
+                                        Aprende de instructores nativos certificados. 
+                                        Metodología optimizada para hispanohablantes. 
+                                        Prepárate para el éxito internacional.
+                                    </motion.p>
+
+                                    <motion.div 
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.6 }}
+                                        className="pt-4"
+                                    >
+                                        <button 
+                                            onClick={() => { setShowPromo(false); onLoginClick(); }}
+                                            className="group relative inline-flex items-center gap-3 bg-gradient-to-br from-[#9e1c22] to-[#7a1418] text-white px-10 py-4 rounded-xl font-bold uppercase tracking-widest transition-all hover:scale-[1.02] active:scale-95 shadow-[0_10px_20px_-5px_rgba(158,28,34,0.4)] border border-[#c4a661]/30 hover:border-[#c4a661]/60"
+                                        >
+                                            <span className="relative z-10">Inscribirse Ahora</span>
+                                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                            {/* Golden subtle glow */}
+                                            <div className="absolute inset-0 rounded-xl bg-[#c4a661]/10 opacity-0 group-hover:opacity-100 blur-md transition-opacity" />
+                                        </button>
+                                    </motion.div>
+                                </div>
+
+                                {/* Star detail */}
+                                <Star className="absolute bottom-10 right-10 text-white/10 w-12 h-12" />
+                            </div>
                         </motion.div>
                     </motion.div>
                 )}
