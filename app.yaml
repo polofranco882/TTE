@@ -1,15 +1,19 @@
 # DigitalOcean App Spec (app.yaml)
-# This file defines the TTE app with its backend and frontend components as services.
+# Definición definitiva para la App TTE con backend y frontend.
 
 name: tte-app
 region: nyc
 services:
   - name: backend
+    github:
+      repo: polofranco882/TTE
+      branch: digitalocean
+      deploy_on_push: true
     instance_count: 1
     instance_size_slug: basic-xs
     source_dir: backend
     dockerfile_path: Dockerfile
-    # Explicitly specify the run command to override any buildpack defaults
+    # Comando de inicio explícito para el backend compilado
     run_command: npm start
     envs:
       - key: DATABASE_URL
@@ -30,6 +34,10 @@ services:
         preserve_path_prefix: true
 
   - name: frontend
+    github:
+      repo: polofranco882/TTE
+      branch: digitalocean
+      deploy_on_push: true
     instance_count: 1
     instance_size_slug: basic-xxs
     source_dir: frontend
