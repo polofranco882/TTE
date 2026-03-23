@@ -5,6 +5,7 @@ import {
     captureState,
     waitForStable,
     isFullyInViewport,
+    dismissPromoAndClickLogin,
 } from '../helpers/viewport';
 
 /**
@@ -19,12 +20,9 @@ test.describe('Auth — Login Form Visibility', () => {
         await page.goto('/');
         await waitForStable(page, 800);
 
-        // Open login dialog (may require clicking a button first)
-        const loginTrigger = page.getByRole('button', { name: /login|platform|acceder|access/i }).first();
-        if (await loginTrigger.isVisible({ timeout: 3000 }).catch(() => false)) {
-            await loginTrigger.click();
-            await waitForStable(page, 600);
-        }
+        // Open login dialog — dismiss promo first, then click CTA
+        await dismissPromoAndClickLogin(page);
+        await waitForStable(page, 600);
         await captureState(page, `auth-form-open-${page.viewportSize()?.width}w`);
 
         // Email input should be visible
@@ -41,11 +39,8 @@ test.describe('Auth — Login Form Visibility', () => {
         await page.goto('/');
         await waitForStable(page, 800);
 
-        const loginTrigger = page.getByRole('button', { name: /login|platform|acceder|access/i }).first();
-        if (await loginTrigger.isVisible({ timeout: 3000 }).catch(() => false)) {
-            await loginTrigger.click();
-            await waitForStable(page, 600);
-        }
+        await dismissPromoAndClickLogin(page);
+        await waitForStable(page, 600);
 
         const passInput = page.locator('input[type="password"]').first();
         if (await passInput.isVisible({ timeout: 3000 }).catch(() => false)) {
@@ -59,11 +54,8 @@ test.describe('Auth — Login Form Visibility', () => {
         await page.goto('/');
         await waitForStable(page, 800);
 
-        const loginTrigger = page.getByRole('button', { name: /login|platform|acceder|access/i }).first();
-        if (await loginTrigger.isVisible({ timeout: 3000 }).catch(() => false)) {
-            await loginTrigger.click();
-            await waitForStable(page, 600);
-        }
+        await dismissPromoAndClickLogin(page);
+        await waitForStable(page, 600);
 
         const submitBtn = page.getByRole('button', { name: /sign in|login|ingresar|acceder|entrar/i }).last();
         if (await submitBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
@@ -82,11 +74,8 @@ test.describe('Auth — Login Form Visibility', () => {
         await page.goto('/');
         await waitForStable(page, 800);
 
-        const loginTrigger = page.getByRole('button', { name: /login|platform|acceder|access/i }).first();
-        if (await loginTrigger.isVisible({ timeout: 3000 }).catch(() => false)) {
-            await loginTrigger.click();
-            await waitForStable(page, 600);
-        }
+        await dismissPromoAndClickLogin(page);
+        await waitForStable(page, 600);
 
         await assertNoHorizontalOverflow(page);
         await captureState(page, `auth-no-overflow-${page.viewportSize()?.width}w`);
@@ -99,11 +88,8 @@ test.describe('Auth — Keyboard / Input Interaction (Mobile)', () => {
         await page.goto('/');
         await waitForStable(page, 800);
 
-        const loginTrigger = page.getByRole('button', { name: /login|platform|acceder|access/i }).first();
-        if (await loginTrigger.isVisible({ timeout: 3000 }).catch(() => false)) {
-            await loginTrigger.click();
-            await waitForStable(page, 600);
-        }
+        await dismissPromoAndClickLogin(page);
+        await waitForStable(page, 600);
 
         const emailInput = page.locator('input[type="email"], input[name="email"]').first();
         if (await emailInput.isVisible({ timeout: 3000 }).catch(() => false)) {
@@ -125,9 +111,10 @@ test.describe('Auth — Keyboard / Input Interaction (Mobile)', () => {
         await page.goto('/');
         await waitForStable(page, 800);
 
-        const loginTrigger = page.getByRole('button', { name: /login|platform|acceder|access/i }).first();
-        if (await loginTrigger.isVisible({ timeout: 3000 }).catch(() => false)) {
-            await loginTrigger.click();
+        const hasCTA = await page.locator('[data-testid="login-cta-nav"], [data-testid="login-cta-hero"]').first().isVisible({ timeout: 2000 }).catch(() => false)
+            || await page.getByRole('button', { name: /login|platform|acceder/i }).first().isVisible({ timeout: 1000 }).catch(() => false);
+        if (hasCTA) {
+            await dismissPromoAndClickLogin(page);
             await waitForStable(page, 600);
 
             const modal = page.locator('[role="dialog"], [class*="modal"], [class*="Modal"]').first();
@@ -151,11 +138,9 @@ test.describe('Auth — Error Messages', () => {
         await page.goto('/');
         await waitForStable(page, 800);
 
-        const loginTrigger = page.getByRole('button', { name: /login|platform|acceder|access/i }).first();
-        if (await loginTrigger.isVisible({ timeout: 3000 }).catch(() => false)) {
-            await loginTrigger.click();
-            await waitForStable(page, 600);
-        }
+        // Open login form — dismiss promo first
+        await dismissPromoAndClickLogin(page);
+        await waitForStable(page, 600);
 
         const emailInput = page.locator('input[type="email"], input[name="email"]').first();
         const passInput  = page.locator('input[type="password"]').first();

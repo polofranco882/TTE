@@ -5,6 +5,30 @@ import { Page, Locator, expect } from '@playwright/test';
  * Utilities to detect visual/layout issues across all device types.
  */
 
+// ── Shared interaction helpers ─────────────────────────────────────────────
+
+/**
+ * Dismisses the promo popup (if visible) then clicks the login CTA.
+ * Handles all device types: uses data-testid first, falls back to aria-label.
+ */
+export async function dismissPromoAndClickLogin(page: Page): Promise<void> {
+    // Close promo popup if it's blocking the CTA
+    const promoClose = page.locator('[data-testid="close-promo"]');
+    if (await promoClose.isVisible({ timeout: 2000 }).catch(() => false)) {
+        await promoClose.click();
+        await page.waitForTimeout(400);
+    }
+    // Prefer data-testid then fall back to text/aria-label
+    const cta = page.locator('[data-testid="login-cta-nav"], [data-testid="login-cta-hero"]').first();
+    const hasDTI = await cta.isVisible({ timeout: 3000 }).catch(() => false);
+    if (hasDTI) {
+        await cta.click();
+    } else {
+        const fallback = page.getByRole('button', { name: /login|platform|acceder|access/i }).first();
+        if (await fallback.isVisible({ timeout: 3000 }).catch(() => false)) await fallback.click();
+    }
+}
+
 // ── Viewport helpers ──────────────────────────────────────────────────────
 
 /** Returns the current page's visible viewport dimensions */

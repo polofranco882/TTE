@@ -5,6 +5,7 @@ import {
     captureState,
     waitForStable,
     isFullyInViewport,
+    dismissPromoAndClickLogin,
 } from '../helpers/viewport';
 
 /**
@@ -122,6 +123,13 @@ test.describe('Landing — Language Switcher', () => {
     test('language switch changes page content', async ({ page }) => {
         await page.goto('/');
         await waitForStable(page, 1000);
+
+        // Dismiss promo popup first so language buttons are accessible
+        const promoClose = page.locator('[data-testid="close-promo"]');
+        if (await promoClose.isVisible({ timeout: 2000 }).catch(() => false)) {
+            await promoClose.click();
+            await waitForStable(page, 600);
+        }
 
         // Get initial hero text
         const h1 = page.locator('h1').first();

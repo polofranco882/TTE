@@ -112,8 +112,8 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
                     </div>
                     <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
                         <LanguageSwitcher />
-                        <button onClick={onLoginClick} aria-label="Platform Login" className="bg-accent hover:bg-accent-dark text-white px-3 sm:px-6 py-2.5 sm:py-2.5 rounded-xl font-bold text-xs sm:text-sm uppercase tracking-wider shadow-premium hover:shadow-premium-hover transition-all flex items-center gap-1 sm:gap-2 group min-h-[40px]">
-                            <span className="hidden sm:inline">{c(h, 'ctaText', 'Platform Login')}</span> <ArrowRight className="w-4 h-4 sm:group-hover:translate-x-1 transition-transform" />
+                        <button onClick={onLoginClick} data-testid="login-cta-nav" aria-label="Platform Login" className="bg-accent hover:bg-accent-dark text-white px-3 sm:px-6 py-2.5 sm:py-2.5 rounded-xl font-bold text-xs sm:text-sm uppercase tracking-wider shadow-premium hover:shadow-premium-hover transition-all flex items-center gap-1 sm:gap-2 group min-h-[40px]">
+                            <span className="sm:inline">{c(h, 'ctaText', 'Platform Login')}</span> <ArrowRight className="w-4 h-4 sm:group-hover:translate-x-1 transition-transform" />
                         </button>
                     </div>
                 </div>
@@ -138,7 +138,7 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
                                 {c(hero, 'subtitle', 'TTESOL Academy offers a premium, interactive learning experience designed to accelerate your fluency and professional growth.')}
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4">
-                                <button onClick={onLoginClick} className="bg-accent text-white px-8 py-5 rounded-xl font-bold uppercase tracking-widest shadow-premium hover:bg-accent-dark transition-all flex items-center justify-center gap-2 group min-h-[56px]">
+                                <button onClick={onLoginClick} data-testid="login-cta-hero" className="bg-accent text-white px-8 py-5 rounded-xl font-bold uppercase tracking-widest shadow-premium hover:bg-accent-dark transition-all flex items-center justify-center gap-2 group min-h-[56px]">
                                     {c(hero, 'primaryCta', 'Access Platform')} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                 </button>
                                 <button className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-8 py-4 rounded-xl font-bold uppercase tracking-widest hover:bg-white/20 transition-all flex items-center justify-center gap-2">
@@ -386,10 +386,11 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
             <AnimatePresence>
                 {showPromo && modules.banners.length > 0 && (
                     <motion.div 
+                        data-testid="promo-popup"
                         initial={{ opacity: 0 }} 
                         animate={{ opacity: 1 }} 
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-primary/40 backdrop-blur-md"
+                        className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6 bg-primary/40 backdrop-blur-md"
                         onClick={() => setShowPromo(false)}
                     >
                         <motion.div 
@@ -401,8 +402,9 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
                         >
                             {/* Close Button */}
                             <button 
+                                data-testid="close-promo"
                                 onClick={() => setShowPromo(false)}
-                                className="absolute top-4 right-4 z-[110] p-2 rounded-full bg-black/20 hover:bg-black/40 text-white transition-all backdrop-blur-md"
+                                className="absolute top-4 right-4 z-[70] p-2 rounded-full bg-black/20 hover:bg-black/40 text-white transition-all backdrop-blur-md"
                             >
                                 <X size={24} />
                             </button>

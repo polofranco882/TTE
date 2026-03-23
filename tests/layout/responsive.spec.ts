@@ -6,6 +6,7 @@ import {
     captureState,
     waitForStable,
     isFullyInViewport,
+    dismissPromoAndClickLogin,
 } from '../helpers/viewport';
 
 /**
@@ -48,8 +49,13 @@ test.describe('Layout — Navigation & Header', () => {
     test('main CTA button is visible and not clipped', async ({ page }) => {
         await page.goto('/');
         await waitForStable(page, 800);
-        // Look for any prominent button
-        const cta = page.getByRole('button', { name: /login|acceder|platform|access/i }).first();
+        // Dismiss promo then look for CTA
+        const promoClose = page.locator('[data-testid="close-promo"]');
+        if (await promoClose.isVisible({ timeout: 2000 }).catch(() => false)) {
+            await promoClose.click();
+            await waitForStable(page, 400);
+        }
+        const cta = page.locator('[data-testid="login-cta-nav"], [data-testid="login-cta-hero"]').first();
         if (await cta.isVisible({ timeout: 3000 }).catch(() => false)) {
             const inVp = await isFullyInViewport(page, cta);
             expect(inVp, 'CTA button should be fully in viewport').toBe(true);
@@ -178,10 +184,11 @@ test.describe('Layout — Overlapping Panels Detection', () => {
         await page.goto('/');
         await waitForStable(page, 800);
 
-        // Trigger login modal if present
-        const loginBtn = page.getByRole('button', { name: /login|platform|acceder/i }).first();
-        if (await loginBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
-            await loginBtn.click();
+        // Use shared helper to dismiss promo then click login
+        const loginBtnVisible = await page.locator('[data-testid="login-cta-nav"], [data-testid="login-cta-hero"]').first().isVisible({ timeout: 2000 }).catch(() => false)
+            || await page.getByRole('button', { name: /login|platform|acceder/i }).first().isVisible({ timeout: 1000 }).catch(() => false);
+        if (loginBtnVisible) {
+            await dismissPromoAndClickLogin(page);
             await waitForStable(page, 600);
             await captureState(page, 'modal-login-opened');
 

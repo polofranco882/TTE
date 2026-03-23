@@ -164,4 +164,19 @@
     position: sticky;
     bottom: 0;
   }
+
+  /* Ensure no horizontal overflow leaks through html layer on WebKit */
+  html {
+    overflow-x: hidden;
+  }
+
+  /* On mobile, the sidebar must never add width to the layout */
+  @media (max-width: 767px) {
+    :root {
+      --sidebar-width: 0px !important;
+    }
+    .reader-fullscreen {
+      left: 0 !important;
+    }
+  }
 }

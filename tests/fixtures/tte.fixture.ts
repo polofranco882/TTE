@@ -25,9 +25,21 @@ type TteFixtures = {
 // ── Authentication helper ─────────────────────────────────────────────────
 async function login(page: Page, email: string, password: string) {
     await page.goto('/');
-    // Wait for login form — could be the landing or direct login modal
-    const loginBtn = page.getByRole('button', { name: /login|acceder|entrar|platform/i }).first();
-    if (await loginBtn.isVisible()) await loginBtn.click();
+    // Dismiss promo popup if present (it appears on first load when banners exist)
+    const promoClose = page.locator('[data-testid="close-promo"]');
+    if (await promoClose.isVisible({ timeout: 2000 }).catch(() => false)) {
+        await promoClose.click();
+        await page.waitForTimeout(400);
+    }
+    // Click login button — prefer data-testid, fallback to aria-label/text
+    const loginBtn = page.locator('[data-testid="login-cta-nav"], [data-testid="login-cta-hero"]').first();
+    const hasDTI = await loginBtn.isVisible({ timeout: 3000 }).catch(() => false);
+    if (hasDTI) {
+        await loginBtn.click();
+    } else {
+        const fallback = page.getByRole('button', { name: /login|acceder|entrar|platform|access/i }).first();
+        if (await fallback.isVisible({ timeout: 3000 }).catch(() => false)) await fallback.click();
+    }
     await page.waitForTimeout(500);
     await page.fill('input[type="email"], input[name="email"]', email);
     await page.fill('input[type="password"], input[name="password"]', password);
