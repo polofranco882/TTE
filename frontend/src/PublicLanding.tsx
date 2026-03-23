@@ -436,14 +436,6 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
 
                                                 {/* Right Side: Dynamic Content */}
                                                 <div className="w-full md:w-1/2 p-8 md:p-14 flex flex-col justify-center relative">
-                                                    {/* Logo Corner */}
-                                                    <div className="absolute top-8 right-14 hidden md:flex items-center gap-2 opacity-80">
-                                                        <div className="h-8 px-2 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center">
-                                                            <img src="/Logo.png" alt="Logo" className="h-4 w-auto brightness-200" />
-                                                        </div>
-                                                        <span className="text-white font-serif font-bold text-lg tracking-tighter">ITE</span>
-                                                    </div>
-
                                                     <div className="space-y-6">
                                                         <motion.span 
                                                             initial={{ opacity: 0, x: -10 }}
