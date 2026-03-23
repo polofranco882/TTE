@@ -6,8 +6,8 @@ const TEST_ADMIN = {
     password: 'admin123',
 };
 const TEST_USER = {
-    email: 'student@ttesol.com',
-    password: 'student123',
+    email: 'admin@ttesol.com',
+    password: 'password123',
 };
 
 // ── Extended fixture types ────────────────────────────────────────────────

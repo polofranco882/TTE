@@ -29,9 +29,10 @@ export default defineConfig({
     /* Shared settings */
     use: {
         baseURL: 'http://localhost:3002',
-        screenshot: 'only-on-failure',
+        storageState: 'playwright/.auth/user.json',
+        screenshot: 'on',
         video: 'on-first-retry',
-        trace: 'on-first-retry',
+        trace: 'on',
         ignoreHTTPSErrors: true,
         actionTimeout: 15_000,
     },
@@ -41,6 +42,15 @@ export default defineConfig({
      * ──────────────────────────────────────────────────────────────── */
     projects: [
 
+        /* ── Setup ────────────────────────────────────────────────── */
+        {
+            name: 'setup',
+            testMatch: /auth\.setup\.ts/,
+            use: {
+                storageState: { cookies: [], origins: [] }, // Start fresh for login
+            },
+        },
+
         /* ── Desktop ─────────────────────────────────────────────── */
         {
             name: 'desktop-chromium',
@@ -48,6 +58,7 @@ export default defineConfig({
                 ...devices['Desktop Chrome'],
                 viewport: { width: 1440, height: 900 },
             },
+            dependencies: ['setup'],
         },
         {
             name: 'desktop-webkit',
@@ -55,6 +66,7 @@ export default defineConfig({
                 ...devices['Desktop Safari'],
                 viewport: { width: 1440, height: 900 },
             },
+            dependencies: ['setup'],
         },
 
         /* ── Mobile WebKit — simulates Mobile Safari / iOS ─────── */
@@ -65,6 +77,7 @@ export default defineConfig({
                 browserName: 'webkit',
                 hasTouch: true,
             },
+            dependencies: ['setup'],
         },
         {
             name: 'mobile-iphone-se',
@@ -73,6 +86,7 @@ export default defineConfig({
                 browserName: 'webkit',
                 hasTouch: true,
             },
+            dependencies: ['setup'],
         },
         {
             name: 'mobile-iphone-14-landscape',
@@ -81,6 +95,7 @@ export default defineConfig({
                 browserName: 'webkit',
                 hasTouch: true,
             },
+            dependencies: ['setup'],
         },
 
         /* ── Tablet WebKit — simulates iPad ─────────────────────── */
@@ -91,6 +106,7 @@ export default defineConfig({
                 browserName: 'webkit',
                 hasTouch: true,
             },
+            dependencies: ['setup'],
         },
         {
             name: 'tablet-ipad-landscape',
@@ -99,6 +115,7 @@ export default defineConfig({
                 browserName: 'webkit',
                 hasTouch: true,
             },
+            dependencies: ['setup'],
         },
 
         /* ── Android / Chrome mobile (optional comparison) ──────── */
@@ -109,14 +126,16 @@ export default defineConfig({
                 browserName: 'chromium',
                 hasTouch: true,
             },
+            dependencies: ['setup'],
         },
     ],
 
     /* Start frontend dev server automatically if not running */
-    // webServer: {
-    //   command: 'npm run dev',
-    //   cwd: './frontend',
-    //   url: 'http://localhost:5173',
-    //   reuseExistingServer: true,
-    // },
+    webServer: {
+        command: 'npm run dev',
+        cwd: './frontend',
+        url: 'http://localhost:3002',
+        reuseExistingServer: true,
+        timeout: 60_000,
+    },
 });

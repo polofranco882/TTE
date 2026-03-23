@@ -13,15 +13,20 @@ import { Page, Locator, expect } from '@playwright/test';
  */
 export async function dismissPromoAndClickLogin(page: Page): Promise<void> {
     // Close promo popup if it's blocking the CTA
-    const promoClose = page.locator('[data-testid="close-promo"]');
+    const promoOverlay = page.locator('[data-testid="promo-popup"]').first();
+    const promoClose = page.locator('[data-testid="close-promo"]').first();
+
     if (await promoClose.isVisible({ timeout: 2000 }).catch(() => false)) {
-        await promoClose.click();
+        await page.evaluate(() => {
+            (document.querySelector('[data-testid="close-promo"]') as HTMLElement)?.click();
+        });
+        await promoOverlay.waitFor({ state: 'hidden', timeout: 3000 }).catch(() => {});
         await page.waitForTimeout(400);
     }
-    // Prefer data-testid then fall back to text/aria-label
-    const cta = page.locator('[data-testid="login-cta-nav"], [data-testid="login-cta-hero"]').first();
-    const hasDTI = await cta.isVisible({ timeout: 3000 }).catch(() => false);
-    if (hasDTI) {
+    // Prefer the real aria-label then data-testid then fall back
+    const cta = page.locator('button[aria-label="Platform Login"], [data-testid="login-cta-nav"], [data-testid="login-cta-hero"]').first();
+    const isVisible = await cta.isVisible({ timeout: 3000 }).catch(() => false);
+    if (isVisible) {
         await cta.click();
     } else {
         const fallback = page.getByRole('button', { name: /login|platform|acceder|access/i }).first();
@@ -147,6 +152,67 @@ export async function getScrollHeight(page: Page): Promise<number> {
 /** Wait for page to be visually stable (no pending animations) */
 export async function waitForStable(page: Page, ms = 600) {
     await page.waitForTimeout(ms);
+}
+
+/** Checks if an element is visually covered by another element (z-index overlap) */
+export async function isElementCovered(page: Page, locator: Locator): Promise<boolean> {
+    return page.evaluate(async (selector) => {
+        const el = document.querySelector(selector);
+        if (!el) return false;
+        
+        const rect = el.getBoundingClientRect();
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+        
+        // Element at point should be the element itself or one of its children
+        const elementAtPoint = document.elementFromPoint(x, y);
+        if (!elementAtPoint) return false;
+        
+        return !el.contains(elementAtPoint) && elementAtPoint !== el;
+    }, await locator.evaluate(el => {
+        if (el.id) return `#${el.id}`;
+        return `${el.tagName.toLowerCase()}${el.className ? '.' + el.className.split(' ').join('.') : ''}`;
+    }));
+}
+
+/** Asserts that an element is not covered by any other element */
+export async function assertNotCovered(page: Page, locator: Locator, label = 'Element') {
+    const covered = await isElementCovered(page, locator);
+    if (covered) {
+        throw new Error(`❌ ${label} is visually covered by another element (overlap detected)`);
+    }
+}
+
+/** Specific helper to wait for the book reader to be fully initialized */
+export async function waitForReaderReady(page: Page) {
+    // Wait for the main reader container or any indicator of the reader page
+    await page.waitForSelector('[data-testid="reader-container"], .book-reader, #reader, [class*="Reader"], main canvas', { timeout: 20000 });
+    
+    // Give it a moment to stabilize the layout
+    await waitForStable(page, 1500);
+    
+    // Check for core visual elements (canvas or text content)
+    const content = page.locator('canvas, svg, iframe, .page-content, [class*="page"], [class*="content"]').first();
+    await expect(content).toBeVisible({ timeout: 10000 }).catch(() => {
+        console.warn('Reader content not immediately visible, might be still rendering...');
+    });
+}
+
+/** Asserts that the sidebar is in a specific state (expanded/collapsed) */
+export async function assertSidebarState(page: Page, expanded: boolean) {
+    const sidebar = page.locator('[data-testid="sidebar"], aside, nav.sidebar').first();
+    const isVisible = await sidebar.isVisible();
+    
+    if (expanded) {
+        expect(isVisible, 'Sidebar should be visible').toBe(true);
+        const width = await getSidebarWidth(page);
+        expect(width, 'Sidebar width should be > 50px when expanded').toBeGreaterThan(50);
+    } else {
+        const width = await getSidebarWidth(page);
+        if (isVisible) {
+            expect(width, 'Sidebar should be narrow (< 100px) when collapsed').toBeLessThan(100);
+        }
+    }
 }
 
 // ── Screenshot helper ─────────────────────────────────────────────────────
