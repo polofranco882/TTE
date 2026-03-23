@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, BookOpen, Users, Globe, PlayCircle, Star, ChevronRight, ChevronLeft, Quote, X, Film, Images } from 'lucide-react';
+import { ArrowRight, BookOpen, Users, Globe, PlayCircle, Star, ChevronRight, Quote, X, Film, Images } from 'lucide-react';
 import bgHero from './assets/final-login-bg.jpg';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from './components/LanguageSwitcher';
@@ -26,7 +26,7 @@ function toEmbedUrl(url: string): string {
 }
 
 const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
-    const { i18n } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [cms, setCms] = useState<any>(null);
     const [modules, setModules] = useState<{ banners: any[]; gallery: any[]; videos: any[]; testimonials: any[] }>({
         banners: [], gallery: [], videos: [], testimonials: []
@@ -63,9 +63,10 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
         if (!showPromo || modules.banners.length <= 1) return;
         const timer = setInterval(() => {
             setActiveBannerIdx(prev => (prev + 1) % modules.banners.length);
-        }, 15000);
+        }, 30000); // 30 seconds as requested
         return () => clearInterval(timer);
     }, [showPromo, modules.banners.length]);
+
 
     const h = cms?.header   || {};
     const hero = cms?.hero    || {};
@@ -383,9 +384,9 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
                 </div>
             </footer>
 
-            {/* ── Premium Promotional Popup ────────────────────────────── */}
+            {/* ── Premium Promotional Popup Carousel ───────────────────── */}
             <AnimatePresence>
-                {showPromo && (
+                {showPromo && modules.banners.length > 0 && (
                     <motion.div 
                         data-testid="promo-popup"
                         initial={{ opacity: 0 }} 
@@ -410,89 +411,123 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
                                 <X size={20} />
                             </button>
 
-                            {/* Left Side: Professional Image */}
-                            <div className="w-full md:w-1/2 relative min-h-[300px] md:min-h-0">
-                                <img 
-                                    src={bgBanner} 
-                                    alt="Graduation Excellence" 
-                                    className="absolute inset-0 w-full h-full object-cover"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#0a1931] hidden md:block" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#0a1931] to-transparent md:hidden" />
+                            {/* Carousel Content Container */}
+                            <div className="flex-1 relative flex flex-col md:flex-row overflow-hidden">
+                                {modules.banners.map((banner, idx) => (
+                                    <AnimatePresence mode="wait" key={banner.id}>
+                                        {idx === activeBannerIdx && (
+                                            <motion.div 
+                                                initial={{ opacity: 0, x: 20 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                exit={{ opacity: 0, x: -20 }}
+                                                transition={{ duration: 0.6 }}
+                                                className="absolute inset-0 flex flex-col md:flex-row"
+                                            >
+                                                {/* Left Side: Dynamic Image */}
+                                                <div className="w-full md:w-1/2 relative min-h-[300px] md:min-h-0">
+                                                    <img 
+                                                        src={banner.image_url || bgBanner} 
+                                                        alt={banner.title} 
+                                                        className="absolute inset-0 w-full h-full object-cover"
+                                                    />
+                                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#0a1931] hidden md:block" />
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a1931] to-transparent md:hidden" />
+                                                </div>
+
+                                                {/* Right Side: Dynamic Content */}
+                                                <div className="w-full md:w-1/2 p-8 md:p-14 flex flex-col justify-center relative">
+                                                    {/* Logo Corner */}
+                                                    <div className="absolute top-8 right-14 hidden md:flex items-center gap-2 opacity-80">
+                                                        <div className="h-8 px-2 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center">
+                                                            <img src="/Logo.png" alt="Logo" className="h-4 w-auto brightness-200" />
+                                                        </div>
+                                                        <span className="text-white font-serif font-bold text-lg tracking-tighter">ITE</span>
+                                                    </div>
+
+                                                    <div className="space-y-6">
+                                                        <motion.span 
+                                                            initial={{ opacity: 0, x: -10 }}
+                                                            animate={{ opacity: 1, x: 0 }}
+                                                            transition={{ delay: 0.2 }}
+                                                            className="inline-block text-accent font-bold text-xs uppercase tracking-[0.2em]"
+                                                        >
+                                                            {banner.badge_text || t('banner.badge')}
+                                                        </motion.span>
+                                                        
+                                                        <motion.h2 
+                                                            initial={{ opacity: 0, y: 10 }}
+                                                            animate={{ opacity: 1, y: 0 }}
+                                                            transition={{ delay: 0.3 }}
+                                                            className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-white leading-[1.1] tracking-tight"
+                                                        >
+                                                            {banner.title || t('banner.title')}
+                                                        </motion.h2>
+
+                                                        <motion.p 
+                                                            initial={{ opacity: 0 }}
+                                                            animate={{ opacity: 1 }}
+                                                            transition={{ delay: 0.4 }}
+                                                            className="text-white/80 font-bold text-sm uppercase tracking-widest"
+                                                        >
+                                                            {banner.subtitle || t('banner.subtitle')}
+                                                        </motion.p>
+
+                                                        <motion.p 
+                                                            initial={{ opacity: 0 }}
+                                                            animate={{ opacity: 1 }}
+                                                            transition={{ delay: 0.5 }}
+                                                            className="text-gray-400 text-sm leading-relaxed max-w-sm"
+                                                        >
+                                                            {banner.description || t('banner.description')}
+                                                        </motion.p>
+
+                                                        <motion.div 
+                                                            initial={{ opacity: 0, y: 20 }}
+                                                            animate={{ opacity: 1, y: 0 }}
+                                                            transition={{ delay: 0.6 }}
+                                                            className="pt-4"
+                                                        >
+                                                            <button 
+                                                                onClick={() => { 
+                                                                    setShowPromo(false); 
+                                                                    if (banner.cta_url && banner.cta_url !== '#') {
+                                                                        window.location.href = banner.cta_url;
+                                                                    } else {
+                                                                        onLoginClick(); 
+                                                                    }
+                                                                }}
+                                                                className="group relative inline-flex items-center gap-3 bg-gradient-to-br from-[#9e1c22] to-[#7a1418] text-white px-10 py-4 rounded-xl font-bold uppercase tracking-widest transition-all hover:scale-[1.02] active:scale-95 shadow-[0_10px_20px_-5px_rgba(158,28,34,0.4)] border border-[#c4a661]/30 hover:border-[#c4a661]/60"
+                                                            >
+                                                                <span className="relative z-10">{banner.cta_text || t('banner.cta')}</span>
+                                                                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                                                <div className="absolute inset-0 rounded-xl bg-[#c4a661]/10 opacity-0 group-hover:opacity-100 blur-md transition-opacity" />
+                                                            </button>
+                                                        </motion.div>
+                                                    </div>
+
+                                                    {/* Decorative Detail */}
+                                                    <Star className="absolute bottom-10 right-10 text-white/10 w-12 h-12" />
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                ))}
                             </div>
 
-                            {/* Right Side: Content */}
-                            <div className="w-full md:w-1/2 p-8 md:p-14 flex flex-col justify-center relative">
-                                {/* Logo Corner */}
-                                <div className="absolute top-8 right-14 hidden md:flex items-center gap-2 opacity-80">
-                                    <div className="h-8 px-2 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center">
-                                        <img src="/Logo.png" alt="Logo" className="h-4 w-auto brightness-200" />
+                            {/* Carousel Controls (if more than 1) */}
+                            {modules.banners.length > 1 && (
+                                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 z-[130]">
+                                    <div className="flex gap-2">
+                                        {modules.banners.map((_, dotIdx) => (
+                                            <button 
+                                                key={dotIdx}
+                                                onClick={() => setActiveBannerIdx(dotIdx)}
+                                                className={`w-2 h-2 rounded-full transition-all duration-500 ${dotIdx === activeBannerIdx ? 'bg-accent w-8' : 'bg-white/20'}`}
+                                            />
+                                        ))}
                                     </div>
-                                    <span className="text-white font-serif font-bold text-lg tracking-tighter">ITE</span>
                                 </div>
-
-                                <div className="space-y-6">
-                                    <motion.span 
-                                        initial={{ opacity: 0, x: -10 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: 0.2 }}
-                                        className="inline-block text-accent font-bold text-xs uppercase tracking-[0.2em]"
-                                    >
-                                        Excelencia en Educación de Inglés
-                                    </motion.span>
-                                    
-                                    <motion.h2 
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.3 }}
-                                        className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-white leading-[1.1] tracking-tight"
-                                    >
-                                        DOMINA EL <br />
-                                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">INGLÉS CON</span> <br />
-                                        CONFIANZA
-                                    </motion.h2>
-
-                                    <motion.p 
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        transition={{ delay: 0.4 }}
-                                        className="text-white/80 font-bold text-sm uppercase tracking-widest"
-                                    >
-                                        Tu Futuro Global Empieza Aquí
-                                    </motion.p>
-
-                                    <motion.p 
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        transition={{ delay: 0.5 }}
-                                        className="text-gray-400 text-sm leading-relaxed max-w-sm"
-                                    >
-                                        Aprende de instructores nativos certificados. 
-                                        Metodología optimizada para hispanohablantes. 
-                                        Prepárate para el éxito internacional.
-                                    </motion.p>
-
-                                    <motion.div 
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.6 }}
-                                        className="pt-4"
-                                    >
-                                        <button 
-                                            onClick={() => { setShowPromo(false); onLoginClick(); }}
-                                            className="group relative inline-flex items-center gap-3 bg-gradient-to-br from-[#9e1c22] to-[#7a1418] text-white px-10 py-4 rounded-xl font-bold uppercase tracking-widest transition-all hover:scale-[1.02] active:scale-95 shadow-[0_10px_20px_-5px_rgba(158,28,34,0.4)] border border-[#c4a661]/30 hover:border-[#c4a661]/60"
-                                        >
-                                            <span className="relative z-10">Inscribirse Ahora</span>
-                                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                                            {/* Golden subtle glow */}
-                                            <div className="absolute inset-0 rounded-xl bg-[#c4a661]/10 opacity-0 group-hover:opacity-100 blur-md transition-opacity" />
-                                        </button>
-                                    </motion.div>
-                                </div>
-
-                                {/* Star detail */}
-                                <Star className="absolute bottom-10 right-10 text-white/10 w-12 h-12" />
-                            </div>
+                            )}
                         </motion.div>
                     </motion.div>
                 )}
