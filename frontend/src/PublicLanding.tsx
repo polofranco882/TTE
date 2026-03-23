@@ -122,36 +122,96 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
             </nav>
 
             {/* ── Hero ──────────────────────────────────────────────────── */}
-            <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden bg-primary">
-                <div className="absolute inset-0 z-0">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary-light to-primary opacity-90 z-10" />
-                    <div className="absolute inset-0 bg-cover bg-center opacity-20 z-0" style={{ backgroundImage: `url(${c(hero, 'backgroundImage', bgHero as string || '')})` }} />
+            <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden bg-primary px-6">
+                {/* Background Shapes */}
+                <div className="absolute inset-0 z-0 overflow-hidden">
+                    <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-secondary/5 to-transparent" />
+                    <div className="absolute -top-24 -right-24 w-96 h-96 bg-accent/10 rounded-full blur-[120px]" />
                 </div>
-                <div className="max-w-7xl mx-auto px-6 relative z-20">
-                    <div className="max-w-3xl">
-                        <motion.div key={i18n.language} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-                            <span className="inline-block py-1 px-3 rounded-full bg-white/10 border border-white/20 text-white text-xs font-bold uppercase tracking-widest mb-6 backdrop-blur-sm">
-                                {c(hero, 'badgeText', 'Excellence in English Education')}
-                            </span>
-                            <h1 className="text-5xl md:text-7xl font-serif font-bold text-white mb-6 leading-[1.1] tracking-tight">
-                                {hero.title ? <span dangerouslySetInnerHTML={{ __html: hero.title.replace(',', ',<br/>') }} /> : <>Master the Language, <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">Shape Your Future.</span></>}
+
+                <div className="max-w-7xl mx-auto relative z-20">
+                    <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+                        {/* Left: Content */}
+                        <motion.div 
+                            key={i18n.language} 
+                            initial={{ opacity: 0, x: -30 }} 
+                            animate={{ opacity: 1, x: 0 }} 
+                            transition={{ duration: 0.8, ease: "easeOut" }}
+                            className="max-w-2xl"
+                        >
+                            <div className="flex items-center gap-3 mb-8">
+                                <div className="w-2 h-2 rounded-full bg-red-600 animate-pulse shadow-[0_0_10px_rgba(220,38,38,0.5)]" />
+                                <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-gray-400">
+                                    {c(hero, 'badgeText', 'Excellence in Pedagogy')}
+                                </span>
+                            </div>
+
+                            <h1 className="text-4xl sm:text-5xl md:text-7xl font-serif font-bold text-white mb-8 leading-[1.05] tracking-tight">
+                                {hero.title ? (
+                                    <span dangerouslySetInnerHTML={{ __html: hero.title }} />
+                                ) : (
+                                    <>
+                                        Mastering <br />
+                                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-800">Global English</span> <br />
+                                        with Academic Rigor.
+                                    </>
+                                )}
                             </h1>
-                            <p className="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl font-light leading-relaxed">
-                                {c(hero, 'subtitle', 'TTESOL Academy offers a premium, interactive learning experience designed to accelerate your fluency and professional growth.')}
+
+                            <p className="text-lg md:text-xl text-gray-300/90 mb-12 max-w-xl font-medium leading-relaxed">
+                                {c(hero, 'subtitle', 'TTESOL English Academy provides a world-class linguistic environment where professional growth meets academic excellence. Join an international community of scholars.')}
                             </p>
-                            <div className="flex flex-col sm:flex-row gap-4">
-                                <button onClick={onLoginClick} data-testid="login-cta-hero" className="bg-accent text-white px-8 py-5 rounded-xl font-bold uppercase tracking-widest shadow-premium hover:bg-accent-dark transition-all flex items-center justify-center gap-2 group min-h-[56px]">
-                                    {c(hero, 'primaryCta', 'Access Platform')} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+
+                            <div className="flex flex-col sm:flex-row gap-5 items-stretch sm:items-center">
+                                <button 
+                                    onClick={onLoginClick} 
+                                    className="bg-red-700 hover:bg-red-800 text-white px-10 py-5 rounded-xl font-black uppercase tracking-widest shadow-xl shadow-red-900/20 transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 min-h-[60px]"
+                                >
+                                    {c(hero, 'primaryCta', 'Join Now')} <ArrowRight size={20} />
                                 </button>
-                                <button className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-8 py-4 rounded-xl font-bold uppercase tracking-widest hover:bg-white/20 transition-all flex items-center justify-center gap-2">
-                                    <PlayCircle className="w-5 h-5" /> {c(hero, 'secondaryCta', 'Watch Video')}
+                                <button className="bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/20 text-white px-10 py-5 rounded-xl font-black uppercase tracking-widest transition-all flex items-center justify-center gap-3 min-h-[60px]">
+                                    {c(hero, 'secondaryCta', 'View Curriculum')}
                                 </button>
                             </div>
                         </motion.div>
+
+                        {/* Right: Premium Image */}
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, x: 30 }}
+                            animate={{ opacity: 1, scale: 1, x: 0 }}
+                            transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
+                            className="relative"
+                        >
+                            {/* Decorative element behind image */}
+                            <div className="absolute -inset-4 bg-gradient-to-br from-accent/20 to-secondary/20 rounded-[3rem] blur-2xl -z-10 opacity-30" />
+                            
+                            <div className="relative aspect-[4/5] sm:aspect-[1.1] lg:aspect-[4/5] overflow-hidden rounded-[2.5rem] sm:rounded-[4rem] shadow-2xl border border-white/10 group">
+                                <img 
+                                    src="file:///C:/Users/user/.gemini/antigravity/brain/6ec8b50f-82fa-4cff-aa41-093eeccf8009/classroom_hero_v1_1774279726655.png" 
+                                    alt="Classroom Education"
+                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-primary/40 via-transparent to-transparent opacity-60 pointer-events-none" />
+                            </div>
+
+                            {/* Floating Stats or Element? Let's add a small detail like in many premium designs */}
+                            <motion.div 
+                                animate={{ y: [0, -10, 0] }}
+                                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                                className="absolute -bottom-6 -left-6 sm:-bottom-10 sm:-left-10 bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-3xl shadow-2xl hidden sm:block"
+                            >
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-2xl bg-accent/20 flex items-center justify-center">
+                                        <BookOpen className="text-accent w-6 h-6" />
+                                    </div>
+                                    <div>
+                                        <p className="text-white font-bold text-lg leading-tight tracking-tight">World-Class</p>
+                                        <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">Pedagogy</p>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        </motion.div>
                     </div>
-                </div>
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1/3 h-full hidden lg:block opacity-50 pointer-events-none">
-                    <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-secondary/30 rounded-full blur-[128px]" />
                 </div>
             </section>
 
