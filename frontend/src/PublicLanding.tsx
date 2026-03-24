@@ -137,7 +137,7 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: 'auto', opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
-                            className="md:hidden overflow-hidden bg-primary shadow-xl border-b border-white/10"
+                            className="lg:hidden overflow-hidden bg-primary shadow-xl border-b border-white/10"
                         >
                             <div className="px-4 py-4 flex flex-col gap-4 text-sm font-bold tracking-wide text-gray-300">
                                 <a href="#about" onClick={() => setIsMobileMenuOpen(false)} className="px-4 py-3 rounded-xl hover:bg-white/5 hover:text-white transition-colors">{c(h, 'nav_about', 'About Us')}</a>
