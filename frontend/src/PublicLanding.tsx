@@ -453,7 +453,7 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
                             initial={{ scale: 0.95, y: 30, opacity: 0 }}
                             animate={{ scale: 1, y: 0, opacity: 1 }}
                             exit={{ scale: 0.95, y: 30, opacity: 0 }}
-                            className="relative w-full max-w-5xl bg-[#0a1931] rounded-[2rem] overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)] flex flex-col md:flex-row min-h-[500px] border border-white/10"
+                            className="relative w-full max-w-5xl bg-[#0a1931] rounded-[2rem] overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)] border border-white/10 max-h-[90svh] overflow-y-auto"
                             onClick={e => e.stopPropagation()}
                         >
                             {/* Close Button */}
@@ -466,7 +466,7 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
                             </button>
 
                             {/* Carousel Content Container */}
-                            <div className="flex-1 relative flex flex-col md:flex-row overflow-hidden">
+                            <div className="flex flex-col">
                                 {modules.banners.map((banner, idx) => (
                                     <AnimatePresence mode="wait" key={banner.id}>
                                         {idx === activeBannerIdx && (
@@ -475,21 +475,21 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
                                                 animate={{ opacity: 1, x: 0 }}
                                                 exit={{ opacity: 0, x: -20 }}
                                                 transition={{ duration: 0.6 }}
-                                                className="absolute inset-0 flex flex-col md:flex-row"
+                                                className="flex flex-col md:flex-row"
                                             >
                                                 {/* Left Side: Dynamic Image */}
-                                                <div className="w-full md:w-1/2 relative min-h-[300px] md:min-h-0">
+                                                <div className="w-full md:w-1/2 relative h-52 sm:h-72 md:h-auto md:min-h-[460px]">
                                                     <img 
                                                         src={banner.image_url || bgBanner} 
                                                         alt={banner.title} 
-                                                        className="absolute inset-0 w-full h-full object-cover"
+                                                        className="w-full h-full object-cover object-center"
                                                     />
                                                     <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#0a1931] hidden md:block" />
-                                                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a1931] to-transparent md:hidden" />
+                                                    <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0a1931] to-transparent md:hidden" />
                                                 </div>
 
                                                 {/* Right Side: Dynamic Content */}
-                                                <div className="w-full md:w-1/2 p-8 md:p-14 flex flex-col justify-center relative">
+                                                <div className="w-full md:w-1/2 p-6 sm:p-8 md:p-14 flex flex-col justify-center relative">
                                                     <div className="space-y-6">
                                                         <motion.span 
                                                             initial={{ opacity: 0, x: -10 }}
@@ -504,7 +504,7 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
                                                             initial={{ opacity: 0, y: 10 }}
                                                             animate={{ opacity: 1, y: 0 }}
                                                             transition={{ delay: 0.3 }}
-                                                            className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-white leading-[1.1] tracking-tight"
+                                                            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-white leading-[1.1] tracking-tight"
                                                         >
                                                             {banner.title || t('banner.title')}
                                                         </motion.h2>
@@ -562,7 +562,7 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
 
                             {/* Carousel Controls (if more than 1) */}
                             {modules.banners.length > 1 && (
-                                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 z-[130]">
+                                <div className="flex justify-center items-center gap-4 py-5">
                                     <div className="flex gap-2">
                                         {modules.banners.map((_, dotIdx) => (
                                             <button 
