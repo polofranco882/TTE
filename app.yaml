@@ -16,9 +16,8 @@ services:
     # Comando de inicio explícito para el backend compilado
     run_command: npm start
     envs:
-      - key: DATABASE_URL
-        scope: RUN_AND_BUILD_TIME
-        value: "postgresql://doadmin:YOUR_PASSWORD@db-postgresql-nyc1-33885-do-user-34754065-0.m.db.ondigitalocean.com:25060/tte?sslmode=require"
+      # DATABASE_URL configuration must be added securely in DigitalOcean Dashboard -> App -> Settings -> App-Level Environment Variables
+
       - key: DB_SCHEMA
         scope: RUN_AND_BUILD_TIME
         value: "app"
