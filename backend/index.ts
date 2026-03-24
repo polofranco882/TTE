@@ -41,19 +41,19 @@ import landingModulesRoutes from './routes/landing-modules';
 import mediaRoutes from './routes/media';
 import i18nRoutes from './routes/i18n';
 
-app.use('/api/auth', authRoutes);
-app.use('/api/books', bookRoutes);
-app.use('/api/reports', reportRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/ai', aiRoutes);
-app.use('/api/settings', settingsRoutes);
-app.use('/api/landing', landingRoutes);
-app.use('/api/landing-modules', landingModulesRoutes);
-app.use('/api/media', mediaRoutes);
-app.use('/api/i18n', i18nRoutes);
+app.use('/auth', authRoutes);
+app.use('/books', bookRoutes);
+app.use('/reports', reportRoutes);
+app.use('/admin', adminRoutes);
+app.use('/ai', aiRoutes);
+app.use('/settings', settingsRoutes);
+app.use('/landing', landingRoutes);
+app.use('/landing-modules', landingModulesRoutes);
+app.use('/media', mediaRoutes);
+app.use('/i18n', i18nRoutes);
 
 // Protected Route Example
-app.get('/api/protected', (req, res) => {
+app.get('/protected', (req, res) => {
     res.json({ message: 'This is protected' });
 });
 
