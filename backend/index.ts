@@ -3,8 +3,6 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import dotenv from 'dotenv';
-import { Client } from 'pg';
 
 // Database connection import (side effect connects)
 import './db';
@@ -14,40 +12,48 @@ const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: false, // Disable for easier debugging in dev/prod transition if needed
+}));
 app.use(morgan('dev'));
 app.use(express.json({ limit: '100mb' }));
 app.use(express.urlencoded({ limit: '100mb', extended: true }));
 
+// Health Check / Root
 app.get('/', (req, res) => {
-    res.json({ message: 'Book Portal API is running' });
+    res.json({ message: 'TTE Backend is running', timestamp: new Date() });
 });
 
-// Routes
-const authRoutes = require('./routes/auth').default || require('./routes/auth');
-const bookRoutes = require('./routes/books').default || require('./routes/books');
-const reportRoutes = require('./routes/reports').default || require('./routes/reports');
-const adminRoutes = require('./routes/admin').default || require('./routes/admin');
-const aiRoutes = require('./routes/ai').default || require('./routes/ai');
-const settingsRoutes = require('./routes/settings').default || require('./routes/settings');
-const landingRoutes = require('./routes/landing').default || require('./routes/landing');
-const landingModulesRoutes = require('./routes/landing-modules').default || require('./routes/landing-modules');
-const mediaRoutes = require('./routes/media').default || require('./routes/media');
-const i18nRoutes = require('./routes/i18n').default || require('./routes/i18n');
+// Explicit API Root
+app.get('/api', (req, res) => {
+    res.json({ message: 'TTE API v1 is active' });
+});
 
-app.use('/auth', authRoutes);
-app.use('/books', bookRoutes);
-app.use('/reports', reportRoutes);
-app.use('/admin', adminRoutes);
-app.use('/ai', aiRoutes);
-app.use('/settings', settingsRoutes);
-app.use('/landing', landingRoutes);
-app.use('/landing-modules', landingModulesRoutes);
-app.use('/media', mediaRoutes);
-app.use('/i18n', i18nRoutes);
+// Routes - Explicitly using /api prefix to match app.yaml with preserve_path_prefix: true
+import authRoutes from './routes/auth';
+import bookRoutes from './routes/books';
+import reportRoutes from './routes/reports';
+import adminRoutes from './routes/admin';
+import aiRoutes from './routes/ai';
+import settingsRoutes from './routes/settings';
+import landingRoutes from './routes/landing';
+import landingModulesRoutes from './routes/landing-modules';
+import mediaRoutes from './routes/media';
+import i18nRoutes from './routes/i18n';
+
+app.use('/api/auth', authRoutes);
+app.use('/api/books', bookRoutes);
+app.use('/api/reports', reportRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/ai', aiRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/api/landing', landingRoutes);
+app.use('/api/landing-modules', landingModulesRoutes);
+app.use('/api/media', mediaRoutes);
+app.use('/api/i18n', i18nRoutes);
 
 // Protected Route Example
-app.get('/protected', (req, res) => {
+app.get('/api/protected', (req, res) => {
     res.json({ message: 'This is protected' });
 });
 

@@ -31,7 +31,7 @@ services:
     http_port: 5000
     routes:
       - path: /api
-        preserve_path_prefix: false
+        preserve_path_prefix: true
 
   - name: frontend
     github:
