@@ -1,0 +1,28 @@
+{
+  "name": "tte-tests",
+  "scripts": {
+    "test": "playwright test",
+    "test:mobile": "playwright test --project=mobile-iphone-14 --project=mobile-iphone-se",
+    "test:tablet": "playwright test --project=tablet-ipad --project=tablet-ipad-landscape",
+    "test:webkit": "playwright test --project=desktop-webkit --project=mobile-iphone-14 --project=tablet-ipad",
+    "test:desktop": "playwright test --project=desktop-chromium --project=desktop-webkit",
+    "test:android": "playwright test --project=mobile-android",
+    "test:books": "playwright test tests/books/",
+    "test:landing": "playwright test tests/landing/",
+    "test:auth": "playwright test tests/auth/",
+    "test:layout": "playwright test tests/layout/",
+    "test:mobile-iphone": "playwright test --project=mobile-iphone-14",
+    "test:mobile-se": "playwright test --project=mobile-iphone-se",
+    "test:landscape": "playwright test --project=mobile-iphone-14-landscape --project=tablet-ipad-landscape",
+    "test:ipad": "playwright test --project=tablet-ipad",
+    "test:headed": "playwright test --headed --project=desktop-chromium",
+    "test:headed-mobile": "playwright test --headed --project=mobile-iphone-14",
+    "test:debug": "playwright test --debug --project=desktop-chromium",
+    "test:report": "playwright show-report playwright-report",
+    "test:ci": "playwright test --reporter=list --project=desktop-chromium --project=mobile-iphone-14 --project=tablet-ipad"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^25.5.0"
+  }
+}
