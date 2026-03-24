@@ -109,15 +109,8 @@ const WelcomeScreen = ({ onStartLearning, settings, userRole, onUpdateSettings }
               }}
             />
             {/* Logo shell */}
-            <div
-              className="relative w-36 h-36 rounded-full flex items-center justify-center shadow-premium"
-              style={{
-                background: 'linear-gradient(145deg, var(--color-secondary), var(--color-primary))',
-                border: '4px solid var(--color-accent)',
-                boxShadow: '0 0 32px rgba(204,30,30,0.5), 0 0 64px rgba(13,34,96,0.6)',
-              }}
-            >
-              <img src="/Logo.png" alt="TTESOL Logo" className="w-24 h-auto object-contain drop-shadow-md" />
+            <div className="relative w-40 h-40 flex items-center justify-center">
+              <img src="/Logo.png" alt="TTESOL Logo" className="w-full h-full object-contain drop-shadow-2xl" />
             </div>
           </div>
         </motion.div>

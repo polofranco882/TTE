@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, BookOpen, Users, Globe, PlayCircle, Star, ChevronRight, Quote, X, Film, Images } from 'lucide-react';
+import { ArrowRight, BookOpen, Users, Globe, PlayCircle, Star, ChevronRight, Quote, X, Film, Images, Menu } from 'lucide-react';
 import bgHero from './assets/final-login-bg.jpg';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from './components/LanguageSwitcher';
@@ -35,6 +35,7 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
     const [activeVideo, setActiveVideo] = useState<any | null>(null);
     const [showPromo, setShowPromo] = useState(false);
     const [activeBannerIdx, setActiveBannerIdx] = useState(0);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const fetchAll = useCallback((lang: string) => {
         const langCode = lang.split('-')[0].toLowerCase();
@@ -99,26 +100,55 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
             {/* ── Navigation ────────────────────────────────────────────── */}
             <nav className="fixed top-0 left-0 w-full z-50 bg-primary/95 backdrop-blur-xl border-b border-white/10 shadow-sm">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
-                    <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                        <div className="h-11 px-3 rounded-xl flex items-center justify-center shadow-lg bg-white/10 border border-white/20">
-                            <img src={c(h, 'logoUrl', '/Logo.png')} alt="TTESOL Logo" className="h-6 w-auto object-contain" />
+                    <div className="flex items-center gap-1 sm:gap-3 flex-shrink-0 lg:flex-1">
+                        <div className="flex items-center justify-center pr-1 shrink-0">
+                            <img src={c(h, 'logoUrl', '/Logo.png')} alt="TTESOL Logo" className="h-7 sm:h-10 md:h-12 w-auto object-contain drop-shadow-lg" />
                         </div>
-                        <span className="font-serif font-bold text-xl sm:text-2xl text-white tracking-tight truncate">{c(h, 'institutionName', 'TTESOL')}</span>
+                        <span className="font-serif font-bold text-[14px] leading-none sm:text-xl md:text-2xl text-white tracking-tight shrink min-w-0 max-w-[140px] sm:max-w-none break-words">{c(h, 'institutionName', 'TTESOL Academy')}</span>
                     </div>
-                    <div className="hidden md:flex items-center gap-8 text-sm font-bold tracking-wide text-gray-300">
+                    <div className="hidden lg:flex items-center gap-4 xl:gap-8 text-sm font-bold tracking-wide text-gray-300">
                         <a href="#about" className="hover:text-white transition-colors">{c(h, 'nav_about', 'About Us')}</a>
                         {modules.gallery.length > 0 && <a href="#gallery" className="hover:text-white transition-colors">{c(h, 'nav_gallery', 'Gallery')}</a>}
                         {modules.videos.length > 0 && <a href="#videos" className="hover:text-white transition-colors">{c(h, 'nav_videos', 'Videos')}</a>}
                         <a href="#courses" className="hover:text-white transition-colors">{c(h, 'nav_courses', 'Courses')}</a>
                         <a href="#testimonials" className="hover:text-white transition-colors">{c(h, 'nav_testimonials', 'Testimonials')}</a>
                     </div>
-                    <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
-                        <LanguageSwitcher />
-                        <button onClick={onLoginClick} data-testid="login-cta-nav" aria-label="Platform Login" className="bg-accent hover:bg-accent-dark text-white px-3 sm:px-6 py-2.5 sm:py-2.5 rounded-xl font-bold text-xs sm:text-sm uppercase tracking-wider shadow-premium hover:shadow-premium-hover transition-all flex items-center gap-1 sm:gap-2 group min-h-[40px]">
-                            <span className="sm:inline">{c(h, 'ctaText', 'Platform Login')}</span> <ArrowRight className="w-4 h-4 sm:group-hover:translate-x-1 transition-transform" />
+                    <div className="flex items-center gap-1 sm:gap-4 flex-shrink-0">
+                        <LanguageSwitcher direction="down" />
+                        <button onClick={onLoginClick} data-testid="login-cta-nav" aria-label="Platform Login" className="bg-accent hover:bg-accent-dark text-white px-2 sm:px-6 py-1.5 sm:py-2.5 rounded-[10px] sm:rounded-xl font-bold text-[10px] sm:text-sm uppercase tracking-wider shadow-premium hover:shadow-premium-hover transition-all flex items-center gap-1 sm:gap-2 group min-h-[32px] sm:min-h-[40px]">
+                            <span className="hidden sm:inline">{c(h, 'ctaText', 'Platform Login')}</span>
+                            <span className="sm:hidden">Login</span>
+                            <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:group-hover:translate-x-1 transition-transform" />
+                        </button>
+                        <button 
+                            className="lg:hidden p-1 text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors shrink-0"
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            aria-label="Toggle mobile menu"
+                        >
+                            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
                         </button>
                     </div>
                 </div>
+
+                {/* Mobile Menu Dropdown */}
+                <AnimatePresence>
+                    {isMobileMenuOpen && (
+                        <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            className="md:hidden overflow-hidden bg-primary shadow-xl border-b border-white/10"
+                        >
+                            <div className="px-4 py-4 flex flex-col gap-4 text-sm font-bold tracking-wide text-gray-300">
+                                <a href="#about" onClick={() => setIsMobileMenuOpen(false)} className="px-4 py-3 rounded-xl hover:bg-white/5 hover:text-white transition-colors">{c(h, 'nav_about', 'About Us')}</a>
+                                {modules.gallery.length > 0 && <a href="#gallery" onClick={() => setIsMobileMenuOpen(false)} className="px-4 py-3 rounded-xl hover:bg-white/5 hover:text-white transition-colors">{c(h, 'nav_gallery', 'Gallery')}</a>}
+                                {modules.videos.length > 0 && <a href="#videos" onClick={() => setIsMobileMenuOpen(false)} className="px-4 py-3 rounded-xl hover:bg-white/5 hover:text-white transition-colors">{c(h, 'nav_videos', 'Videos')}</a>}
+                                <a href="#courses" onClick={() => setIsMobileMenuOpen(false)} className="px-4 py-3 rounded-xl hover:bg-white/5 hover:text-white transition-colors">{c(h, 'nav_courses', 'Courses')}</a>
+                                <a href="#testimonials" onClick={() => setIsMobileMenuOpen(false)} className="px-4 py-3 rounded-xl hover:bg-white/5 hover:text-white transition-colors">{c(h, 'nav_testimonials', 'Testimonials')}</a>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </nav>
 
             {/* ── Hero ──────────────────────────────────────────────────── */}
@@ -409,8 +439,8 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
                 <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
                     <div className="col-span-1 md:col-span-2">
                         <div className="flex items-center gap-3 mb-6">
-                            <div className="h-9 px-2.5 rounded-lg flex items-center justify-center bg-white/10 border border-white/20">
-                                <img src={c(h, 'logoUrl', '/Logo.png')} alt="TTESOL Logo" className="h-5 w-auto object-contain" />
+                            <div className="flex items-center justify-center pr-1">
+                                <img src={c(h, 'logoUrl', '/Logo.png')} alt="TTESOL Logo" className="h-8 w-auto object-contain drop-shadow-md" />
                             </div>
                             <span className="font-serif font-bold text-xl text-white tracking-tight">{c(h, 'institutionName', 'TTESOL')}</span>
                         </div>

@@ -1,0 +1,759 @@
+{
+  "config": {
+    "configFile": "C:\\APP_WEB\\TTE\\playwright.config.ts",
+    "rootDir": "C:/APP_WEB/TTE/tests",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/APP_WEB/TTE/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "setup",
+        "name": "setup",
+        "testDir": "C:/APP_WEB/TTE/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "/auth\\.setup\\.ts/"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/APP_WEB/TTE/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "desktop-chromium",
+        "name": "desktop-chromium",
+        "testDir": "C:/APP_WEB/TTE/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/APP_WEB/TTE/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "desktop-webkit",
+        "name": "desktop-webkit",
+        "testDir": "C:/APP_WEB/TTE/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/APP_WEB/TTE/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "mobile-iphone-14",
+        "name": "mobile-iphone-14",
+        "testDir": "C:/APP_WEB/TTE/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/APP_WEB/TTE/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "mobile-iphone-se",
+        "name": "mobile-iphone-se",
+        "testDir": "C:/APP_WEB/TTE/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/APP_WEB/TTE/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "mobile-iphone-14-landscape",
+        "name": "mobile-iphone-14-landscape",
+        "testDir": "C:/APP_WEB/TTE/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/APP_WEB/TTE/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "tablet-ipad",
+        "name": "tablet-ipad",
+        "testDir": "C:/APP_WEB/TTE/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/APP_WEB/TTE/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "tablet-ipad-landscape",
+        "name": "tablet-ipad-landscape",
+        "testDir": "C:/APP_WEB/TTE/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/APP_WEB/TTE/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "mobile-android",
+        "name": "mobile-android",
+        "testDir": "C:/APP_WEB/TTE/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "playwright-report",
+          "open": "never"
+        }
+      ],
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "playwright-report/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "runAgents": "none",
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.58.2",
+    "workers": 2,
+    "webServer": {
+      "command": "npm run dev",
+      "cwd": "./frontend",
+      "url": "http://localhost:3002",
+      "reuseExistingServer": true,
+      "timeout": 60000
+    }
+  },
+  "suites": [
+    {
+      "title": "auth.setup.ts",
+      "file": "auth.setup.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "authenticate as user",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "setup",
+              "projectName": "setup",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3155,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "Navigating to login form...\n"
+                    },
+                    {
+                      "text": "Attempting login for admin@ttesol.com...\n"
+                    },
+                    {
+                      "text": "Waiting for sidebar elements to indicate successful login...\n"
+                    },
+                    {
+                      "text": "Login successful! Dashboard/Sidebar is visible. Current URL: http://localhost:3002/\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-03-24T04:33:06.498Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "C:\\APP_WEB\\TTE\\test-results\\auth.setup.ts-authenticate-as-user-setup\\test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "C:\\APP_WEB\\TTE\\test-results\\auth.setup.ts-authenticate-as-user-setup\\trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "17e3fe6f4d9d8bd79c6b-368b23621c7c58cdb338",
+          "file": "auth.setup.ts",
+          "line": 5,
+          "column": 6
+        }
+      ]
+    },
+    {
+      "title": "layout\\responsive.spec.ts",
+      "file": "layout/responsive.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Responsive — Layout Consistency",
+          "file": "layout/responsive.spec.ts",
+          "line": 18,
+          "column": 6,
+          "specs": [
+            {
+              "title": "no horizontal overflow on iPhone SE (Small)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2403,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-24T04:33:10.917Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\APP_WEB\\TTE\\test-results\\layout-responsive-Responsi-55f7a-verflow-on-iPhone-SE-Small--mobile-iphone-14\\test-finished-1.png"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\APP_WEB\\TTE\\test-results\\layout-responsive-Responsi-55f7a-verflow-on-iPhone-SE-Small--mobile-iphone-14\\trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-85b3d50c6db2d147a06d",
+              "file": "layout/responsive.spec.ts",
+              "line": 29,
+              "column": 13
+            },
+            {
+              "title": "no horizontal overflow on iPhone 14 (Medium)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2428,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-24T04:33:13.410Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\APP_WEB\\TTE\\test-results\\layout-responsive-Responsi-d700e-erflow-on-iPhone-14-Medium--mobile-iphone-14\\test-finished-1.png"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\APP_WEB\\TTE\\test-results\\layout-responsive-Responsi-d700e-erflow-on-iPhone-14-Medium--mobile-iphone-14\\trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-0d192a1ff4b64d4b0560",
+              "file": "layout/responsive.spec.ts",
+              "line": 29,
+              "column": 13
+            },
+            {
+              "title": "no horizontal overflow on iPad Portrait",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3032,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-24T04:33:15.885Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\APP_WEB\\TTE\\test-results\\layout-responsive-Responsi-75328-l-overflow-on-iPad-Portrait-mobile-iphone-14\\test-finished-1.png"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\APP_WEB\\TTE\\test-results\\layout-responsive-Responsi-75328-l-overflow-on-iPad-Portrait-mobile-iphone-14\\trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-931acf360a54d74ebaf9",
+              "file": "layout/responsive.spec.ts",
+              "line": 29,
+              "column": 13
+            },
+            {
+              "title": "no horizontal overflow on iPad Landscape",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3158,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-24T04:33:18.982Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\APP_WEB\\TTE\\test-results\\layout-responsive-Responsi-c5aa2--overflow-on-iPad-Landscape-mobile-iphone-14\\test-finished-1.png"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\APP_WEB\\TTE\\test-results\\layout-responsive-Responsi-c5aa2--overflow-on-iPad-Landscape-mobile-iphone-14\\trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-c05df6fc25e828d6e853",
+              "file": "layout/responsive.spec.ts",
+              "line": 29,
+              "column": 13
+            },
+            {
+              "title": "no horizontal overflow on Desktop Baseline",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3696,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-24T04:33:22.219Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\APP_WEB\\TTE\\test-results\\layout-responsive-Responsi-029d0-verflow-on-Desktop-Baseline-mobile-iphone-14\\test-finished-1.png"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\APP_WEB\\TTE\\test-results\\layout-responsive-Responsi-029d0-verflow-on-Desktop-Baseline-mobile-iphone-14\\trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-f5177fcebc3548871c72",
+              "file": "layout/responsive.spec.ts",
+              "line": 29,
+              "column": 13
+            }
+          ]
+        },
+        {
+          "title": "Responsive — Form & Modal Interaction",
+          "file": "layout/responsive.spec.ts",
+          "line": 39,
+          "column": 6,
+          "specs": [
+            {
+              "title": "login modal is centered and usable on small mobile",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 12357,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('[role=\"dialog\"], [class*=\"modal\"], [class*=\"Modal\"]').first()\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('[role=\"dialog\"], [class*=\"modal\"], [class*=\"Modal\"]').first()\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('[role=\"dialog\"], [class*=\"modal\"], [class*=\"Modal\"]').first()\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('[role=\"dialog\"], [class*=\"modal\"], [class*=\"Modal\"]').first()\u001b[22m\n\n    at C:\\APP_WEB\\TTE\\tests\\layout\\responsive.spec.ts:48:29",
+                        "location": {
+                          "file": "C:\\APP_WEB\\TTE\\tests\\layout\\responsive.spec.ts",
+                          "column": 29,
+                          "line": 48
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 46 |\u001b[39m\n \u001b[90m 47 |\u001b[39m         \u001b[36mconst\u001b[39m modal \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'[role=\"dialog\"], [class*=\"modal\"], [class*=\"Modal\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 48 |\u001b[39m         \u001b[36mawait\u001b[39m expect(modal)\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 49 |\u001b[39m         \n \u001b[90m 50 |\u001b[39m         \u001b[36mconst\u001b[39m box \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m modal\u001b[33m.\u001b[39mboundingBox()\u001b[33m;\u001b[39m\n \u001b[90m 51 |\u001b[39m         \u001b[36mif\u001b[39m (box) {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\APP_WEB\\TTE\\tests\\layout\\responsive.spec.ts",
+                            "column": 29,
+                            "line": 48
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('[role=\"dialog\"], [class*=\"modal\"], [class*=\"Modal\"]').first()\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('[role=\"dialog\"], [class*=\"modal\"], [class*=\"Modal\"]').first()\u001b[22m\n\n\n\u001b[0m \u001b[90m 46 |\u001b[39m\n \u001b[90m 47 |\u001b[39m         \u001b[36mconst\u001b[39m modal \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'[role=\"dialog\"], [class*=\"modal\"], [class*=\"Modal\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 48 |\u001b[39m         \u001b[36mawait\u001b[39m expect(modal)\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 49 |\u001b[39m         \n \u001b[90m 50 |\u001b[39m         \u001b[36mconst\u001b[39m box \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m modal\u001b[33m.\u001b[39mboundingBox()\u001b[33m;\u001b[39m\n \u001b[90m 51 |\u001b[39m         \u001b[36mif\u001b[39m (box) {\u001b[0m\n\u001b[2m    at C:\\APP_WEB\\TTE\\tests\\layout\\responsive.spec.ts:48:29\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-24T04:33:25.985Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\APP_WEB\\TTE\\test-results\\layout-responsive-Responsi-afaf6--and-usable-on-small-mobile-mobile-iphone-14\\test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\APP_WEB\\TTE\\test-results\\layout-responsive-Responsi-afaf6--and-usable-on-small-mobile-mobile-iphone-14\\error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\APP_WEB\\TTE\\test-results\\layout-responsive-Responsi-afaf6--and-usable-on-small-mobile-mobile-iphone-14\\trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\APP_WEB\\TTE\\tests\\layout\\responsive.spec.ts",
+                        "column": 29,
+                        "line": 48
+                      }
+                    },
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 12583,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('[role=\"dialog\"], [class*=\"modal\"], [class*=\"Modal\"]').first()\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('[role=\"dialog\"], [class*=\"modal\"], [class*=\"Modal\"]').first()\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('[role=\"dialog\"], [class*=\"modal\"], [class*=\"Modal\"]').first()\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('[role=\"dialog\"], [class*=\"modal\"], [class*=\"Modal\"]').first()\u001b[22m\n\n    at C:\\APP_WEB\\TTE\\tests\\layout\\responsive.spec.ts:48:29",
+                        "location": {
+                          "file": "C:\\APP_WEB\\TTE\\tests\\layout\\responsive.spec.ts",
+                          "column": 29,
+                          "line": 48
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 46 |\u001b[39m\n \u001b[90m 47 |\u001b[39m         \u001b[36mconst\u001b[39m modal \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'[role=\"dialog\"], [class*=\"modal\"], [class*=\"Modal\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 48 |\u001b[39m         \u001b[36mawait\u001b[39m expect(modal)\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 49 |\u001b[39m         \n \u001b[90m 50 |\u001b[39m         \u001b[36mconst\u001b[39m box \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m modal\u001b[33m.\u001b[39mboundingBox()\u001b[33m;\u001b[39m\n \u001b[90m 51 |\u001b[39m         \u001b[36mif\u001b[39m (box) {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\APP_WEB\\TTE\\tests\\layout\\responsive.spec.ts",
+                            "column": 29,
+                            "line": 48
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('[role=\"dialog\"], [class*=\"modal\"], [class*=\"Modal\"]').first()\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('[role=\"dialog\"], [class*=\"modal\"], [class*=\"Modal\"]').first()\u001b[22m\n\n\n\u001b[0m \u001b[90m 46 |\u001b[39m\n \u001b[90m 47 |\u001b[39m         \u001b[36mconst\u001b[39m modal \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'[role=\"dialog\"], [class*=\"modal\"], [class*=\"Modal\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 48 |\u001b[39m         \u001b[36mawait\u001b[39m expect(modal)\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 49 |\u001b[39m         \n \u001b[90m 50 |\u001b[39m         \u001b[36mconst\u001b[39m box \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m modal\u001b[33m.\u001b[39mboundingBox()\u001b[33m;\u001b[39m\n \u001b[90m 51 |\u001b[39m         \u001b[36mif\u001b[39m (box) {\u001b[0m\n\u001b[2m    at C:\\APP_WEB\\TTE\\tests\\layout\\responsive.spec.ts:48:29\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 1,
+                      "startTime": "2026-03-24T04:33:39.280Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\APP_WEB\\TTE\\test-results\\layout-responsive-Responsi-afaf6--and-usable-on-small-mobile-mobile-iphone-14-retry1\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\APP_WEB\\TTE\\test-results\\layout-responsive-Responsi-afaf6--and-usable-on-small-mobile-mobile-iphone-14-retry1\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\APP_WEB\\TTE\\test-results\\layout-responsive-Responsi-afaf6--and-usable-on-small-mobile-mobile-iphone-14-retry1\\error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\APP_WEB\\TTE\\test-results\\layout-responsive-Responsi-afaf6--and-usable-on-small-mobile-mobile-iphone-14-retry1\\trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\APP_WEB\\TTE\\tests\\layout\\responsive.spec.ts",
+                        "column": 29,
+                        "line": 48
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-a62abfcb8d08478d2e4d",
+              "file": "layout/responsive.spec.ts",
+              "line": 41,
+              "column": 9
+            },
+            {
+              "title": "inputs remain visible and accessible on mobile focus",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2300,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-24T04:33:52.875Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\APP_WEB\\TTE\\test-results\\layout-responsive-Responsi-0ef6d--accessible-on-mobile-focus-mobile-iphone-14\\test-finished-1.png"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\APP_WEB\\TTE\\test-results\\layout-responsive-Responsi-0ef6d--accessible-on-mobile-focus-mobile-iphone-14\\trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-5830c52c09b8ef832ed3",
+              "file": "layout/responsive.spec.ts",
+              "line": 68,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "Responsive — Orientation Change",
+          "file": "layout/responsive.spec.ts",
+          "line": 88,
+          "column": 6,
+          "specs": [
+            {
+              "title": "seamless reflow from Portrait to Landscape",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-iphone-14",
+                  "projectName": "mobile-iphone-14",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3819,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-24T04:33:55.270Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\APP_WEB\\TTE\\test-results\\layout-responsive-Responsi-cf5c0--from-Portrait-to-Landscape-mobile-iphone-14\\test-finished-1.png"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\APP_WEB\\TTE\\test-results\\layout-responsive-Responsi-cf5c0--from-Portrait-to-Landscape-mobile-iphone-14\\trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ca90fc9a60309d0c6b28-db28d75339034dfe1f88",
+              "file": "layout/responsive.spec.ts",
+              "line": 90,
+              "column": 9
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-03-24T04:33:05.618Z",
+    "duration": 53575.623,
+    "expected": 8,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

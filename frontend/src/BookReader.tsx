@@ -1217,6 +1217,7 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
                                                                             exit={{ opacity: 0, x: -10 }}
                                                                             transition={{ duration: 0.2 }}
                                                                             className="w-full h-full"
+                                                                            data-testid="book-canvas"
                                                                         >
                                                                             <FlipbookPage
                                                                                 contentItem={selectedChapter}
@@ -1290,6 +1291,7 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
                                                                             }
                                                                         }}
                                                                         className="flip-book-container h-full w-full"
+                                                                        data-testid="book-canvas"
                                                                     >
                                                                     {contents.map((chapter) => (
                                                                         <FlipbookPage

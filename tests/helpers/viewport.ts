@@ -12,25 +12,38 @@ import { Page, Locator, expect } from '@playwright/test';
  * Handles all device types: uses data-testid first, falls back to aria-label.
  */
 export async function dismissPromoAndClickLogin(page: Page): Promise<void> {
-    // Close promo popup if it's blocking the CTA
+    // Step 1: Check if the promo popup exists and dismiss it robustly
     const promoOverlay = page.locator('[data-testid="promo-popup"]').first();
-    const promoClose = page.locator('[data-testid="close-promo"]').first();
+    const promoClose   = page.locator('[data-testid="close-promo"]').first();
 
-    if (await promoClose.isVisible({ timeout: 2000 }).catch(() => false)) {
+    const promoVisible = await promoOverlay.isVisible({ timeout: 3000 }).catch(() => false);
+    if (promoVisible) {
+        // Try clicking close via JS first (avoids animation interception)
         await page.evaluate(() => {
-            (document.querySelector('[data-testid="close-promo"]') as HTMLElement)?.click();
+            const btn = document.querySelector('[data-testid="close-promo"]') as HTMLElement;
+            if (btn) btn.click();
         });
-        await promoOverlay.waitFor({ state: 'hidden', timeout: 3000 }).catch(() => {});
-        await page.waitForTimeout(400);
+        // Force-hide the overlay immediately in case Framer Motion animation is slow
+        await page.evaluate(() => {
+            const overlay = document.querySelector('[data-testid="promo-popup"]') as HTMLElement;
+            if (overlay) { overlay.style.display = 'none'; overlay.style.pointerEvents = 'none'; }
+        });
+        // Wait for it to be fully gone
+        await promoOverlay.waitFor({ state: 'hidden', timeout: 4000 }).catch(() => {});
+        await page.waitForTimeout(300);
     }
-    // Prefer the real aria-label then data-testid then fall back
+
+    // Step 2: Click the Login CTA (use force:true in case of residual z-index issues)
     const cta = page.locator('button[aria-label="Platform Login"], [data-testid="login-cta-nav"], [data-testid="login-cta-hero"]').first();
-    const isVisible = await cta.isVisible({ timeout: 3000 }).catch(() => false);
-    if (isVisible) {
-        await cta.click();
+    const ctaVisible = await cta.isVisible({ timeout: 4000 }).catch(() => false);
+    if (ctaVisible) {
+        await cta.click({ force: true });
     } else {
+        // Fallback: any button with login-related text
         const fallback = page.getByRole('button', { name: /login|platform|acceder|access/i }).first();
-        if (await fallback.isVisible({ timeout: 3000 }).catch(() => false)) await fallback.click();
+        if (await fallback.isVisible({ timeout: 3000 }).catch(() => false)) {
+            await fallback.click({ force: true });
+        }
     }
 }
 

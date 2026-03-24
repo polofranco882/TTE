@@ -90,7 +90,7 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen, userRole, onLogou
             </div>
 
             <motion.div
-                className={`fixed lg:static inset-y-0 left-0 h-screen bg-primary/95 backdrop-blur-xl text-white shadow-premium z-[160] flex flex-col border-r border-white/10 font-sans overflow-hidden`}
+                className={`fixed lg:static inset-y-0 left-0 h-[100dvh] bg-primary/95 backdrop-blur-xl text-white shadow-premium z-[160] flex flex-col border-r border-white/10 font-sans overflow-hidden`}
                 initial={false}
                 animate={{
                     x: isMobile ? (isOpen ? 0 : -300) : 0,
@@ -177,9 +177,9 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen, userRole, onLogou
                 </div>
 
                 {/* User Profile / Logout */}
-                <div className="p-4 border-t border-white/10 bg-black/20 flex flex-col gap-3">
+                <div className="p-4 border-t border-white/10 bg-black/20 flex flex-col gap-3 pb-[max(1rem,env(safe-area-inset-bottom))]">
                     <div className={`${isOpen ? 'px-2' : 'flex justify-center'}`}>
-                        <LanguageSwitcher />
+                        <LanguageSwitcher direction="up" />
                     </div>
                     
                     <button

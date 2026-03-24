@@ -242,14 +242,15 @@ function App() {
         </div>
 
         {/* Scrollable Container */}
-        <div className="absolute inset-0 z-10 flex flex-col items-center p-4 overflow-y-auto custom-scrollbar">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="bg-surface p-8 md:p-10 rounded-2xl shadow-premium w-full max-w-md md:max-w-none [width:min(448px,calc(100vw-32px))] border border-black/5 mt-auto mb-auto shrink-0 relative"
-          >
-          <div className="absolute top-6 right-6">
+        <div className="absolute inset-0 z-10 overflow-y-auto overflow-x-hidden custom-scrollbar">
+          <div className="min-h-full flex flex-col items-center justify-center p-4 sm:p-6">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="bg-surface p-6 sm:p-8 md:p-10 rounded-2xl shadow-premium w-full max-w-[400px] sm:max-w-md border border-black/5 relative"
+            >
+            <div className="absolute top-6 right-6">
             <LanguageSwitcher />
           </div>
 
@@ -267,8 +268,8 @@ function App() {
               className="p-1 rounded-2xl mt-4"
             >
               {/* TTESOL abstract logo or text */}
-              <div className="w-24 h-20 rounded-xl flex items-center justify-center shadow-premium-hover bg-white/5 border border-white/10 p-3">
-                <img src="/Logo.png" alt="TTESOL Logo" className="w-full h-full object-contain filter drop-shadow-md" />
+              <div className="w-32 h-32 flex items-center justify-center mb-4">
+                <img src="/Logo.png" alt="TTESOL Logo" className="w-full h-full object-contain drop-shadow-xl" />
               </div>
             </motion.div>
           </div>
@@ -346,6 +347,7 @@ function App() {
             </div>
           </div>
         </motion.div>
+        </div>
         </div>
       </div>
     );
