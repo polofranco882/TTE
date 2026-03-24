@@ -2385,13 +2385,13 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
             {/* Premium Confirmation Dialog for deletions */}
             <PremiumConfirmModal
                 isOpen={confirmModal.isOpen}
-                onClose={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
+                onCancel={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
                 onConfirm={confirmModal.onConfirm}
                 title={confirmModal.title}
-                description={confirmModal.description}
-                isDanger={true}
-                confirmText={"Delete"}
-                cancelText={"Cancel"}
+                message={confirmModal.description}
+                variant="danger"
+                confirmLabel={"Delete"}
+                cancelLabel={"Cancel"}
             />
         </motion.div >
     );

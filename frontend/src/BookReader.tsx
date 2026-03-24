@@ -1262,17 +1262,21 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
                                                                         maxWidth={4000}
                                                                         minHeight={400}
                                                                         maxHeight={4000}
+                                                                        drawShadow={true}
+                                                                        flippingTime={1000}
+                                                                        usePortrait={isSinglePage}
+                                                                        startPage={0}
+                                                                        autoSize={true}
+                                                                        maxShadowOpacity={0.5}
                                                                         showCover={true}
                                                                         mobileScrollSupport={true}
-                                                                        usePortrait={isSinglePage}
-                                                                        
-                                                                        // disableFlipByClick prevents clicking the page center from turning pages
-                                                                        // useMouseEvents must be true so the internal animation engine can work (flipPrev relies on it)
-                                                                        disableFlipByClick={true}
+                                                                        clickEventForward={true}
                                                                         useMouseEvents={true}
-                                                                        swipeDistance={999999}
+                                                                        swipeDistance={30}
                                                                         showPageCorners={true}
-                                                                        
+                                                                        disableFlipByClick={true}
+                                                                        startZIndex={0}
+                                                                        style={{}}
                                                                         ref={flipBookRef}
                                                                         onFlip={(e: any) => {
                                                                             const pageIdx = e.data;
