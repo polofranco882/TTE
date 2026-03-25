@@ -48,3 +48,9 @@ services:
     http_port: 80
     routes:
       - path: /
+
+domains:
+  - domain: ttesol-english-academy.com
+    type: PRIMARY
+  - domain: www.ttesol-english-academy.com
+    type: ALIAS
