@@ -25,13 +25,14 @@ interface InteractivePageEditorProps {
     initialData: { canvas?: any; blocks: BlockData[] };
     onSave: (data: { canvas: any; blocks: BlockData[] }) => void;
     token?: string;
+    bookContents?: any[];
 }
 
 const DESIGN_WIDTH = 1350;
 const DESIGN_HEIGHT = 1909;
 
 const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
-    isOpen, onClose, title, initialData, onSave, token
+    isOpen, onClose, title, initialData, onSave, token, bookContents
 }) => {
     const [blocks, setBlocks] = useState<BlockData[]>(initialData?.blocks || []);
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -226,6 +227,9 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                     width: 400, 
                     height: 120
                 };
+                break;
+            case 'toc':
+                defaultData = { ...defaultData, width: 400, height: 600, zIndex: 10 };
                 break;
         }
 
@@ -580,7 +584,8 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                             { type: 'image', icon: <ImageIcon size={14} />, label: 'Image' },
                                             { type: 'video', icon: <Video size={14} />, label: 'Video' },
                                             { type: 'audio', icon: <Music size={14} />, label: 'Audio' },
-                                            { type: 'button', icon: <MousePointer2 size={14} />, label: 'Button' }
+                                            { type: 'button', icon: <MousePointer2 size={14} />, label: 'Button' },
+                                            { type: 'toc', icon: <ListOrdered size={14} />, label: 'TOC' }
                                         ]
                                     },
                                     {
@@ -780,6 +785,7 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                         <BlockRenderer
                                             block={block}
                                             isAdmin={!isPreview}
+                                            bookContents={bookContents}
                                             onInteract={(_, interaction) => {
                                                 if (!isPreview) return; // Only process interactions in preview mode
                                                 const isTrue = interaction.isCorrect !== undefined ? interaction.isCorrect : interaction.correct;

@@ -242,7 +242,7 @@ router.get('/:id/contents-meta', authenticateToken, async (req: any, res: any) =
         const { id } = req.params;
 
         const result = await client.query(
-            'SELECT id, book_id, title, type, page_number, order_index, parent_id, COALESCE(is_active, TRUE) as is_active FROM book_contents WHERE book_id = $1 ORDER BY order_index ASC',
+            'SELECT id, book_id, title, type, page_number, order_index, parent_id, COALESCE(is_active, TRUE) as is_active, COALESCE(show_in_index, TRUE) as show_in_index FROM book_contents WHERE book_id = $1 ORDER BY order_index ASC',
             [id]
         );
         res.json(result.rows);
@@ -316,6 +316,7 @@ router.put('/:id/contents/:contentId', authenticateToken, async (req: any, res: 
         if (page_number !== undefined) { updates.push(`page_number = $${idx++}`); values.push(page_number); }
         if (order_index !== undefined) { updates.push(`order_index = $${idx++}`); values.push(order_index); }
         if (req.body.is_active !== undefined) { updates.push(`is_active = $${idx++}`); values.push(req.body.is_active); }
+        if (req.body.show_in_index !== undefined) { updates.push(`show_in_index = $${idx++}`); values.push(req.body.show_in_index); }
 
         if (updates.length === 0) return res.status(400).json({ message: 'No fields to update' });
 
@@ -409,6 +410,67 @@ router.patch('/:id/contents/:contentId/toggle', authenticateToken, async (req: a
         );
         if (result.rowCount === 0) return res.status(404).json({ message: 'Content not found' });
         res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Batch Toggle is_active (Admin/Manager)
+router.post('/:id/contents-batch-toggle-active', authenticateToken, async (req: any, res: any) => {
+    try {
+        const { role } = req.user;
+        if (role !== 'admin' && role !== 'manager') return res.status(403).json({ message: 'Forbidden' });
+
+        const { ids, is_active } = req.body;
+        if (!Array.isArray(ids) || ids.length === 0) return res.status(400).json({ message: 'Invalid payload' });
+
+        const result = await client.query(
+            'UPDATE book_contents SET is_active = $1 WHERE id = ANY($2::int[])',
+            [is_active, ids]
+        );
+
+        res.json({ message: 'Contents updated', count: result.rowCount });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Toggle show_in_index for a content item (Admin/Manager)
+router.patch('/:id/contents/:contentId/toggle-index', authenticateToken, async (req: any, res: any) => {
+    try {
+        const { role } = req.user;
+        if (role !== 'admin' && role !== 'manager') return res.status(403).json({ message: 'Forbidden' });
+
+        const { contentId } = req.params;
+        const result = await client.query(
+            'UPDATE book_contents SET show_in_index = NOT COALESCE(show_in_index, TRUE) WHERE id = $1 RETURNING id, show_in_index',
+            [contentId]
+        );
+        if (result.rowCount === 0) return res.status(404).json({ message: 'Content not found' });
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Batch Toggle show_in_index (Admin/Manager)
+router.post('/:id/contents-batch-toggle-index', authenticateToken, async (req: any, res: any) => {
+    try {
+        const { role } = req.user;
+        if (role !== 'admin' && role !== 'manager') return res.status(403).json({ message: 'Forbidden' });
+
+        const { ids, show_in_index } = req.body;
+        if (!Array.isArray(ids) || ids.length === 0) return res.status(400).json({ message: 'Invalid payload' });
+
+        const result = await client.query(
+            'UPDATE book_contents SET show_in_index = $1 WHERE id = ANY($2::int[])',
+            [show_in_index, ids]
+        );
+
+        res.json({ message: 'Contents updated', count: result.rowCount });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Server error' });

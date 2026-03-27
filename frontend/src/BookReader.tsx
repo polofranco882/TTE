@@ -70,15 +70,17 @@ const ScaledCanvas = ({ designWidth, height, canvas, children }: {
 
 interface FlipbookPageProps {
     contentItem: {
+        id?: number;
         content?: string;
         canvas?: { color: string; url: string };
     };
     onInteract: (interaction: any) => void;
     debugNav?: boolean;
+    bookContents?: any[];
 }
 
 const FlipbookPage = forwardRef<HTMLDivElement, FlipbookPageProps>((props, ref) => {
-    const { contentItem, debugNav } = props;
+    const { contentItem, debugNav, bookContents } = props;
     let blocks: BlockData[] = [];
     let canvas: any = { color: 'transparent', url: '' };
 
@@ -158,6 +160,7 @@ const FlipbookPage = forwardRef<HTMLDivElement, FlipbookPageProps>((props, ref) 
                         <div className="w-full h-full relative">
                             <BlockRenderer
                                 block={block}
+                                bookContents={bookContents}
                                 onInteract={(_, interaction) => {
                                     props.onInteract(interaction);
                                 }}
@@ -191,6 +194,8 @@ interface ContentItem {
     type: 'chapter' | 'topic';
     content?: string;
     page_number?: string;
+    is_active?: boolean;
+    show_in_index?: boolean;
 }
 
 interface BookReaderProps {
@@ -374,6 +379,7 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
     // Derived Search Results filtering
     const searchResults = contents.filter(item => {
         if (!searchQuery.trim()) return false;
+        if (item.show_in_index === false) return false;
         const q = searchQuery.toLowerCase();
         return (item.title && item.title.toLowerCase().includes(q)) || 
                (item.content && item.content.toLowerCase().includes(q)) ||
@@ -407,7 +413,7 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
                 }
                 if (resContents.ok) {
                     const data = await resContents.json();
-                    setContents(data);
+                    setContents(data.filter((item: any) => item.is_active !== false));
                 }
             } catch (err) {
                 console.error(err);
@@ -887,9 +893,9 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
                                 </div>
 
                                 <div className="divide-y divide-white/5">
-                                    {contents.reduce((acc: any[], item, idx) => {
+                                    {contents.filter(c => c.show_in_index !== false).reduce((acc: any[], item, idx, filteredArr) => {
                                         // Color logic: increment when a new chapter starts
-                                        const lastChapterIdx = contents.slice(0, idx + 1).filter(c => c.type === 'chapter').length - 1;
+                                        const lastChapterIdx = filteredArr.slice(0, idx + 1).filter(c => c.type === 'chapter').length - 1;
                                         const color = colors[lastChapterIdx % colors.length];
 
                                         acc.push(
@@ -1222,6 +1228,7 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
                                                                             <FlipbookPage
                                                                                 contentItem={selectedChapter}
                                                                                 debugNav={debugNav}
+                                                                                bookContents={contents}
                                                                                 onInteract={(interaction: any) => {
                                                                                     if (interaction.action === 'next') handleFlipNext();
                                                                                     if (interaction.action === 'link' && interaction.value) {
@@ -1298,6 +1305,7 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
                                                                             key={chapter.id}
                                                                             contentItem={chapter}
                                                                             debugNav={debugNav}
+                                                                            bookContents={contents}
                                                                             onInteract={(interaction: any) => {
                                                                                 if (interaction.action === 'next') flipBookRef.current?.pageFlip()?.flipNext();
                                                                                 if (interaction.action === 'link' && interaction.value) {

@@ -14,11 +14,12 @@ import ReadingCompBlock from './ReadingCompBlock';
 import CodeEditorBlock from './CodeEditorBlock';
 import TextInputBlock from './TextInputBlock';
 import CompletionBlock from './CompletionBlock';
+import TableOfContents from './TableOfContents';
 
 export type BlockType = 'text' | 'image' | 'video' | 'audio' | 'button' | 'quiz' | 'activity' | 'html'
     | 'word_bank' | 'matching' | 'cloze' | 'listen_tap' | 'dictation' | 'pronunciation'
     | 'translation' | 'story_dialogue' | 'reading_comp' | 'gami_reward' | 'meta_hint'
-    | 'code_editor' | 'layout_container' | 'text_input' | 'completion';
+    | 'code_editor' | 'layout_container' | 'text_input' | 'completion' | 'toc';
 
 export interface BlockData {
     id: string;
@@ -30,6 +31,7 @@ interface BlockRendererProps {
     block: BlockData;
     onInteract?: (blockId: string, interaction: any) => void;
     isAdmin?: boolean;
+    bookContents?: any[];
 }
 
 // --- AudioBlock extracted as a real React component so hooks work correctly ---
@@ -298,7 +300,7 @@ const VideoBlock: React.FC<VideoBlockProps> = React.memo(({ data, isAdmin }) => 
     );
 });
 
-const BlockRenderer: React.FC<BlockRendererProps> = React.memo(({ block, onInteract, isAdmin }) => {
+const BlockRenderer: React.FC<BlockRendererProps> = React.memo(({ block, onInteract, isAdmin, bookContents }) => {
     const { type, data } = block;
 
     const renderText = () => {
@@ -508,6 +510,11 @@ const BlockRenderer: React.FC<BlockRendererProps> = React.memo(({ block, onInter
             case 'code_editor': return <CodeEditorBlock data={data} isAdmin={isAdmin} onComplete={(isCorrect) => onInteract?.(block.id, { isCorrect })} />;
             case 'text_input': return <TextInputBlock data={data} isAdmin={isAdmin} onComplete={(isCorrect) => onInteract?.(block.id, { isCorrect })} />;
             case 'completion': return <CompletionBlock data={data} isAdmin={isAdmin} onComplete={(isCorrect) => onInteract?.(block.id, { isCorrect })} />;
+            case 'toc': return (
+                <div className="w-full h-full overflow-y-auto custom-scrollbar bg-white">
+                    <TableOfContents contents={bookContents || []} onNavigate={(item) => onInteract?.(block.id, { action: 'page', value: item.id })} />
+                </div>
+            );
             case 'layout_container': return renderStub('Container', 'Group blocks together');
             default: return <div className="p-4 bg-red-500/10 text-red-400 rounded-lg text-[10px] font-black uppercase">Unknown: {type}</div>;
         }

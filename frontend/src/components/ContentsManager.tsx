@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     X, Plus, Trash2, Layout, ChevronLeft, GripVertical,
-    BookOpen, FileText, Loader2, Eye, EyeOff, FileUp
+    BookOpen, FileText, Loader2, Eye, EyeOff, FileUp, List
 } from 'lucide-react';
 import type {
     DragEndEvent,
@@ -38,6 +38,7 @@ interface ContentMeta {
     order_index: number;
     parent_id: number | null;
     is_active: boolean;
+    show_in_index: boolean;
 }
 
 interface ContentsManagerProps {
@@ -88,6 +89,27 @@ const ContentsManager: React.FC<ContentsManagerProps> = ({
         }
     };
 
+    // Toggle show_in_index
+    const handleToggleIndex = async (item: ContentMeta) => {
+        setSaving(item.id);
+        try {
+            const res = await fetch(`${API}/api/books/${bookId}/contents/${item.id}/toggle-index`, {
+                method: 'PATCH',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setItems(prev => prev.map(i => i.id === item.id ? { ...i, show_in_index: data.show_in_index } : i));
+                onNotify(`${item.type === 'chapter' ? 'Chapter' : 'Topic'} ${data.show_in_index ? 'shown in index' : 'hidden from index'}`, 'success');
+            }
+        } catch (err) {
+            console.error(err);
+            onNotify('Failed to toggle index visibility', 'error');
+        } finally {
+            setSaving(null);
+        }
+    };
+
     // Fetch lightweight metadata only
     const fetchItems = useCallback(async () => {
         setLoading(true);
@@ -117,6 +139,56 @@ const ContentsManager: React.FC<ContentsManagerProps> = ({
         }
     }, [isOpen, bookId, fetchItems]);
 
+    // Bulk Toggle Index
+    const handleBulkToggleIndex = async (show: boolean) => {
+        const ids = Array.from(selectedIds);
+        setLoading(true);
+        try {
+            const res = await fetch(`${API}/api/books/${bookId}/contents-batch-toggle-index`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ ids, show_in_index: show })
+            });
+            if (res.ok) {
+                setItems(prev => prev.map(i => ids.includes(i.id) ? { ...i, show_in_index: show } : i));
+                onNotify(`${ids.length} items ${show ? 'shown in index' : 'hidden from index'}`, 'success');
+                setSelectedIds(new Set());
+            }
+        } catch (err) {
+            onNotify('Error updating items', 'error');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Bulk Toggle Active
+    const handleBulkToggleActive = async (active: boolean) => {
+        const ids = Array.from(selectedIds);
+        setLoading(true);
+        try {
+            const res = await fetch(`${API}/api/books/${bookId}/contents-batch-toggle-active`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ ids, is_active: active })
+            });
+            if (res.ok) {
+                setItems(prev => prev.map(i => ids.includes(i.id) ? { ...i, is_active: active } : i));
+                onNotify(`${ids.length} items ${active ? 'activated' : 'deactivated'}`, 'success');
+                setSelectedIds(new Set());
+            }
+        } catch (err) {
+            onNotify('Error updating items', 'error');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     // Add new item
     const handleAdd = async (type: 'chapter' | 'topic') => {
         setAddingItem(true);
@@ -144,7 +216,8 @@ const ContentsManager: React.FC<ContentsManagerProps> = ({
                     page_number: newItem.page_number,
                     order_index: newItem.order_index,
                     parent_id: newItem.parent_id || null,
-                    is_active: true
+                    is_active: true,
+                    show_in_index: true
                 }]);
                 onNotify(`${type === 'chapter' ? 'Chapter' : 'Topic'} added`, 'success');
             }
@@ -380,13 +453,49 @@ const ContentsManager: React.FC<ContentsManagerProps> = ({
                                     exit={{ opacity: 0, x: 10, scale: 0.9 }}
                                     className="flex items-center gap-2 sm:mr-2 border-r border-white/10 pr-4"
                                 >
-                                    <span className="text-[10px] font-bold text-red-400 uppercase tracking-widest hidden sm:inline">{selectedIds.size} selected</span>
+                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest hidden sm:inline">{selectedIds.size} selected</span>
+                                    
+                                    {/* Bulk Index Visibility */}
+                                    <div className="flex bg-white/5 rounded-lg p-0.5 border border-white/10">
+                                        <button
+                                            onClick={() => handleBulkToggleIndex(true)}
+                                            className="p-1.5 rounded-md hover:bg-blue-500/20 text-blue-400 transition-all"
+                                            title="Show all in Index"
+                                        >
+                                            <List size={14} />
+                                        </button>
+                                        <button
+                                            onClick={() => handleBulkToggleIndex(false)}
+                                            className="p-1.5 rounded-md hover:bg-gray-500/20 text-gray-400 transition-all"
+                                            title="Hide all from Index"
+                                        >
+                                            <List size={14} className="opacity-40" />
+                                        </button>
+                                    </div>
+
+                                    {/* Bulk Active Visibility */}
+                                    <div className="flex bg-white/5 rounded-lg p-0.5 border border-white/10">
+                                        <button
+                                            onClick={() => handleBulkToggleActive(true)}
+                                            className="p-1.5 rounded-md hover:bg-green-500/20 text-green-400 transition-all"
+                                            title="Activate all pages"
+                                        >
+                                            <Eye size={14} />
+                                        </button>
+                                        <button
+                                            onClick={() => handleBulkToggleActive(false)}
+                                            className="p-1.5 rounded-md hover:bg-red-500/20 text-red-400 transition-all"
+                                            title="Deactivate all pages"
+                                        >
+                                            <EyeOff size={14} />
+                                        </button>
+                                    </div>
+
                                     <button
                                         onClick={() => triggerDelete()}
-                                        className="px-3 py-1.5 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition-all flex items-center gap-1.5 shadow-lg shadow-red-500/10"
+                                        className="p-1.5 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition-all flex items-center gap-1 shadow-lg shadow-red-500/10"
                                     >
                                         <Trash2 size={14} />
-                                        <span className="text-xs font-bold hidden sm:inline">Delete</span>
                                     </button>
                                 </motion.div>
                             )}
@@ -441,8 +550,7 @@ const ContentsManager: React.FC<ContentsManagerProps> = ({
                         </div>
                     ) : (
                         <div className="max-w-3xl mx-auto space-y-2">
-                            {/* Select All Header */}
-                            <div className="flex items-center gap-4 px-4 py-2 mb-2 bg-white/5 rounded-xl border border-white/10">
+                            {/* Select All Header */}                             <div className="flex items-center gap-4 px-4 py-2 mb-2 bg-white/5 rounded-xl border border-white/10">
                                 <label className="flex items-center justify-center cursor-pointer w-5 h-5">
                                     <input 
                                         type="checkbox" 
@@ -451,9 +559,17 @@ const ContentsManager: React.FC<ContentsManagerProps> = ({
                                         className="appearance-none w-4 h-4 border-2 border-gray-500 rounded-sm checked:bg-accent checked:border-accent transition-all cursor-pointer relative after:content-['✓'] after:absolute after:text-[10px] after:text-white after:font-bold after:left-[2px] after:top-[0px] after:opacity-0 checked:after:opacity-100"
                                     />
                                 </label>
-                                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest cursor-pointer" onClick={handleSelectAll}>
+                                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest cursor-pointer flex-1" onClick={handleSelectAll}>
                                     {selectedIds.size === items.length && items.length > 0 ? 'Deselect All' : 'Select All'}
                                 </span>
+                                
+                                {/* Column Headers */}
+                                <div className="hidden md:flex items-center gap-3 pr-[100px]">
+                                    <span className="text-[9px] font-black text-gray-500 uppercase tracking-tighter w-12 text-center">Page #</span>
+                                    <span className="text-[9px] font-black text-gray-500 uppercase tracking-tighter w-8 text-center">Editor</span>
+                                    <span className="text-[9px] font-black text-gray-500 uppercase tracking-tighter w-8 text-center">Index</span>
+                                    <span className="text-[9px] font-black text-gray-500 uppercase tracking-tighter w-8 text-center">Sheet</span>
+                                </div>
                             </div>
 
                             <DndContext
@@ -476,6 +592,7 @@ const ContentsManager: React.FC<ContentsManagerProps> = ({
                                             handleUpdate={handleUpdate}
                                             handleOpenEditor={handleOpenEditor}
                                             handleToggleActive={handleToggleActive}
+                                            handleToggleIndex={handleToggleIndex}
                                             triggerDelete={triggerDelete}
                                             saving={saving}
                                         />
@@ -504,6 +621,7 @@ const ContentsManager: React.FC<ContentsManagerProps> = ({
                 })()}
                 onSave={handleSaveVisualContent}
                 token={token}
+                bookContents={items}
             />
             <PdfImporterModal
                 isOpen={pdfModalOpen}
@@ -581,7 +699,7 @@ const ContentsManager: React.FC<ContentsManagerProps> = ({
 const SortableItem = ({ 
     item, idx, setItems, selectedIds, 
     handleSelectToggle, handleUpdate, handleOpenEditor, 
-    handleToggleActive, triggerDelete, saving 
+    handleToggleActive, handleToggleIndex, triggerDelete, saving 
 }: any) => {
     const {
         attributes,
@@ -677,7 +795,19 @@ const SortableItem = ({
                     <Loader2 size={12} className="animate-spin text-accent" />
                 )}
 
-                {/* Toggle visibility */}
+                {/* Toggle Show in Index */}
+                <button
+                    onClick={() => handleToggleIndex(item)}
+                    className={`p-2 rounded-lg border transition-all ${item.show_in_index !== false
+                        ? 'bg-blue-500/10 border-blue-500/20 text-blue-400 hover:bg-blue-500/20'
+                        : 'bg-gray-500/10 border-gray-500/20 text-gray-500 hover:bg-gray-500/20'
+                        }`}
+                    title={item.show_in_index !== false ? 'Shown in Index — Click to hide from TOC' : 'Hidden from Index — Click to show in TOC'}
+                >
+                    <List size={14} className={item.show_in_index === false ? 'opacity-40' : ''} />
+                </button>
+
+                {/* Toggle visibility (Active/Inactive) */}
                 <button
                     onClick={() => handleToggleActive(item)}
                     className={`p-2 rounded-lg border transition-all ${item.is_active !== false
