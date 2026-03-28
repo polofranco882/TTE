@@ -1,8 +1,7 @@
-
+import 'dotenv/config';
 import { Client } from 'pg';
 
-// dotenv removed to prevent interference
-// dotenv.config();
+// Environment variables are now loaded via 'dotenv/config'
 
 const isLocal = !process.env.DATABASE_URL || process.env.DATABASE_URL.includes('localhost') || process.env.DATABASE_URL.includes('127.0.0.1');
 
