@@ -289,23 +289,11 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
             // 1. Identify if we are inside the book reader container
             if (!container.contains(target)) return;
 
-            // 2. Identify if it's an interactive element
-            const isInteractive = target.closest('.block-interactive') || 
-                                target.closest('button') || 
-                                target.closest('input') || 
-                                target.closest('textarea') ||
-                                target.closest('select') ||
-                                target.closest('a') ||
-                                target.closest('[role="button"]') ||
-                                target.closest('video') || 
-                                target.closest('audio') ||
-                                target.closest('.notification-container') ||
-                                target.closest('.nav-zone'); // Allow explicit nav zones to receive their clicks
-
+            const isInteractive = target.closest('.block-interactive, button, input, textarea, select, a, [role="button"], video, audio, .notification-container, .nav-zone');
+            
             if (isInteractive) {
-                // If it's an interactive element, we should NEVER stop propagation in the capture phase
-                // console.log("Document Shield: PROTECTED INTERACTIVE BLOCK OR NAV ZONE", target);
-                return; // Let interactive elements handle their own events
+                if (debugNav) console.log("BookReader Shield: ALLOWING Interaction on:", target.className, target.tagName);
+                return; // Let the block handle it
             }
 
             // 3. Coordinate Check for Edges
@@ -1320,23 +1308,24 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
                                                                                         setSelectedChapter(targetItem);
                                                                                     }
                                                                                 }
-                                                                                const isTrue = interaction.isCorrect !== undefined ? interaction.isCorrect : interaction.correct;
-                                                                                if (isTrue !== undefined) {
-                                                                                    if (isTrue) {
-                                                                                        setValidationState('correct');
-                                                                                        setValidationMessage('Excellent progress!');
-                                                                                        addXp(10);
-                                                                                        incrementStreak();
-                                                                                    } else {
-                                                                                        setValidationState('incorrect');
-                                                                                        setValidationMessage('');
-                                                                                        subtractHeart();
-                                                                                        if (hearts <= 1) {
-                                                                                            setIsGameOver(true);
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            }}
+                                                    const isTrue = interaction.isCorrect !== undefined ? interaction.isCorrect : interaction.correct;
+                                                    console.log("BookReader (Double): Interaction Received", interaction, "isTrue:", isTrue);
+                                                    if (isTrue !== undefined) {
+                                                        if (isTrue) {
+                                                            setValidationState('correct');
+                                                            setValidationMessage('Excellent progress!');
+                                                            addXp(10);
+                                                            incrementStreak();
+                                                        } else {
+                                                            setValidationState('incorrect');
+                                                            setValidationMessage('');
+                                                            subtractHeart();
+                                                            if (hearts <= 1) {
+                                                                setIsGameOver(true);
+                                                            }
+                                                        }
+                                                    }
+                                                }}
                                                                         />
                                                                     ))}
                                                                     </HTMLFlipBook>

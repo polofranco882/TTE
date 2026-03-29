@@ -8,9 +8,12 @@ interface LetterCompletionBlockProps {
         visibleIndices?: string; // e.g. "0,2,4"
         preset?: 'classic' | 'modern' | 'glass' | 'neon' | 'underline';
         bgColor?: string;
-        textColor?: string;
+        hintColor?: string;
+        answerColor?: string;
         fontSize?: number;
         fontFamily?: string;
+        bold?: boolean;
+        italic?: boolean;
         indicatorPosition?: 'top' | 'bottom' | 'left' | 'right';
         gap?: number;
         boxSize?: number;
@@ -24,11 +27,14 @@ const LetterCompletionBlock: React.FC<LetterCompletionBlockProps> = ({ data, isA
     const {
         word = 'ENGLISH',
         visibleIndices = '0,6',
-        preset = 'modern',
+        preset = 'underline',
         bgColor = 'transparent',
-        textColor = '#ffffff',
+        hintColor = '#000000',
+        answerColor = '#2563eb',
         fontSize = 32,
-        fontFamily = 'monospace',
+        fontFamily = 'serif',
+        bold = true,
+        italic = false,
         indicatorPosition = 'right',
         gap = 8,
         boxSize = 50,
@@ -84,7 +90,10 @@ const LetterCompletionBlock: React.FC<LetterCompletionBlockProps> = ({ data, isA
                 inputRefs.current[prevIndex]?.focus();
             }
         } else if (e.key === 'Enter') {
+            e.stopPropagation();
             checkAnswer();
+        } else {
+            e.stopPropagation();
         }
     };
 
@@ -134,7 +143,7 @@ const LetterCompletionBlock: React.FC<LetterCompletionBlockProps> = ({ data, isA
             case 'neon':
                 return `border-2 transition-all ${isInput ? 'border-accent shadow-[0_0_10px_rgba(255,107,0,0.3)] bg-black' : 'border-transparent text-accent/50'}`;
             case 'underline':
-                return `border-b-4 transition-all ${isInput ? (isFilled ? 'border-accent' : 'border-black/30') : 'border-transparent text-gray-400'}`;
+                return `border-b-4 transition-all ${isInput ? (isFilled ? 'border-accent' : 'border-black/30') : 'border-transparent'}`;
             case 'classic':
             default:
                 return `border-b-4 transition-all ${isInput ? 'border-black' : 'border-transparent text-gray-500'}`;
@@ -144,6 +153,20 @@ const LetterCompletionBlock: React.FC<LetterCompletionBlockProps> = ({ data, isA
     return (
         <div 
             className="w-full h-full flex items-center justify-center p-4 relative block-interactive"
+            onPointerDown={(e) => { if (!isAdmin) { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); } }}
+            onMouseDown={(e) => { if (!isAdmin) { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); } }}
+            onTouchStart={(e) => { if (!isAdmin) { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); } }}
+            onClick={(e) => {
+                if (!isAdmin) {
+                    e.stopPropagation();
+                    e.nativeEvent.stopImmediatePropagation();
+                    // Find first empty or first input to focus
+                    const firstInputIndex = characters.findIndex((char, i) => !visibleSet.has(i) && char !== ' ');
+                    if (firstInputIndex !== -1) {
+                        inputRefs.current[firstInputIndex]?.focus();
+                    }
+                }
+            }}
             style={{ backgroundColor: bgColor }}
         >
             <motion.div 
@@ -161,13 +184,15 @@ const LetterCompletionBlock: React.FC<LetterCompletionBlockProps> = ({ data, isA
                     return (
                         <div 
                             key={i}
-                            className={`flex items-center justify-center font-black transition-all ${getBoxStyles(i, isHidden)}`}
+                            className={`flex items-center justify-center transition-all ${getBoxStyles(i, isHidden)}`}
                             style={{ 
                                 width: scaledBoxSize, 
                                 height: scaledBoxSize, 
                                 fontSize: scaledFontSize,
                                 fontFamily: fontFamily,
-                                color: isHidden ? textColor : undefined
+                                fontWeight: bold ? '900' : 'normal',
+                                fontStyle: italic ? 'italic' : 'normal',
+                                color: isHidden ? answerColor : hintColor
                             }}
                         >
                             {isHidden ? (
@@ -176,11 +201,21 @@ const LetterCompletionBlock: React.FC<LetterCompletionBlockProps> = ({ data, isA
                                     type="text"
                                     maxLength={1}
                                     value={userInputs[i] || ''}
-                                    onChange={(e) => handleInputChange(i, e.target.value)}
+                                    onChange={(e) => {
+                                        e.stopPropagation();
+                                        handleInputChange(i, e.target.value);
+                                    }}
                                     onKeyDown={(e) => handleKeyDown(i, e)}
+                                    onPointerDown={(e) => e.stopPropagation()}
+                                    onMouseDown={(e) => e.stopPropagation()}
+                                    onTouchStart={(e) => e.stopPropagation()}
                                     disabled={status === 'correct' || isAdmin}
-                                    className="w-full h-full bg-transparent text-center outline-none uppercase font-black"
-                                    style={{ color: textColor }}
+                                    className="w-full h-full bg-transparent text-center outline-none uppercase pointer-events-auto cursor-text text-inherit"
+                                    style={{ 
+                                        color: answerColor,
+                                        fontWeight: bold ? '900' : 'normal',
+                                        fontStyle: italic ? 'italic' : 'normal'
+                                    }}
                                 />
                             ) : (
                                 <span>{char.toUpperCase()}</span>

@@ -129,6 +129,9 @@ const CompletionBlock: React.FC<CompletionBlockProps> = ({ data, isAdmin, onComp
     return (
         <div 
             className={`w-full h-full flex items-center overflow-hidden transition-all duration-500 block-interactive ${styles.container}`}
+            onPointerDown={(e) => { if (!isAdmin) e.stopPropagation(); }}
+            onMouseDown={(e) => { if (!isAdmin) e.stopPropagation(); }}
+            onTouchStart={(e) => { if (!isAdmin) e.stopPropagation(); }}
             style={{ 
                 backgroundColor: preset === 'neon' ? '#000' : (preset === 'glass' ? 'transparent' : bgColor),
                 fontFamily: fontFamily,
@@ -178,6 +181,7 @@ const CompletionBlock: React.FC<CompletionBlockProps> = ({ data, isAdmin, onComp
                         }}
                         onPointerDown={(e) => e.stopPropagation()}
                         onMouseDown={(e) => e.stopPropagation()}
+                        onTouchStart={(e) => e.stopPropagation()}
                         disabled={status === 'correct'}
                         placeholder={placeholder}
                         className={`text-center transition-all col-start-1 row-start-1 w-full bg-transparent outline-none pointer-events-auto ${styles.input}`}

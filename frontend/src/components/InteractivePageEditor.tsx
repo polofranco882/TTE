@@ -235,9 +235,12 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                     visibleIndices: '0,6',
                     preset: 'underline',
                     bgColor: 'transparent',
-                    textColor: '#333333',
+                    hintColor: '#000000',
+                    answerColor: '#2563eb',
                     fontSize: 32,
-                    fontFamily: 'monospace',
+                    fontFamily: 'serif',
+                    bold: true,
+                    italic: false,
                     indicatorPosition: 'right',
                     gap: 8,
                     boxSize: 50,
@@ -1360,6 +1363,57 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                                     </div>
 
                                                     <div className="grid grid-cols-2 gap-3 pt-2">
+                                                        <div className="flex flex-col gap-1">
+                                                            <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Hint Color</span>
+                                                            <input type="color" value={selectedBlock.data.hintColor || '#000000'} onChange={e => updateBlockData(selectedId!, { hintColor: e.target.value })} className="w-full h-8 rounded cursor-pointer bg-transparent border-0" />
+                                                        </div>
+                                                        <div className="flex flex-col gap-1">
+                                                            <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Answer Color</span>
+                                                            <input type="color" value={selectedBlock.data.answerColor || '#2563eb'} onChange={e => updateBlockData(selectedId!, { answerColor: e.target.value })} className="w-full h-8 rounded cursor-pointer bg-transparent border-0" />
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/5">
+                                                        <div className="flex flex-col gap-1">
+                                                            <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Font</span>
+                                                            <select 
+                                                                value={selectedBlock.data.fontFamily || 'serif'} 
+                                                                onChange={e => updateBlockData(selectedId!, { fontFamily: e.target.value })}
+                                                                className="bg-[#0c0e1a] border border-white/10 rounded-lg p-2 text-[10px] text-white outline-none"
+                                                            >
+                                                                <option value="serif">Serif (Classic)</option>
+                                                                <option value="sans-serif">Sans Serif</option>
+                                                                <option value="monospace">Monospace</option>
+                                                            </select>
+                                                        </div>
+                                                        <div className="flex flex-col gap-1">
+                                                            <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Size</span>
+                                                            <input type="number" value={selectedBlock.data.fontSize || 32} onChange={e => updateBlockData(selectedId!, { fontSize: parseInt(e.target.value) })} className="w-full bg-[#0c0e1a] border border-white/10 rounded-lg p-2 text-xs text-white" />
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="flex gap-4 pt-2">
+                                                        <div className="flex items-center gap-2">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={selectedBlock.data.bold !== false}
+                                                                onChange={(e) => updateBlockData(selectedId!, { bold: e.target.checked })}
+                                                                className="rounded border-white/10 bg-black"
+                                                            />
+                                                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Bold</label>
+                                                        </div>
+                                                        <div className="flex items-center gap-2">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={selectedBlock.data.italic || false}
+                                                                onChange={(e) => updateBlockData(selectedId!, { italic: e.target.checked })}
+                                                                className="rounded border-white/10 bg-black"
+                                                            />
+                                                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Italic</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/5">
                                                         <div className="space-y-2">
                                                             <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 block">Box Size</label>
                                                             <input type="number" value={selectedBlock.data.boxSize || 50} onChange={e => updateBlockData(selectedId!, { boxSize: parseInt(e.target.value) })} className="w-full bg-[#0c0e1a] border border-white/10 rounded-lg p-2 text-xs text-white" />
