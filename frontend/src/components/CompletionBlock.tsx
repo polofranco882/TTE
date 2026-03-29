@@ -60,10 +60,25 @@ const CompletionBlock: React.FC<CompletionBlockProps> = ({ data, isAdmin, onComp
         if (!val) return;
 
         const isCorrect = correctAnswers.some(ans => {
-            if (caseSensitive) {
-                return ans.trim() === val;
+            const trimmedAns = ans.trim();
+            if (!trimmedAns.includes('%')) {
+                // Exact matching
+                if (caseSensitive) {
+                    return trimmedAns === val;
+                }
+                return trimmedAns.toLowerCase() === val.toLowerCase();
+            } else {
+                // Wildcard matching (% like SQL LIKE)
+                // 1. Escape special characters (\ -> \\, . -> \., etc.)
+                // 2. Replace % with .*
+                // 3. Match from start to end (^...$)
+                const regexPattern = '^' + trimmedAns
+                    .replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // escape regex chars
+                    .replace(/%/g, '.*') + '$';             // replace % with wildcard
+                
+                const regex = new RegExp(regexPattern, caseSensitive ? '' : 'i');
+                return regex.test(val);
             }
-            return ans.trim().toLowerCase() === val.toLowerCase();
         });
 
         if (isCorrect) {
@@ -202,20 +217,21 @@ const CompletionBlock: React.FC<CompletionBlockProps> = ({ data, isAdmin, onComp
                                 animate={{ scale: 1, opacity: 1 }}
                                 className={getIndicatorPositionClasses()}
                             >
-                                <div className="flex flex-col items-center gap-2">
-                                    <div className="bg-green-500 text-white p-2 rounded-full shadow-lg">
-                                        <CheckCircle2 size={24} />
+                                <div className="flex flex-row items-center gap-2 bg-white/20 backdrop-blur-md p-1 pr-3 rounded-full border border-white/30 shadow-xl pointer-events-auto">
+                                    <div className="bg-green-500 text-white p-1.5 rounded-full shadow-lg shrink-0">
+                                        <CheckCircle2 size={18} />
                                     </div>
-                                    <span className="text-[10px] font-black uppercase text-green-500 bg-white/90 px-2 py-0.5 rounded-full shadow-sm">Correct!</span>
-                                    {!isAdmin && (
-                                        <button 
-                                            onClick={reset}
-                                            className="p-1.5 bg-white/20 hover:bg-white/40 rounded-full transition-colors text-green-600 hover:text-green-700 pointer-events-auto border border-green-500/20 shadow-sm"
-                                            title="Retry"
-                                        >
-                                            <RefreshCw size={14} />
-                                        </button>
-                                    )}
+                                    <div className="flex flex-col -gap-1">
+                                        <span className="text-[8px] font-black uppercase tracking-tighter text-green-600 block leading-none">Correct!</span>
+                                        {!isAdmin && (
+                                            <button 
+                                                onClick={reset}
+                                                className="text-[7px] font-bold uppercase text-gray-500 hover:text-green-600 transition-colors text-left"
+                                            >
+                                                Tap to Reset
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
                             </motion.div>
                         )}
@@ -226,20 +242,21 @@ const CompletionBlock: React.FC<CompletionBlockProps> = ({ data, isAdmin, onComp
                                 exit={{ scale: 0, opacity: 0 }}
                                 className={getIndicatorPositionClasses()}
                             >
-                                <div className="flex flex-col items-center gap-2">
-                                    <div className="bg-red-500 text-white p-2 rounded-full shadow-lg">
-                                        <XCircle size={24} />
+                                <div className="flex flex-row items-center gap-2 bg-white/20 backdrop-blur-md p-1 pr-3 rounded-full border border-white/30 shadow-xl pointer-events-auto">
+                                    <div className="bg-red-500 text-white p-1.5 rounded-full shadow-lg shrink-0">
+                                        <XCircle size={18} />
                                     </div>
-                                    <span className="text-[10px] font-black uppercase text-red-500 bg-white/90 px-2 py-0.5 rounded-full shadow-sm">Incorrect!</span>
-                                    {!isAdmin && (
-                                        <button 
-                                            onClick={reset}
-                                            className="p-1.5 bg-white/20 hover:bg-white/40 rounded-full transition-colors text-red-600 hover:text-red-700 pointer-events-auto border border-red-500/20 shadow-sm"
-                                            title="Retry"
-                                        >
-                                            <RefreshCw size={14} />
-                                        </button>
-                                    )}
+                                    <div className="flex flex-col -gap-1">
+                                        <span className="text-[8px] font-black uppercase tracking-tighter text-red-600 block leading-none">Incorrect!</span>
+                                        {!isAdmin && (
+                                            <button 
+                                                onClick={reset}
+                                                className="text-[7px] font-bold uppercase text-gray-500 hover:text-red-600 transition-colors text-left"
+                                            >
+                                                Tap to Retry
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
                             </motion.div>
                         )}

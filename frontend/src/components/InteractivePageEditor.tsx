@@ -1561,7 +1561,9 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                                             className="w-full bg-[#0c0e1a] border border-white/10 rounded-lg p-2 text-xs text-white"
                                                             placeholder="night | NIGHT | evening"
                                                         />
-                                                        <p className="text-[7px] text-gray-500 mt-1 uppercase">Separate with Pipe (|) for multiple options</p>
+                                                        <p className="text-[7px] text-accent mt-1 uppercase font-bold tracking-tighter">
+                                                            Sep with | for options • Use % for wildcards (e.g. yes,%)
+                                                        </p>
                                                     </div>
                                                     <div className="flex items-center gap-2">
                                                         <input

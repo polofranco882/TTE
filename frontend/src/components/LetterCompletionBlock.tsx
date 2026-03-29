@@ -284,30 +284,41 @@ const LetterCompletionBlock: React.FC<LetterCompletionBlockProps> = ({ data, isA
                             exit={{ scale: 0, opacity: 0 }}
                             className={getIndicatorPositionClasses()}
                         >
-                            <div className="flex flex-col items-center gap-2">
+                            <div className="flex flex-row items-center gap-2 bg-white/20 backdrop-blur-md p-1 pr-3 rounded-full border border-white/30 shadow-xl pointer-events-auto min-w-max">
                                 {status === 'correct' ? (
                                     <>
-                                        <div className="bg-green-500 text-white p-2 rounded-full shadow-lg">
-                                            <CheckCircle2 size={24} />
+                                        <div className="bg-green-500 text-white p-1.5 rounded-full shadow-lg shrink-0">
+                                            <CheckCircle2 size={18} />
                                         </div>
-                                        <span className="text-[10px] font-black uppercase text-green-500 bg-white/90 px-2 py-0.5 rounded-full shadow-sm">Correct!</span>
+                                        <div className="flex flex-col -gap-1">
+                                            <span className="text-[8px] font-black uppercase tracking-tighter text-green-600 block leading-none">Correct!</span>
+                                            {!isAdmin && (
+                                                <button 
+                                                    onClick={reset}
+                                                    className="text-[7px] font-bold uppercase text-gray-500 hover:text-green-600 transition-colors text-left"
+                                                >
+                                                    Tap to Reset
+                                                </button>
+                                            )}
+                                        </div>
                                     </>
                                 ) : (
                                     <>
-                                        <div className="bg-red-500 text-white p-2 rounded-full shadow-lg">
-                                            <XCircle size={24} />
+                                        <div className="bg-red-500 text-white p-1.5 rounded-full shadow-lg shrink-0">
+                                            <XCircle size={18} />
                                         </div>
-                                        <span className="text-[10px] font-black uppercase text-red-500 bg-white/90 px-2 py-0.5 rounded-full shadow-sm">Incorrect!</span>
+                                        <div className="flex flex-col -gap-1">
+                                            <span className="text-[8px] font-black uppercase tracking-tighter text-red-600 block leading-none">Incorrect!</span>
+                                            {!isAdmin && (
+                                                <button 
+                                                    onClick={reset}
+                                                    className="text-[7px] font-bold uppercase text-gray-500 hover:text-red-600 transition-colors text-left"
+                                                >
+                                                    Tap to Retry
+                                                </button>
+                                            )}
+                                        </div>
                                     </>
-                                )}
-                                {!isAdmin && (
-                                    <button 
-                                        onClick={(e) => { e.stopPropagation(); reset(); }}
-                                        className={`p-1.5 bg-white/20 hover:bg-white/40 rounded-full transition-colors pointer-events-auto border shadow-sm ${status === 'correct' ? 'text-green-600 border-green-500/20' : 'text-red-600 border-red-500/20'}`}
-                                        title="Retry"
-                                    >
-                                        <RefreshCw size={14} />
-                                    </button>
                                 )}
                             </div>
                         </motion.div>
