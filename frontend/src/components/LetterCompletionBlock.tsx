@@ -15,9 +15,13 @@ interface LetterCompletionBlockProps {
         bold?: boolean;
         italic?: boolean;
         indicatorPosition?: 'top' | 'bottom' | 'left' | 'right';
+        actionPosition?: 'top' | 'bottom' | 'left' | 'right';
+        actionStyle?: 'minimal' | 'glass' | 'neon' | 'modern';
+        actionVisibleAlways?: boolean;
         gap?: number;
         boxSize?: number;
-        height?: number; // Used for auto-scaling
+        height?: number;
+        align?: 'left' | 'center' | 'right';
     };
     isAdmin?: boolean;
     onComplete?: (isCorrect: boolean) => void;
@@ -35,10 +39,11 @@ const LetterCompletionBlock: React.FC<LetterCompletionBlockProps> = ({ data, isA
         fontFamily = 'serif',
         bold = true,
         italic = false,
-        indicatorPosition = 'right',
-        gap = 8,
-        boxSize = 50,
-        height = 120
+        actionStyle = 'minimal',
+        gap = 10,
+        boxSize = 60,
+        height = 80,
+        align = 'left'
     } = data;
 
     // Auto-scaling factor based on default height of 120px
@@ -92,6 +97,19 @@ const LetterCompletionBlock: React.FC<LetterCompletionBlockProps> = ({ data, isA
         } else if (e.key === 'Enter') {
             e.stopPropagation();
             checkAnswer();
+        } else if (e.key === ' ' || e.key === 'Spacebar') {
+            e.preventDefault();
+            e.stopPropagation();
+            // Move to next field
+            if (index < characters.length - 1) {
+                let nextIndex = index + 1;
+                while (nextIndex < characters.length && (visibleSet.has(nextIndex) || characters[nextIndex] === ' ')) {
+                    nextIndex++;
+                }
+                if (nextIndex < characters.length) {
+                    inputRefs.current[nextIndex]?.focus();
+                }
+            }
         } else {
             e.stopPropagation();
         }
@@ -123,10 +141,11 @@ const LetterCompletionBlock: React.FC<LetterCompletionBlockProps> = ({ data, isA
     };
 
     const getIndicatorPositionClasses = () => {
-        switch (indicatorPosition) {
+        const pos = data.actionPosition || 'right';
+        switch (pos) {
             case 'bottom': return 'absolute -bottom-20 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 z-30';
             case 'left': return 'absolute top-1/2 -translate-y-1/2 -left-28 flex flex-col items-center gap-1 z-30';
-            case 'right': return 'absolute top-1/2 -translate-y-1/2 -right-28 flex flex-col items-center gap-1 z-30';
+            case 'right': return 'absolute top-1/2 -translate-y-1/2 -right-16 flex flex-col items-center gap-1 z-30';
             case 'top':
             default: return 'absolute -top-20 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 z-30';
         }
@@ -150,20 +169,43 @@ const LetterCompletionBlock: React.FC<LetterCompletionBlockProps> = ({ data, isA
         }
     };
 
+    const getAlignClasses = (type: 'container' | 'content') => {
+        const a = align || 'left';
+        if (type === 'container') {
+            switch (a) {
+                case 'left': return 'justify-start pl-2';
+                case 'right': return 'justify-end pr-2';
+                case 'center':
+                default: return 'justify-center';
+            }
+        } else { // content (flex-wrap container)
+            switch (a) {
+                case 'left': return 'justify-start';
+                case 'right': return 'justify-end';
+                case 'center':
+                default: return 'justify-center';
+            }
+        }
+    };
+
     return (
         <div 
-            className="w-full h-full flex items-center justify-center p-4 relative block-interactive"
+            className={`w-full h-full flex items-center relative block-interactive ${getAlignClasses('container')}`}
             onPointerDown={(e) => { if (!isAdmin) { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); } }}
             onMouseDown={(e) => { if (!isAdmin) { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); } }}
             onTouchStart={(e) => { if (!isAdmin) { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); } }}
             onClick={(e) => {
                 if (!isAdmin) {
+                    // Stop event if it hits the container or its children (except the actual inputs handled below)
                     e.stopPropagation();
                     e.nativeEvent.stopImmediatePropagation();
-                    // Find first empty or first input to focus
-                    const firstInputIndex = characters.findIndex((char, i) => !visibleSet.has(i) && char !== ' ');
-                    if (firstInputIndex !== -1) {
-                        inputRefs.current[firstInputIndex]?.focus();
+                    
+                    // If the user didn't click an input, find the MOST REASONABLE input to focus
+                    if ((e.target as HTMLElement).tagName !== 'INPUT') {
+                        const firstInputIndex = characters.findIndex((char, i) => !visibleSet.has(i) && char !== ' ');
+                        if (firstInputIndex !== -1) {
+                            inputRefs.current[firstInputIndex]?.focus();
+                        }
                     }
                 }
             }}
@@ -171,7 +213,7 @@ const LetterCompletionBlock: React.FC<LetterCompletionBlockProps> = ({ data, isA
         >
             <motion.div 
                 animate={shake ? { x: [-5, 5, -5, 5, 0] } : {}}
-                className="flex flex-wrap items-center justify-center relative"
+                className={`flex flex-wrap items-center relative ${getAlignClasses('content')}`}
                 style={{ gap: `${scaledGap}px` }}
             >
                 {characters.map((char, i) => {
@@ -199,13 +241,22 @@ const LetterCompletionBlock: React.FC<LetterCompletionBlockProps> = ({ data, isA
                                 <input
                                     ref={el => { inputRefs.current[i] = el; }}
                                     type="text"
-                                    maxLength={1}
+                                    inputMode="text"
+                                    autoComplete="off"
+                                    autoCorrect="off"
+                                    autoCapitalize="characters"
+                                    spellCheck={false}
                                     value={userInputs[i] || ''}
+                                    onFocus={(e) => e.currentTarget.select()}
                                     onChange={(e) => {
                                         e.stopPropagation();
                                         handleInputChange(i, e.target.value);
                                     }}
                                     onKeyDown={(e) => handleKeyDown(i, e)}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        inputRefs.current[i]?.focus();
+                                    }}
                                     onPointerDown={(e) => e.stopPropagation()}
                                     onMouseDown={(e) => e.stopPropagation()}
                                     onTouchStart={(e) => e.stopPropagation()}
@@ -225,6 +276,7 @@ const LetterCompletionBlock: React.FC<LetterCompletionBlockProps> = ({ data, isA
                 })}
 
                 <AnimatePresence>
+                    {/* Status Feedback */}
                     {status !== 'idle' && (
                         <motion.div 
                             initial={{ scale: 0, opacity: 0 }}
@@ -250,13 +302,62 @@ const LetterCompletionBlock: React.FC<LetterCompletionBlockProps> = ({ data, isA
                                 )}
                                 {!isAdmin && (
                                     <button 
-                                        onClick={reset}
+                                        onClick={(e) => { e.stopPropagation(); reset(); }}
                                         className={`p-1.5 bg-white/20 hover:bg-white/40 rounded-full transition-colors pointer-events-auto border shadow-sm ${status === 'correct' ? 'text-green-600 border-green-500/20' : 'text-red-600 border-red-500/20'}`}
                                         title="Retry"
                                     >
                                         <RefreshCw size={14} />
                                     </button>
                                 )}
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {/* Manual Check Button (for Mobile) - Visible when idle, with style variants */}
+                    {status === 'idle' && (Object.keys(userInputs).length > 0 || isAdmin || data.actionVisibleAlways !== false) && (
+                        <motion.div 
+                            initial={{ scale: 0, opacity: 0, y: 10 }}
+                            animate={{ 
+                                scale: 1, 
+                                opacity: (Object.keys(userInputs).length > 0 || isAdmin) ? 1 : 0.4, 
+                                y: 0 
+                            }}
+                            exit={{ scale: 0, opacity: 0 }}
+                            className={getIndicatorPositionClasses()}
+                        >
+                            <div 
+                                className="flex flex-col items-center gap-2 pointer-events-auto transition-transform active:scale-95"
+                                style={{ transform: `scale(${Math.max(0.7, Math.min(1.2, scaleFactor))})` }}
+                            >
+                                <button 
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (!isAdmin && Object.keys(userInputs).length > 0) checkAnswer();
+                                    }}
+                                    className={`
+                                        group relative p-3 rounded-2xl transition-all duration-300
+                                        ${data.actionStyle === 'glass' ? 'bg-white/10 backdrop-blur-md border border-white/20 shadow-xl' : ''}
+                                        ${data.actionStyle === 'neon' ? 'bg-accent border-2 border-white/50 shadow-[0_0_20px_rgba(255,107,0,0.6)]' : ''}
+                                        ${data.actionStyle === 'modern' ? 'bg-gradient-to-br from-accent to-orange-600 shadow-xl text-white' : ''}
+                                        ${(!data.actionStyle || data.actionStyle === 'minimal') ? 'bg-accent text-white shadow-lg' : ''}
+                                        ${isAdmin || Object.keys(userInputs).length === 0 ? 'cursor-default' : 'hover:scale-110'}
+                                    `}
+                                    title={isAdmin ? "Preview" : "Check Answer"}
+                                >
+                                    {data.actionStyle === 'neon' && (
+                                        <div className="absolute inset-0 rounded-2xl bg-white animate-ping opacity-10 pointer-events-none" />
+                                    )}
+                                    <CheckCircle2 
+                                        size={24} 
+                                        className={`${data.actionStyle === 'glass' ? 'text-accent' : 'text-white'} transition-transform`} 
+                                    />
+                                </button>
+                                <span className={`
+                                    text-[9px] font-black uppercase tracking-tighter px-2 py-1 rounded-full shadow-sm
+                                    ${data.actionStyle === 'glass' ? 'bg-white/20 text-white backdrop-blur-sm' : 'bg-white/90 text-accent'}
+                                `}>
+                                    Check
+                                </span>
                             </div>
                         </motion.div>
                     )}

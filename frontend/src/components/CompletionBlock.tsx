@@ -13,6 +13,7 @@ interface CompletionBlockProps {
         titleColor?: string;
         fontFamily?: string;
         fontSize?: number;
+        height?: number;
         placeholder?: string;
         inputWidth?: number | string;
         align?: 'left' | 'center' | 'right';
@@ -20,6 +21,9 @@ interface CompletionBlockProps {
         italic?: boolean;
         underline?: boolean;
         indicatorPosition?: 'top' | 'bottom' | 'left' | 'right';
+        actionPosition?: 'top' | 'bottom' | 'left' | 'right';
+        actionStyle?: 'minimal' | 'glass' | 'neon' | 'modern';
+        actionVisibleAlways?: boolean;
     };
     isAdmin?: boolean;
     onComplete?: (isCorrect: boolean) => void;
@@ -47,7 +51,6 @@ const CompletionBlock: React.FC<CompletionBlockProps> = ({ data, isAdmin, onComp
         bold = false,
         italic = false,
         underline = false,
-        indicatorPosition = 'right'
     } = data;
 
     const checkAnswer = () => {
@@ -113,13 +116,14 @@ const CompletionBlock: React.FC<CompletionBlockProps> = ({ data, isAdmin, onComp
     const styles = getPresetStyles();
     
     const getIndicatorPositionClasses = () => {
-        switch (indicatorPosition) {
+        const pos = data.actionPosition || 'right';
+        switch (pos) {
             case 'bottom':
-                return 'absolute -bottom-16 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 z-20';
+                return 'absolute -bottom-20 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 z-20';
             case 'left':
                 return 'absolute top-1/2 -translate-y-1/2 -left-24 flex flex-col items-center gap-1 z-20';
             case 'right':
-                return 'absolute top-1/2 -translate-y-1/2 -right-24 flex flex-col items-center gap-1 z-20';
+                return 'absolute top-1/2 -translate-y-1/2 -right-20 flex flex-col items-center gap-1 z-30';
             case 'top':
             default:
                 return 'absolute -top-16 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 z-20';
@@ -128,10 +132,11 @@ const CompletionBlock: React.FC<CompletionBlockProps> = ({ data, isAdmin, onComp
 
     return (
         <div 
-            className={`w-full h-full flex items-center overflow-hidden transition-all duration-500 block-interactive ${styles.container}`}
+            className={`w-full h-full flex items-center overflow-visible transition-all duration-500 block-interactive ${styles.container}`}
             onPointerDown={(e) => { if (!isAdmin) e.stopPropagation(); }}
             onMouseDown={(e) => { if (!isAdmin) e.stopPropagation(); }}
             onTouchStart={(e) => { if (!isAdmin) e.stopPropagation(); }}
+            onClick={() => { if (!isAdmin && status === 'idle') inputRef.current?.focus(); }}
             style={{ 
                 backgroundColor: preset === 'neon' ? '#000' : (preset === 'glass' ? 'transparent' : bgColor),
                 fontFamily: fontFamily,
@@ -145,7 +150,6 @@ const CompletionBlock: React.FC<CompletionBlockProps> = ({ data, isAdmin, onComp
             <motion.div 
                 animate={shake ? { x: [-5, 5, -5, 5, 0] } : {}}
                 className={`flex items-baseline gap-4 flex-wrap relative scale-110 ${align === 'left' ? 'justify-start' : (align === 'right' ? 'justify-end' : 'justify-center')}`}
-                onClick={() => inputRef.current?.focus()}
             >
                 <span 
                     className={`block leading-none ${styles.title}`}
@@ -158,7 +162,6 @@ const CompletionBlock: React.FC<CompletionBlockProps> = ({ data, isAdmin, onComp
                 </span>
 
                 <div className="relative group inline-grid">
-                    {/* Hidden span to measure text width and force container size */}
                     <span 
                         className="invisible pointer-events-none whitespace-pre col-start-1 row-start-1 px-4"
                         style={{ 
@@ -237,6 +240,51 @@ const CompletionBlock: React.FC<CompletionBlockProps> = ({ data, isAdmin, onComp
                                             <RefreshCw size={14} />
                                         </button>
                                     )}
+                                </div>
+                            </motion.div>
+                        )}
+                        {/* Manual Check Button - Visible when idle, with style variants */}
+                        {status === 'idle' && (inputValue.trim().length > 0 || isAdmin || data.actionVisibleAlways !== false) && (
+                            <motion.div 
+                                initial={{ scale: 0, opacity: 0, y: 10 }}
+                                animate={{ 
+                                    scale: 1, 
+                                    opacity: (inputValue.trim().length > 0 || isAdmin) ? 1 : 0.4, 
+                                    y: 0 
+                                }}
+                                exit={{ scale: 0, opacity: 0 }}
+                                className={getIndicatorPositionClasses()}
+                            >
+                                <div className="flex flex-col items-center gap-2 pointer-events-auto transition-transform active:scale-95">
+                                    <button 
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            if (!isAdmin && inputValue.trim().length > 0) checkAnswer();
+                                        }}
+                                        className={`
+                                            group relative p-3 rounded-2xl transition-all duration-300
+                                            ${data.actionStyle === 'glass' ? 'bg-white/10 backdrop-blur-md border border-white/20 shadow-xl' : ''}
+                                            ${data.actionStyle === 'neon' ? 'bg-accent border-2 border-white/50 shadow-[0_0_20px_rgba(255,107,0,0.6)]' : ''}
+                                            ${data.actionStyle === 'modern' ? 'bg-gradient-to-br from-accent to-orange-600 shadow-xl text-white' : ''}
+                                            ${(!data.actionStyle || data.actionStyle === 'minimal') ? 'bg-accent text-white shadow-lg' : ''}
+                                            ${isAdmin || inputValue.trim().length === 0 ? 'cursor-default' : 'hover:scale-110'}
+                                        `}
+                                        title={isAdmin ? "Preview" : "Check Answer"}
+                                    >
+                                        {data.actionStyle === 'neon' && (
+                                            <div className="absolute inset-0 rounded-2xl bg-white animate-ping opacity-10 pointer-events-none" />
+                                        )}
+                                        <CheckCircle2 
+                                            size={24} 
+                                            className={`${data.actionStyle === 'glass' ? 'text-accent' : 'text-white'} transition-transform`} 
+                                        />
+                                    </button>
+                                    <span className={`
+                                        text-[9px] font-black uppercase tracking-tighter px-2 py-1 rounded-full shadow-sm
+                                        ${data.actionStyle === 'glass' ? 'bg-white/20 text-white backdrop-blur-sm' : 'bg-white/90 text-accent'}
+                                    `}>
+                                        Check
+                                    </span>
                                 </div>
                             </motion.div>
                         )}

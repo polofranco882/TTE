@@ -1424,6 +1424,29 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                                         </div>
                                                     </div>
 
+                                                    <div className="pt-2 border-t border-white/5 space-y-2">
+                                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1 block">Content Alignment</label>
+                                                        <div className="grid grid-cols-3 gap-2">
+                                                            {[
+                                                                { id: 'left', label: 'Left' },
+                                                                { id: 'center', label: 'Center' },
+                                                                { id: 'right', label: 'Right' }
+                                                            ].map(a => (
+                                                                <button
+                                                                    key={a.id}
+                                                                    onClick={() => updateBlockData(selectedId!, { align: a.id })}
+                                                                    className={`py-2 rounded-lg text-[9px] font-black border transition-all ${
+                                                                        (selectedBlock.data.align === a.id || (!selectedBlock.data.align && a.id === 'left')) 
+                                                                        ? 'bg-accent border-accent text-white shadow-lg shadow-accent/20' 
+                                                                        : 'bg-white/5 border-white/10 text-gray-400 hover:text-white hover:bg-white/10'
+                                                                    }`}
+                                                                >
+                                                                    {a.label.toUpperCase()}
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+
                                                     <div className="space-y-2 pt-2 border-t border-white/5">
                                                         <p className="text-[8px] text-gray-500 font-bold uppercase tracking-widest">Premium Design (Preset)</p>
                                                         <div className="grid grid-cols-2 gap-2">
@@ -1440,6 +1463,58 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                                     </div>
 
                                                     <div className="pt-2 border-t border-white/5 space-y-2">
+                                                        <label className="text-[10px] font-black uppercase tracking-widest text-accent mb-1 block">Action (Check) Position</label>
+                                                        <div className="grid grid-cols-4 gap-1 mb-2">
+                                                            {['top', 'bottom', 'left', 'right'].map(id => (
+                                                                <button
+                                                                    key={id}
+                                                                    onClick={() => updateBlockData(selectedId!, { actionPosition: id })}
+                                                                    className={`py-1.5 rounded-lg text-[9px] font-black border transition-all ${
+                                                                        (selectedBlock.data.actionPosition === id || (!selectedBlock.data.actionPosition && id === 'right')) 
+                                                                        ? 'bg-accent border-accent text-white shadow-lg shadow-accent/20' 
+                                                                        : 'bg-white/5 border-white/10 text-gray-400 hover:text-white hover:bg-white/10'
+                                                                    }`}
+                                                                >
+                                                                    {id[0].toUpperCase()}
+                                                                </button>
+                                                            ))}
+                                                        </div>
+
+                                                        <div className="space-y-2 pt-2">
+                                                            <div className="flex items-center justify-between">
+                                                                <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 block">Action Style</label>
+                                                                <div className="flex items-center gap-2">
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={selectedBlock.data.actionVisibleAlways !== false}
+                                                                        onChange={(e) => updateBlockData(selectedId!, { actionVisibleAlways: e.target.checked })}
+                                                                        className="rounded border-white/10 bg-black"
+                                                                    />
+                                                                    <label className="text-[8px] font-black uppercase tracking-widest text-gray-400">Show Always</label>
+                                                                </div>
+                                                            </div>
+                                                            <div className="grid grid-cols-4 gap-1">
+                                                                {[
+                                                                    { id: 'minimal', label: 'Min' },
+                                                                    { id: 'glass', label: 'Gls' },
+                                                                    { id: 'neon', label: 'Neo' },
+                                                                    { id: 'modern', label: 'Mod' }
+                                                                ].map(p => (
+                                                                    <button
+                                                                        key={p.id}
+                                                                        onClick={() => updateBlockData(selectedId!, { actionStyle: p.id })}
+                                                                        className={`py-1.5 rounded-lg text-[8px] font-black border transition-all ${
+                                                                            (selectedBlock.data.actionStyle === p.id || (!selectedBlock.data.actionStyle && p.id === 'minimal')) 
+                                                                            ? 'bg-accent border-accent text-white shadow-lg shadow-accent/20' 
+                                                                            : 'bg-white/5 border-white/10 text-gray-500 hover:text-white'
+                                                                        }`}
+                                                                    >
+                                                                        {p.label.toUpperCase()}
+                                                                    </button>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+
                                                         <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1 block">Indicator Position</label>
                                                         <div className="grid grid-cols-2 gap-2">
                                                             {[
@@ -1588,7 +1663,59 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                                     </div>
 
                                                     <div className="pt-2 border-t border-white/5 space-y-2">
-                                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1 block">Indicator Position</label>
+                                                        <label className="text-[10px] font-black uppercase tracking-widest text-accent mb-1 block">Action (Check) Position</label>
+                                                        <div className="grid grid-cols-4 gap-1 mb-2">
+                                                            {['top', 'bottom', 'left', 'right'].map(id => (
+                                                                <button
+                                                                    key={id}
+                                                                    onClick={() => updateBlockData(selectedId!, { actionPosition: id })}
+                                                                    className={`py-1.5 rounded-lg text-[9px] font-black border transition-all ${
+                                                                        (selectedBlock.data.actionPosition === id || (!selectedBlock.data.actionPosition && id === 'right')) 
+                                                                        ? 'bg-accent border-accent text-white shadow-lg shadow-accent/20' 
+                                                                        : 'bg-white/5 border-white/10 text-gray-400 hover:text-white hover:bg-white/10'
+                                                                    }`}
+                                                                >
+                                                                    {id[0].toUpperCase()}
+                                                                </button>
+                                                            ))}
+                                                        </div>
+
+                                                        <div className="space-y-2 pt-2">
+                                                            <div className="flex items-center justify-between">
+                                                                <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 block">Action Style</label>
+                                                                <div className="flex items-center gap-2">
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={selectedBlock.data.actionVisibleAlways !== false}
+                                                                        onChange={(e) => updateBlockData(selectedId!, { actionVisibleAlways: e.target.checked })}
+                                                                        className="rounded border-white/10 bg-black"
+                                                                    />
+                                                                    <label className="text-[8px] font-black uppercase tracking-widest text-gray-400">Show Always</label>
+                                                                </div>
+                                                            </div>
+                                                            <div className="grid grid-cols-4 gap-1">
+                                                                {[
+                                                                    { id: 'minimal', label: 'Min' },
+                                                                    { id: 'glass', label: 'Gls' },
+                                                                    { id: 'neon', label: 'Neo' },
+                                                                    { id: 'modern', label: 'Mod' }
+                                                                ].map(p => (
+                                                                    <button
+                                                                        key={p.id}
+                                                                        onClick={() => updateBlockData(selectedId!, { actionStyle: p.id })}
+                                                                        className={`py-1.5 rounded-lg text-[8px] font-black border transition-all ${
+                                                                            (selectedBlock.data.actionStyle === p.id || (!selectedBlock.data.actionStyle && p.id === 'minimal')) 
+                                                                            ? 'bg-accent border-accent text-white shadow-lg shadow-accent/20' 
+                                                                            : 'bg-white/5 border-white/10 text-gray-500 hover:text-white'
+                                                                        }`}
+                                                                    >
+                                                                        {p.label.toUpperCase()}
+                                                                    </button>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+
+                                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1 pt-2 block">Indicator Position</label>
                                                         <div className="grid grid-cols-2 gap-2">
                                                             {[
                                                                 { id: 'top', label: 'Top' },
