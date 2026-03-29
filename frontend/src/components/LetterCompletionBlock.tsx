@@ -17,11 +17,14 @@ interface LetterCompletionBlockProps {
         indicatorPosition?: 'top' | 'bottom' | 'left' | 'right';
         actionPosition?: 'top' | 'bottom' | 'left' | 'right';
         actionStyle?: 'minimal' | 'glass' | 'neon' | 'modern';
+        actionLayout?: 'pill' | 'stack';
+        actionSolid?: boolean;
         actionVisibleAlways?: boolean;
         gap?: number;
         boxSize?: number;
         height?: number;
         align?: 'left' | 'center' | 'right';
+        actionOpacity?: number;
     };
     isAdmin?: boolean;
     onComplete?: (isCorrect: boolean) => void;
@@ -40,10 +43,14 @@ const LetterCompletionBlock: React.FC<LetterCompletionBlockProps> = ({ data, isA
         bold = true,
         italic = false,
         actionStyle = 'minimal',
+        actionLayout = 'pill',
+        actionSolid = false,
+        actionVisibleAlways = true,
         gap = 10,
         boxSize = 60,
         height = 80,
-        align = 'left'
+        align = 'left',
+        actionOpacity = 100,
     } = data;
 
     // Auto-scaling factor based on default height of 120px
@@ -143,11 +150,15 @@ const LetterCompletionBlock: React.FC<LetterCompletionBlockProps> = ({ data, isA
     const getIndicatorPositionClasses = () => {
         const pos = data.actionPosition || 'right';
         switch (pos) {
-            case 'bottom': return 'absolute -bottom-20 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 z-30';
-            case 'left': return 'absolute top-1/2 -translate-y-1/2 -left-28 flex flex-col items-center gap-1 z-30';
-            case 'right': return 'absolute top-1/2 -translate-y-1/2 -right-16 flex flex-col items-center gap-1 z-30';
+            case 'bottom':
+                return 'absolute -bottom-12 left-1/2 -translate-x-1/2 flex flex-row items-center gap-2 z-20';
+            case 'left':
+                return 'absolute top-1/2 -translate-y-1/2 -left-28 flex flex-row-reverse items-center gap-2 z-20';
+            case 'right':
+                return 'absolute top-1/2 -translate-y-1/2 -right-24 flex flex-row items-center gap-2 z-30';
             case 'top':
-            default: return 'absolute -top-20 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 z-30';
+            default:
+                return 'absolute -top-12 left-1/2 -translate-x-1/2 flex flex-row items-center gap-2 z-20';
         }
     };
 
@@ -325,51 +336,49 @@ const LetterCompletionBlock: React.FC<LetterCompletionBlockProps> = ({ data, isA
                     )}
 
                     {/* Manual Check Button (for Mobile) - Visible when idle, with style variants */}
-                    {status === 'idle' && (Object.keys(userInputs).length > 0 || isAdmin || data.actionVisibleAlways !== false) && (
+                    {status === 'idle' && (Object.keys(userInputs).length > 0 || isAdmin || actionVisibleAlways !== false) && (
                         <motion.div 
                             initial={{ scale: 0, opacity: 0, y: 10 }}
                             animate={{ 
                                 scale: 1, 
-                                opacity: (Object.keys(userInputs).length > 0 || isAdmin) ? 1 : 0.4, 
+                                opacity: (Object.keys(userInputs).length > 0 || isAdmin) ? (actionOpacity / 100) : (actionOpacity / 250), 
                                 y: 0 
                             }}
                             exit={{ scale: 0, opacity: 0 }}
                             className={getIndicatorPositionClasses()}
+                            style={{ opacity: actionOpacity / 100 }}
                         >
-                            <div 
-                                className="flex flex-col items-center gap-2 pointer-events-auto transition-transform active:scale-95"
+                            <button 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (!isAdmin && Object.keys(userInputs).length > 0) checkAnswer();
+                                }}
+                                className={`flex items-center gap-2 pointer-events-auto transition-all transform hover:scale-105 active:scale-95 ${
+                                    actionLayout === 'stack' ? 'flex-col gap-1' : 'flex-row gap-2'
+                                } ${
+                                    actionStyle === 'glass' && !actionSolid ? 'bg-black/40 backdrop-blur-xl border border-white/30 p-1.5 rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.3),0_0_1px_rgba(255,255,255,0.4)]' :
+                                    actionStyle === 'neon' ? 'bg-accent/20 border border-accent/50 p-1.5 rounded-3xl shadow-[0_0_15px_rgba(255,107,0,0.5)]' :
+                                    actionStyle === 'modern' ? 'bg-gradient-to-r from-accent to-orange-600 text-white p-1.5 rounded-3xl shadow-lg' :
+                                    'bg-accent text-white p-1.5 rounded-3xl shadow-lg'
+                                } ${
+                                    actionLayout === 'pill' ? 'pr-4' : 'pt-2 px-2 pb-1.5'
+                                } ${actionSolid ? 'bg-accent/100 border-accent/20' : ''}`}
                                 style={{ transform: `scale(${Math.max(0.7, Math.min(1.2, scaleFactor))})` }}
                             >
-                                <button 
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        if (!isAdmin && Object.keys(userInputs).length > 0) checkAnswer();
-                                    }}
-                                    className={`
-                                        group relative p-3 rounded-2xl transition-all duration-300
-                                        ${data.actionStyle === 'glass' ? 'bg-white/10 backdrop-blur-md border border-white/20 shadow-xl' : ''}
-                                        ${data.actionStyle === 'neon' ? 'bg-accent border-2 border-white/50 shadow-[0_0_20px_rgba(255,107,0,0.6)]' : ''}
-                                        ${data.actionStyle === 'modern' ? 'bg-gradient-to-br from-accent to-orange-600 shadow-xl text-white' : ''}
-                                        ${(!data.actionStyle || data.actionStyle === 'minimal') ? 'bg-accent text-white shadow-lg' : ''}
-                                        ${isAdmin || Object.keys(userInputs).length === 0 ? 'cursor-default' : 'hover:scale-110'}
-                                    `}
-                                    title={isAdmin ? "Preview" : "Check Answer"}
-                                >
-                                    {data.actionStyle === 'neon' && (
-                                        <div className="absolute inset-0 rounded-2xl bg-white animate-ping opacity-10 pointer-events-none" />
-                                    )}
-                                    <CheckCircle2 
-                                        size={24} 
-                                        className={`${data.actionStyle === 'glass' ? 'text-accent' : 'text-white'} transition-transform`} 
-                                    />
-                                </button>
-                                <span className={`
-                                    text-[9px] font-black uppercase tracking-tighter px-2 py-1 rounded-full shadow-sm
-                                    ${data.actionStyle === 'glass' ? 'bg-white/20 text-white backdrop-blur-sm' : 'bg-white/90 text-accent'}
-                                `}>
-                                    Check
-                                </span>
-                            </div>
+                                <div className={`p-1.5 rounded-2xl shadow-sm shrink-0 ${
+                                    actionLayout === 'stack' ? 'w-10 h-10 flex items-center justify-center' : ''
+                                } ${
+                                    actionStyle === 'glass' && !actionSolid ? 'bg-white/10 text-white' :
+                                    actionStyle === 'neon' ? 'bg-accent text-white shadow-[0_0_10px_rgba(255,107,0,0.5)]' :
+                                    actionStyle === 'modern' ? 'bg-white text-accent' :
+                                    'bg-white text-accent'
+                                }`}>
+                                    <CheckCircle2 size={actionLayout === 'stack' ? 20 : 16} />
+                                </div>
+                                <span className={`text-[9px] font-black uppercase tracking-widest ${
+                                    actionLayout === 'stack' ? 'bg-white/10 px-2 py-0.5 rounded-md text-white' : 'text-white'
+                                }`}>Check</span>
+                            </button>
                         </motion.div>
                     )}
                 </AnimatePresence>

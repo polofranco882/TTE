@@ -1513,9 +1513,54 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                                                     </button>
                                                                 ))}
                                                             </div>
+                                                            <div className="pt-2">
+                                                                <div className="flex justify-between items-center mb-1">
+                                                                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Action Opacity</label>
+                                                                    <span className="text-[10px] font-bold text-accent">{selectedBlock.data.actionOpacity ?? 100}%</span>
+                                                                </div>
+                                                                <input 
+                                                                    type="range" 
+                                                                    min="0" 
+                                                                    max="100" 
+                                                                    value={selectedBlock.data.actionOpacity ?? 100} 
+                                                                    onChange={e => updateBlockData(selectedId!, { actionOpacity: parseInt(e.target.value) })}
+                                                                    className="w-full h-1.5 bg-white/5 rounded-lg appearance-none cursor-pointer accent-accent"
+                                                                />
+                                                            </div>
                                                         </div>
 
-                                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1 block">Indicator Position</label>
+                                                            <div className="grid grid-cols-2 gap-2 pt-2">
+                                                                <div className="flex flex-col gap-1">
+                                                                    <span className="text-[8px] font-black text-gray-500 uppercase tracking-widest">Layout</span>
+                                                                    <div className="flex bg-black/20 rounded-lg p-0.5 border border-white/5">
+                                                                        {['pill', 'stack'].map(id => (
+                                                                            <button
+                                                                                key={id}
+                                                                                onClick={() => updateBlockData(selectedId!, { actionLayout: id })}
+                                                                                className={`flex-1 py-1 rounded text-[7px] font-black uppercase transition ${
+                                                                                    (selectedBlock.data.actionLayout === id || (!selectedBlock.data.actionLayout && id === 'pill')) 
+                                                                                    ? 'bg-accent text-white shadow-sm' 
+                                                                                    : 'text-gray-500 hover:text-white'
+                                                                                }`}
+                                                                            >
+                                                                                {id}
+                                                                            </button>
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+                                                                <div className="flex flex-col gap-1">
+                                                                    <span className="text-[8px] font-black text-gray-500 uppercase tracking-widest">Theme</span>
+                                                                    <button
+                                                                        onClick={() => updateBlockData(selectedId!, { actionSolid: !selectedBlock.data.actionSolid })}
+                                                                        className={`w-full py-1.5 rounded-lg text-[7px] font-black border transition ${
+                                                                            selectedBlock.data.actionSolid ? 'bg-accent border-accent text-white shadow-lg shadow-accent/20' : 'bg-white/5 border-white/10 text-gray-400 hover:text-white'
+                                                                        }`}
+                                                                    >
+                                                                        {selectedBlock.data.actionSolid ? 'SOLID' : 'GLASS'}
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1 block">Indicator Position</label>
                                                         <div className="grid grid-cols-2 gap-2">
                                                             {[
                                                                 { id: 'top', label: 'Top' },
@@ -1715,9 +1760,54 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                                                     </button>
                                                                 ))}
                                                             </div>
+                                                            <div className="pt-2">
+                                                                <div className="flex justify-between items-center mb-1">
+                                                                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-500">Action Opacity</label>
+                                                                    <span className="text-[10px] font-bold text-accent">{selectedBlock.data.actionOpacity ?? 100}%</span>
+                                                                </div>
+                                                                <input 
+                                                                    type="range" 
+                                                                    min="0" 
+                                                                    max="100" 
+                                                                    value={selectedBlock.data.actionOpacity ?? 100} 
+                                                                    onChange={e => updateBlockData(selectedId!, { actionOpacity: parseInt(e.target.value) })}
+                                                                    className="w-full h-1.5 bg-white/5 rounded-lg appearance-none cursor-pointer accent-accent"
+                                                                />
+                                                            </div>
                                                         </div>
 
-                                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1 pt-2 block">Indicator Position</label>
+                                                            <div className="grid grid-cols-2 gap-2 pt-2">
+                                                                <div className="flex flex-col gap-1">
+                                                                    <span className="text-[8px] font-black text-gray-500 uppercase tracking-widest">Layout</span>
+                                                                    <div className="flex bg-black/20 rounded-lg p-0.5 border border-white/5">
+                                                                        {['pill', 'stack'].map(id => (
+                                                                            <button
+                                                                                key={id}
+                                                                                onClick={() => updateBlockData(selectedId!, { actionLayout: id })}
+                                                                                className={`flex-1 py-1 rounded text-[7px] font-black uppercase transition ${
+                                                                                    (selectedBlock.data.actionLayout === id || (!selectedBlock.data.actionLayout && id === 'pill')) 
+                                                                                    ? 'bg-accent text-white shadow-sm' 
+                                                                                    : 'text-gray-500 hover:text-white'
+                                                                                }`}
+                                                                            >
+                                                                                {id}
+                                                                            </button>
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+                                                                <div className="flex flex-col gap-1">
+                                                                    <span className="text-[8px] font-black text-gray-500 uppercase tracking-widest">Theme</span>
+                                                                    <button
+                                                                        onClick={() => updateBlockData(selectedId!, { actionSolid: !selectedBlock.data.actionSolid })}
+                                                                        className={`w-full py-1.5 rounded-lg text-[7px] font-black border transition ${
+                                                                            selectedBlock.data.actionSolid ? 'bg-accent border-accent text-white shadow-lg shadow-accent/20' : 'bg-white/5 border-white/10 text-gray-400 hover:text-white'
+                                                                        }`}
+                                                                    >
+                                                                        {selectedBlock.data.actionSolid ? 'SOLID' : 'GLASS'}
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1 pt-2 block">Indicator Position</label>
                                                         <div className="grid grid-cols-2 gap-2">
                                                             {[
                                                                 { id: 'top', label: 'Top' },
