@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef, forwardRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, BookOpen, Star, Clock, Share2, Bookmark, Play, Download, X, ArrowRight, Menu, ZoomIn, ZoomOut, Maximize, Layout, Expand, Shrink, Volume2, VolumeX, Search } from 'lucide-react';
+import { useGamification } from './context/GamificationContext';
+import { api } from './services/api';
 import { type NotificationType } from './components/Notification';
 import BlockRenderer from './components/BlockRenderer';
 import type { BlockData } from './components/BlockRenderer';
 import ValidationFooter from './components/ValidationFooter';
 import type { ValidationState } from './components/ValidationFooter';
-import { useGamification } from './context/GamificationContext';
 import HTMLFlipBook from 'react-pageflip';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import pasaHojaAudio from './assets/pasaHoja.mp3';
@@ -152,7 +153,7 @@ const FlipbookPage = forwardRef<HTMLDivElement, FlipbookPageProps>((props, ref) 
                             top: block.data.y,
                             width: block.data.width,
                             height: block.data.height,
-                            zIndex: block.data.zIndex || (idx + 10),
+                            zIndex: (block.data.zIndex || 10) + 600,
                             transform: `rotate(${block.data.rotate || 0}deg)`,
                             pointerEvents: 'auto' // RE-ENABLE pointer events for interactive blocks only
                         }}
@@ -292,13 +293,18 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
             const isInteractive = target.closest('.block-interactive') || 
                                 target.closest('button') || 
                                 target.closest('input') || 
+                                target.closest('textarea') ||
+                                target.closest('select') ||
+                                target.closest('a') ||
+                                target.closest('[role="button"]') ||
                                 target.closest('video') || 
                                 target.closest('audio') ||
                                 target.closest('.notification-container') ||
                                 target.closest('.nav-zone'); // Allow explicit nav zones to receive their clicks
 
             if (isInteractive) {
-                console.log("Document Shield: PROTECTED INTERACTIVE BLOCK OR NAV ZONE", target);
+                // If it's an interactive element, we should NEVER stop propagation in the capture phase
+                // console.log("Document Shield: PROTECTED INTERACTIVE BLOCK OR NAV ZONE", target);
                 return; // Let interactive elements handle their own events
             }
 
@@ -366,7 +372,7 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
     });
 
     // Gamification & Validation
-    const { hearts, addXp, subtractHeart, incrementStreak, xp } = useGamification();
+    const { hearts, addXp, subtractHeart, incrementStreak, xp, infiniteHearts, setInfiniteHearts } = useGamification();
     const [validationState, setValidationState] = useState<ValidationState>('idle');
     const [validationMessage, setValidationMessage] = useState('');
     const [isGameOver, setIsGameOver] = useState(false);
@@ -390,13 +396,7 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
         const fetchBookAndContents = async () => {
             try {
                 // Fetch basic book info
-                const resBooks = await fetch(`/api/books`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                if (resBooks.status === 401) {
-                    onUnauthorized();
-                    return;
-                }
+                const resBooks = await api.get(`/api/books`);
                 if (resBooks.ok) {
                     const data = await resBooks.json();
                     const found = data.find((b: BookItem) => b.id === bookId);
@@ -404,13 +404,7 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
                 }
 
                 // Fetch TOC
-                const resContents = await fetch(`/api/books/${bookId}/contents`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                if (resContents.status === 401) {
-                    onUnauthorized();
-                    return;
-                }
+                const resContents = await api.get(`/api/books/${bookId}/contents`);
                 if (resContents.ok) {
                     const data = await resContents.json();
                     setContents(data.filter((item: any) => item.is_active !== false));
@@ -431,6 +425,10 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.altKey && e.key === 'd') {
                 setDebugNav(prev => !prev);
+            }
+            if (e.altKey && e.key === 'i') {
+                setInfiniteHearts(!infiniteHearts);
+                onNotify(infiniteHearts ? "Infinite Hearts DISABLED" : "Infinite Hearts ENABLED", "success");
             }
         };
         window.addEventListener('keydown', handleKeyDown);
@@ -675,7 +673,7 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none" className="drop-shadow-sm md:w-[20px] md:h-[20px]">
                                             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                                         </svg>
-                                        {hearts}
+                                        {infiniteHearts ? '∞' : hearts}
                                     </div>
                                     <div className="w-px h-3 md:h-4 bg-white/20"></div>
                                     <div className="flex items-center gap-1 md:gap-1.5 text-[#ffc800] font-black text-sm md:text-lg">
@@ -1125,7 +1123,10 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
                                                 wheel={{ disabled: false, step: 0.1 }}
                                                 doubleClick={{ disabled: false, step: 0.5 }}
                                                 pinch={{ disabled: false }}
-                                                panning={{ disabled: currentScale <= 1.05 }}
+                                                panning={{ 
+                                                    disabled: currentScale <= 1.05,
+                                                    excluded: ["input", "button", "textarea", "select", "a", ".block-interactive"]
+                                                }}
                                                 onTransformed={(_, state) => setCurrentScale(state.scale)}
                                             >
                                                 {({ zoomIn, zoomOut, resetTransform }) => (
@@ -1134,7 +1135,7 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
                                                          <div className="absolute inset-0 z-[500] pointer-events-none flex">
                                                              {/* Left Navigation Zone */}
                                                              <div 
-                                                                className="nav-zone h-full w-[17%] sm:w-[10%] pointer-events-auto cursor-pointer"
+                                                                className="nav-zone h-full w-[5%] pointer-events-auto cursor-pointer"
                                                                 onClick={handleFlipPrev}
                                                              ></div>
 
@@ -1143,7 +1144,7 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
 
                                                              {/* Right Navigation Zone */}
                                                              <div 
-                                                                className="nav-zone h-full w-[17%] sm:w-[10%] pointer-events-auto cursor-pointer"
+                                                                className="nav-zone h-full w-[5%] pointer-events-auto cursor-pointer"
                                                                 onClick={handleFlipNext}
                                                              ></div>
                                                          </div>
@@ -1252,7 +1253,7 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
                                                                                             setValidationState('incorrect');
                                                                                             setValidationMessage('');
                                                                                             subtractHeart();
-                                                                                            if (hearts <= 1) {
+                                                                                            if (hearts <= 1 && !infiniteHearts) {
                                                                                                 setIsGameOver(true);
                                                                                             }
                                                                                         }

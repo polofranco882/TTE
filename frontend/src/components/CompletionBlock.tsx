@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, XCircle, RefreshCw } from 'lucide-react';
 
@@ -19,6 +19,7 @@ interface CompletionBlockProps {
         bold?: boolean;
         italic?: boolean;
         underline?: boolean;
+        indicatorPosition?: 'top' | 'bottom' | 'left' | 'right';
     };
     isAdmin?: boolean;
     onComplete?: (isCorrect: boolean) => void;
@@ -28,6 +29,7 @@ const CompletionBlock: React.FC<CompletionBlockProps> = ({ data, isAdmin, onComp
     const [inputValue, setInputValue] = useState('');
     const [status, setStatus] = useState<'idle' | 'correct' | 'incorrect'>('idle');
     const [shake, setShake] = useState(false);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     const {
         title = 'Good',
@@ -44,7 +46,8 @@ const CompletionBlock: React.FC<CompletionBlockProps> = ({ data, isAdmin, onComp
         align = 'center',
         bold = false,
         italic = false,
-        underline = false
+        underline = false,
+        indicatorPosition = 'right'
     } = data;
 
     const checkAnswer = () => {
@@ -108,10 +111,24 @@ const CompletionBlock: React.FC<CompletionBlockProps> = ({ data, isAdmin, onComp
     };
 
     const styles = getPresetStyles();
+    
+    const getIndicatorPositionClasses = () => {
+        switch (indicatorPosition) {
+            case 'bottom':
+                return 'absolute -bottom-16 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 z-20';
+            case 'left':
+                return 'absolute top-1/2 -translate-y-1/2 -left-24 flex flex-col items-center gap-1 z-20';
+            case 'right':
+                return 'absolute top-1/2 -translate-y-1/2 -right-24 flex flex-col items-center gap-1 z-20';
+            case 'top':
+            default:
+                return 'absolute -top-16 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 z-20';
+        }
+    };
 
     return (
         <div 
-            className={`w-full h-full flex items-center overflow-hidden transition-all duration-500 ${styles.container}`}
+            className={`w-full h-full flex items-center overflow-hidden transition-all duration-500 block-interactive ${styles.container}`}
             style={{ 
                 backgroundColor: preset === 'neon' ? '#000' : (preset === 'glass' ? 'transparent' : bgColor),
                 fontFamily: fontFamily,
@@ -125,6 +142,7 @@ const CompletionBlock: React.FC<CompletionBlockProps> = ({ data, isAdmin, onComp
             <motion.div 
                 animate={shake ? { x: [-5, 5, -5, 5, 0] } : {}}
                 className={`flex items-baseline gap-4 flex-wrap relative scale-110 ${align === 'left' ? 'justify-start' : (align === 'right' ? 'justify-end' : 'justify-center')}`}
+                onClick={() => inputRef.current?.focus()}
             >
                 <span 
                     className={`block leading-none ${styles.title}`}
@@ -150,13 +168,19 @@ const CompletionBlock: React.FC<CompletionBlockProps> = ({ data, isAdmin, onComp
                         {inputValue || placeholder}
                     </span>
                     <input
+                        ref={inputRef}
                         type="text"
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && checkAnswer()}
+                        onKeyDown={(e) => {
+                            e.stopPropagation();
+                            if (e.key === 'Enter') checkAnswer();
+                        }}
+                        onPointerDown={(e) => e.stopPropagation()}
+                        onMouseDown={(e) => e.stopPropagation()}
                         disabled={status === 'correct'}
                         placeholder={placeholder}
-                        className={`text-center transition-all col-start-1 row-start-1 w-full bg-transparent outline-none ${styles.input}`}
+                        className={`text-center transition-all col-start-1 row-start-1 w-full bg-transparent outline-none pointer-events-auto ${styles.input}`}
                         style={{ 
                             color: preset === 'neon' ? undefined : textColor,
                             fontSize: `${fontSize}px`,
@@ -169,12 +193,23 @@ const CompletionBlock: React.FC<CompletionBlockProps> = ({ data, isAdmin, onComp
                             <motion.div 
                                 initial={{ scale: 0, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
-                                className="absolute -top-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1"
+                                className={getIndicatorPositionClasses()}
                             >
-                                <div className="bg-green-500 text-white p-2 rounded-full shadow-lg">
-                                    <CheckCircle2 size={24} />
+                                <div className="flex flex-col items-center gap-2">
+                                    <div className="bg-green-500 text-white p-2 rounded-full shadow-lg">
+                                        <CheckCircle2 size={24} />
+                                    </div>
+                                    <span className="text-[10px] font-black uppercase text-green-500 bg-white/90 px-2 py-0.5 rounded-full shadow-sm">Correct!</span>
+                                    {!isAdmin && (
+                                        <button 
+                                            onClick={reset}
+                                            className="p-1.5 bg-white/20 hover:bg-white/40 rounded-full transition-colors text-green-600 hover:text-green-700 pointer-events-auto border border-green-500/20 shadow-sm"
+                                            title="Retry"
+                                        >
+                                            <RefreshCw size={14} />
+                                        </button>
+                                    )}
                                 </div>
-                                <span className="text-[10px] font-black uppercase text-green-500 bg-white/90 px-2 py-0.5 rounded-full shadow-sm">Correct!</span>
                             </motion.div>
                         )}
                         {status === 'incorrect' && (
@@ -182,25 +217,29 @@ const CompletionBlock: React.FC<CompletionBlockProps> = ({ data, isAdmin, onComp
                                 initial={{ scale: 0, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
                                 exit={{ scale: 0, opacity: 0 }}
-                                className="absolute -top-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1"
+                                className={getIndicatorPositionClasses()}
                             >
-                                <div className="bg-red-500 text-white p-2 rounded-full shadow-lg">
-                                    <XCircle size={24} />
+                                <div className="flex flex-col items-center gap-2">
+                                    <div className="bg-red-500 text-white p-2 rounded-full shadow-lg">
+                                        <XCircle size={24} />
+                                    </div>
+                                    <span className="text-[10px] font-black uppercase text-red-500 bg-white/90 px-2 py-0.5 rounded-full shadow-sm">Incorrect!</span>
+                                    {!isAdmin && (
+                                        <button 
+                                            onClick={reset}
+                                            className="p-1.5 bg-white/20 hover:bg-white/40 rounded-full transition-colors text-red-600 hover:text-red-700 pointer-events-auto border border-red-500/20 shadow-sm"
+                                            title="Retry"
+                                        >
+                                            <RefreshCw size={14} />
+                                        </button>
+                                    )}
                                 </div>
-                                <span className="text-[10px] font-black uppercase text-red-500 bg-white/90 px-2 py-0.5 rounded-full shadow-sm">Incorrect!</span>
                             </motion.div>
                         )}
                     </AnimatePresence>
                 </div>
 
-                {!isAdmin && status !== 'idle' && (
-                    <button 
-                        onClick={reset}
-                        className="ml-4 p-2 bg-white/20 hover:bg-white/30 rounded-full transition-colors text-gray-400 hover:text-white"
-                    >
-                        <RefreshCw size={16} />
-                    </button>
-                )}
+
             </motion.div>
         </div>
     );

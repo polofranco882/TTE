@@ -228,6 +228,23 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                     height: 120
                 };
                 break;
+            case 'letter_completion':
+                defaultData = {
+                    ...defaultData,
+                    word: 'ENGLISH',
+                    visibleIndices: '0,6',
+                    preset: 'underline',
+                    bgColor: 'transparent',
+                    textColor: '#333333',
+                    fontSize: 32,
+                    fontFamily: 'monospace',
+                    indicatorPosition: 'right',
+                    gap: 8,
+                    boxSize: 50,
+                    width: 450,
+                    height: 120
+                };
+                break;
             case 'toc':
                 defaultData = { ...defaultData, width: 400, height: 600, zIndex: 10 };
                 break;
@@ -595,7 +612,8 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                             { type: 'word_bank', icon: <ListOrdered size={14} />, label: 'Word Bank' },
                                             { type: 'matching', icon: <CopyCheck size={14} />, label: 'Matching' },
                                             { type: 'cloze', icon: <Edit3 size={14} />, label: 'Cloze' },
-                                            { type: 'completion', icon: <CheckCircle2 size={14} />, label: 'Completion' }
+                                            { type: 'completion', icon: <CheckCircle2 size={14} />, label: 'Completion' },
+                                            { type: 'letter_completion', icon: <Type size={14} />, label: 'Letters' }
                                         ]
                                     },
                                     {
@@ -1317,6 +1335,82 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                                 </div>
                                             )}
 
+                                            {selectedBlock.type === 'letter_completion' && (
+                                                <div className="space-y-4 pt-4 border-t border-white/5">
+                                                    <div>
+                                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1 block">Word / Phrase</label>
+                                                        <input
+                                                            type="text"
+                                                            value={selectedBlock.data.word || ''}
+                                                            onChange={(e) => updateBlockData(selectedId!, { word: e.target.value.toUpperCase() })}
+                                                            className="w-full bg-[#0c0e1a] border border-white/10 rounded-lg p-2 text-xs text-white"
+                                                            placeholder="ENGLISH"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1 block">Visible Indices</label>
+                                                        <input
+                                                            type="text"
+                                                            value={selectedBlock.data.visibleIndices || ''}
+                                                            onChange={(e) => updateBlockData(selectedId!, { visibleIndices: e.target.value })}
+                                                            className="w-full bg-[#0c0e1a] border border-white/10 rounded-lg p-2 text-xs text-white"
+                                                            placeholder="0,2,6"
+                                                        />
+                                                        <p className="text-[7px] text-gray-500 mt-1 uppercase">0-based indices separated by comma</p>
+                                                    </div>
+
+                                                    <div className="grid grid-cols-2 gap-3 pt-2">
+                                                        <div className="space-y-2">
+                                                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 block">Box Size</label>
+                                                            <input type="number" value={selectedBlock.data.boxSize || 50} onChange={e => updateBlockData(selectedId!, { boxSize: parseInt(e.target.value) })} className="w-full bg-[#0c0e1a] border border-white/10 rounded-lg p-2 text-xs text-white" />
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 block">Gap</label>
+                                                            <input type="number" value={selectedBlock.data.gap || 8} onChange={e => updateBlockData(selectedId!, { gap: parseInt(e.target.value) })} className="w-full bg-[#0c0e1a] border border-white/10 rounded-lg p-2 text-xs text-white" />
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="space-y-2 pt-2 border-t border-white/5">
+                                                        <p className="text-[8px] text-gray-500 font-bold uppercase tracking-widest">Premium Design (Preset)</p>
+                                                        <div className="grid grid-cols-2 gap-2">
+                                                            {['classic', 'modern', 'glass', 'neon', 'underline'].map(p => (
+                                                                <button
+                                                                    key={p}
+                                                                    onClick={() => updateBlockData(selectedId!, { preset: p })}
+                                                                    className={`py-2 rounded-lg text-[9px] font-black border transition-all ${selectedBlock.data.preset === p ? 'bg-accent border-accent text-white shadow-lg shadow-accent/20' : 'bg-white/5 border-white/10 text-gray-400 hover:text-white hover:bg-white/10'}`}
+                                                                >
+                                                                    {p.toUpperCase()}
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="pt-2 border-t border-white/5 space-y-2">
+                                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1 block">Indicator Position</label>
+                                                        <div className="grid grid-cols-2 gap-2">
+                                                            {[
+                                                                { id: 'top', label: 'Top' },
+                                                                { id: 'bottom', label: 'Bottom' },
+                                                                { id: 'left', label: 'Left' },
+                                                                { id: 'right', label: 'Right' }
+                                                            ].map(p => (
+                                                                <button
+                                                                    key={p.id}
+                                                                    onClick={() => updateBlockData(selectedId!, { indicatorPosition: p.id })}
+                                                                    className={`py-2 rounded-lg text-[9px] font-black border transition-all ${
+                                                                        (selectedBlock.data.indicatorPosition === p.id || (!selectedBlock.data.indicatorPosition && p.id === 'right')) 
+                                                                        ? 'bg-accent border-accent text-white shadow-lg shadow-accent/20' 
+                                                                        : 'bg-white/5 border-white/10 text-gray-400 hover:text-white hover:bg-white/10'
+                                                                    }`}
+                                                                >
+                                                                    {p.label.toUpperCase()}
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+
                                             {selectedBlock.type === 'completion' && (
                                                 <div className="space-y-4 pt-4 border-t border-white/5">
                                                     <div>
@@ -1434,6 +1528,30 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                                                     className={`py-2 rounded-lg text-[9px] font-black border transition-all ${selectedBlock.data.align === a.id ? 'bg-accent border-accent text-white shadow-lg shadow-accent/20' : 'bg-white/5 border-white/10 text-gray-500 hover:text-white'}`}
                                                                 >
                                                                     {a.label.toUpperCase()}
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="pt-2 border-t border-white/5 space-y-2">
+                                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1 block">Indicator Position</label>
+                                                        <div className="grid grid-cols-2 gap-2">
+                                                            {[
+                                                                { id: 'top', label: 'Top' },
+                                                                { id: 'bottom', label: 'Bottom' },
+                                                                { id: 'left', label: 'Left' },
+                                                                { id: 'right', label: 'Right' }
+                                                            ].map(p => (
+                                                                <button
+                                                                    key={p.id}
+                                                                    onClick={() => updateBlockData(selectedId!, { indicatorPosition: p.id })}
+                                                                    className={`py-2 rounded-lg text-[9px] font-black border transition-all ${
+                                                                        (selectedBlock.data.indicatorPosition === p.id || (!selectedBlock.data.indicatorPosition && p.id === 'right')) 
+                                                                        ? 'bg-accent border-accent text-white shadow-lg shadow-accent/20' 
+                                                                        : 'bg-white/5 border-white/10 text-gray-400 hover:text-white hover:bg-white/10'
+                                                                    }`}
+                                                                >
+                                                                    {p.label.toUpperCase()}
                                                                 </button>
                                                             ))}
                                                         </div>
@@ -1581,6 +1699,37 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                                             className="w-full bg-black/30 border border-white/10 rounded-lg py-2 px-3 text-[10px] font-bold focus:border-accent outline-none"
                                                             placeholder="Or paste audio URL (.mp3)..."
                                                         />
+                                                    )}
+
+                                                    {/* Hotspot Variants Selector */}
+                                                    {selectedBlock.data.visualStyle === 'hotspot' && (
+                                                        <div className="pt-2 border-t border-white/5 space-y-2 animate-fade-in">
+                                                            <div className="flex items-center justify-between">
+                                                                <label className="text-[9px] font-black uppercase tracking-widest text-gray-500">Premium Design</label>
+                                                                <span className="text-[7px] text-accent font-black uppercase">5 Styles</span>
+                                                            </div>
+                                                            <div className="grid grid-cols-2 gap-1.5">
+                                                                {[
+                                                                    { id: 'classic', label: '🔴 Classic' },
+                                                                    { id: 'modern', label: '⚪ Modern' },
+                                                                    { id: 'glass', label: '🧊 Glass' },
+                                                                    { id: 'neon', label: '✨ Neon' },
+                                                                    { id: 'radar', label: '🛰️ Radar' }
+                                                                ].map(v => (
+                                                                    <button 
+                                                                        key={v.id} 
+                                                                        onClick={() => updateBlockData(selectedId!, { hotspotVariant: v.id })}
+                                                                        className={`py-2 px-1 rounded-lg text-[8px] font-black border transition-all truncate hover:scale-[1.02] active:scale-[0.98] ${
+                                                                            (selectedBlock.data.hotspotVariant === v.id || (!selectedBlock.data.hotspotVariant && v.id === 'classic')) 
+                                                                            ? 'bg-accent border-accent text-white shadow-lg shadow-accent/20' 
+                                                                            : 'bg-white/5 border-white/10 text-gray-500 hover:text-white hover:bg-white/10'
+                                                                        }`}
+                                                                    >
+                                                                        {v.label.toUpperCase()}
+                                                                    </button>
+                                                                ))}
+                                                            </div>
+                                                        </div>
                                                     )}
 
                                                     <input

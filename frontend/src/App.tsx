@@ -69,9 +69,30 @@ function App() {
     fetchSettings();
   }, [token]);
 
-  useEffect(() => {
+    useEffect(() => {
     loadTranslationsFromDB();
-  }, []);
+
+    // Listen for global unauthorized events from services/api.ts
+    const handleGlobalUnauth = () => handleUnauthorized();
+    window.addEventListener('tte:unauthorized', handleGlobalUnauth);
+    
+    // Check session validity when user returns to the tab
+    const handleFocus = () => {
+        if (token) {
+            fetch('/api/settings', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            }).then(res => {
+                if (res.status === 401) handleUnauthorized();
+            }).catch(() => {}); // Ignore offline/network errors
+        }
+    };
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+        window.removeEventListener('tte:unauthorized', handleGlobalUnauth);
+        window.removeEventListener('focus', handleFocus);
+    };
+  }, [token]);
 
   const login = async (e: React.FormEvent) => {
     e.preventDefault();

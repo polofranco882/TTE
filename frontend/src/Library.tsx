@@ -6,6 +6,7 @@ import EditBookModal from './components/EditBookModal';
 import { useTranslation } from 'react-i18next';
 // Loading from src/assets as requested
 import bgLogin from './assets/final-login-bg.png';
+import { api } from './services/api';
 
 interface BookItem {
     id: number;
@@ -35,16 +36,8 @@ const Library = ({ token, userRole, onNotify, onStartReading, onUnauthorized }: 
 
     const fetchBooks = () => {
         setLoading(true);
-        fetch('/api/books', {
-            headers: { Authorization: `Bearer ${token}` }
-        })
-            .then(res => {
-                if (res.status === 401) {
-                    onUnauthorized();
-                    throw new Error('Unauthorized');
-                }
-                return res.json();
-            })
+        api.get('/api/books')
+            .then(res => res.json())
             .then(data => {
                 // Filter only active books for the library view unless admin
                 const isStaff = userRole === 'admin' || userRole === 'manager';
@@ -69,16 +62,7 @@ const Library = ({ token, userRole, onNotify, onStartReading, onUnauthorized }: 
 
     const logEvent = (action: string, metadata?: any) => {
         // Fire and forget logging
-        fetch('/api/auth/log', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ action, metadata })
-        }).then(res => {
-            if (res.status === 401) onUnauthorized();
-        }).catch(console.error);
+        api.post('/api/auth/log', { action, metadata }).catch(console.error);
     };
 
     const handleBookClick = (book: BookItem) => {

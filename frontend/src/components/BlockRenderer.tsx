@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Image as ImageIcon, Music, HelpCircle, ArrowRight, Video, Play, Volume2, Maximize, Minimize } from 'lucide-react';
 import InteractiveActivity from './InteractiveActivity';
 import WordBankBlock from './WordBankBlock';
@@ -14,12 +14,13 @@ import ReadingCompBlock from './ReadingCompBlock';
 import CodeEditorBlock from './CodeEditorBlock';
 import TextInputBlock from './TextInputBlock';
 import CompletionBlock from './CompletionBlock';
+import LetterCompletionBlock from './LetterCompletionBlock';
 import TableOfContents from './TableOfContents';
 
 export type BlockType = 'text' | 'image' | 'video' | 'audio' | 'button' | 'quiz' | 'activity' | 'html'
     | 'word_bank' | 'matching' | 'cloze' | 'listen_tap' | 'dictation' | 'pronunciation'
     | 'translation' | 'story_dialogue' | 'reading_comp' | 'gami_reward' | 'meta_hint'
-    | 'code_editor' | 'layout_container' | 'text_input' | 'completion' | 'toc';
+    | 'code_editor' | 'layout_container' | 'text_input' | 'completion' | 'letter_completion' | 'toc';
 
 export interface BlockData {
     id: string;
@@ -107,24 +108,87 @@ const AudioBlock: React.FC<AudioBlockProps> = React.memo(({ data, isAdmin }) => 
     ) : null;
 
     if (isHotspot) {
+        const variant = data.hotspotVariant || 'classic';
+        const color = data.accentColor || '#ef4444'; // default red if not set
+
         return (
             <div className="w-full h-full relative" title={error || (data.url ? "Click to play" : "No audio loaded")}>
                 {audioEl}
                 <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
                     onClick={togglePlay}
-                    className={`w-full h-full rounded-full flex items-center justify-center text-white transition-all relative group ${error ? 'bg-red-500/20' : 'bg-accent/20'}`}
+                    className="w-full h-full relative group cursor-pointer"
                 >
-                    {/* Ring aura */}
-                    <div className={`absolute inset-0 rounded-full ${isPlaying ? 'animate-ping opacity-30 shadow-[0_0_20px_rgba(255,100,0,0.5)]' : 'opacity-0 group-hover:opacity-30 transition-opacity duration-300'} ${error ? 'bg-red-500' : 'bg-accent'}`} />
+                    {/* --- VARIANT 1: CLASSIC (Red Pulse) --- */}
+                    {variant === 'classic' && (
+                        <div className="w-full h-full rounded-full flex items-center justify-center relative transition-all duration-500 overflow-visible">
+                            <div className={`absolute inset-0 rounded-full ${isPlaying ? 'animate-ping opacity-40 shadow-[0_0_25px_rgba(239,68,68,0.6)]' : 'opacity-0 group-hover:opacity-30'} bg-red-500 transition-all duration-700`} />
+                            <div className={`relative w-[80%] h-[80%] rounded-full flex items-center justify-center shadow-2xl backdrop-blur-sm transition-all border-2 border-white/20 bg-red-600`}>
+                                {isPlaying ? <Volume2 size={24} className="animate-pulse text-white drop-shadow-md" /> : <Volume2 size={24} className="text-white drop-shadow-md" />}
+                            </div>
+                        </div>
+                    )}
 
-                    {/* Core Button */}
-                    <div className={`relative w-[75%] h-[75%] rounded-full flex items-center justify-center shadow-2xl backdrop-blur-md transition-all ${error ? 'bg-red-500 shadow-red-500/40' : 'bg-accent shadow-accent/50'}`}>
-                        {error ? <Music size={20} className="opacity-50" /> :
-                            isPlaying ? <Volume2 size={24} className="animate-pulse drop-shadow-md" /> :
-                                <Volume2 size={24} className="drop-shadow-md" />}
-                    </div>
+                    {/* --- VARIANT 2: MODERN (Sleek Glow) --- */}
+                    {variant === 'modern' && (
+                        <div className="w-full h-full rounded-full flex items-center justify-center relative bg-white/5 border border-white/10 group-hover:border-accent/40 shadow-xl transition-all duration-500">
+                             <div className={`absolute inset-0 rounded-full transition-opacity duration-1000 ${isPlaying ? 'opacity-100 blur-[20px]' : 'opacity-0 group-hover:opacity-40 blur-[10px]'} bg-accent/30`} />
+                             <div className={`relative w-[70%] h-[70%] rounded-full flex items-center justify-center transition-all duration-300 ${isPlaying ? 'bg-accent shadow-[0_0_15px_rgba(255,255,255,0.4)]' : 'bg-white/10 group-hover:bg-white/20 border border-white/20'}`}>
+                                 <Volume2 size={20} className={`transition-colors ${isPlaying ? 'text-white' : 'text-gray-400 group-hover:text-white'}`}  />
+                             </div>
+                        </div>
+                    )}
+
+                    {/* --- VARIANT 3: GLASS (Glassmorphism) --- */}
+                    {variant === 'glass' && (
+                        <div className="w-full h-full rounded-full flex items-center justify-center relative bg-white/10 backdrop-blur-md border md:border-2 border-white/20 shadow-2xl transition-all duration-500 group-hover:bg-white/15">
+                             <AnimatePresence>
+                                {isPlaying && (
+                                    <motion.div 
+                                        initial={{ scale: 0.8, opacity: 0 }}
+                                        animate={{ scale: 1.4, opacity: 0 }}
+                                        transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut" }}
+                                        className="absolute inset-0 rounded-full border-2 border-white/30"
+                                    />
+                                )}
+                             </AnimatePresence>
+                             <div className="relative z-10">
+                                <Volume2 size={24} className={`drop-shadow-lg ${isPlaying ? 'text-white' : 'text-white/60 group-hover:text-white'}`} />
+                             </div>
+                        </div>
+                    )}
+
+                    {/* --- VARIANT 4: NEON (Outline Pulse) --- */}
+                    {variant === 'neon' && (
+                        <div className="w-full h-full rounded-full flex items-center justify-center relative transition-all duration-500">
+                             <div className={`absolute inset-0 rounded-full border-2 transition-all duration-500 ${isPlaying ? 'border-accent shadow-[0_0_20px_rgba(255,100,0,0.8)] scale-110' : 'border-white/20 scale-100 group-hover:border-accent/60'}`} />
+                             <div className={`absolute inset-1 rounded-full border border-dashed transition-all duration-1000 ${isPlaying ? 'border-accent/50 animate-[spin_4s_linear_infinite]' : 'border-transparent opacity-0'}`} />
+                             <div className="relative">
+                                <Volume2 size={22} className={`transition-all ${isPlaying ? 'text-accent drop-shadow-[0_0_8px_rgba(255,100,0,1)]' : 'text-white/40 group-hover:text-white'}`} />
+                             </div>
+                        </div>
+                    )}
+
+                    {/* --- VARIANT 5: RADAR (Sonar Waves) --- */}
+                    {variant === 'radar' && (
+                        <div className="w-full h-full rounded-full flex items-center justify-center relative transition-all duration-500">
+                             <AnimatePresence>
+                                {isPlaying && [1, 2, 3].map((i) => (
+                                    <motion.div
+                                        key={i}
+                                        initial={{ scale: 0.5, opacity: 0.5 }}
+                                        animate={{ scale: 2.2, opacity: 0 }}
+                                        transition={{ duration: 2, repeat: Infinity, delay: i * 0.6, ease: "linear" }}
+                                        className="absolute inset-0 rounded-full border border-white/30 bg-white/5"
+                                    />
+                                ))}
+                             </AnimatePresence>
+                             <div className={`relative w-[60%] h-[60%] rounded-full bg-white/10 flex items-center justify-center z-10 transition-all ${isPlaying ? 'scale-110 bg-white/20' : 'group-hover:bg-white/30'}`}>
+                                <Volume2 size={20} className="text-white" />
+                             </div>
+                        </div>
+                    )}
                 </motion.button>
                 {error && <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] font-black text-red-400 uppercase whitespace-nowrap bg-black/60 px-2 py-1 rounded-full backdrop-blur-md">{error}</div>}
             </div>
@@ -510,6 +574,7 @@ const BlockRenderer: React.FC<BlockRendererProps> = React.memo(({ block, onInter
             case 'code_editor': return <CodeEditorBlock data={data} isAdmin={isAdmin} onComplete={(isCorrect) => onInteract?.(block.id, { isCorrect })} />;
             case 'text_input': return <TextInputBlock data={data} isAdmin={isAdmin} onComplete={(isCorrect) => onInteract?.(block.id, { isCorrect })} />;
             case 'completion': return <CompletionBlock data={data} isAdmin={isAdmin} onComplete={(isCorrect) => onInteract?.(block.id, { isCorrect })} />;
+            case 'letter_completion': return <LetterCompletionBlock data={data} isAdmin={isAdmin} onComplete={(isCorrect) => onInteract?.(block.id, { isCorrect })} />;
             case 'toc': return (
                 <div className="w-full h-full overflow-y-auto custom-scrollbar bg-white">
                     <TableOfContents contents={bookContents || []} onNavigate={(item) => onInteract?.(block.id, { action: 'page', value: item.id })} />
