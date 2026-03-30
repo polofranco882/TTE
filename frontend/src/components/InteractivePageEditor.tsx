@@ -302,42 +302,78 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
 
     const selectedBlock = blocks.find(b => b.id === selectedId);
 
-    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+    const [isUploading, setIsUploading] = useState(false);
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        // Validation for common patterns
         const isVideo = file.type.startsWith('video/');
         const isAudio = file.type.startsWith('audio/');
-        
-        // Size limit: 50MB
+        const isImage = file.type.startsWith('image/');
+
+        // Size limit: 50MB (Backend will further process/optimize)
         const maxSize = 50 * 1024 * 1024;
         if (file.size > maxSize) {
             alert(`File too large (${(file.size / 1024 / 1024).toFixed(2)}MB). Maximum allowed is 50MB.`);
             return;
         }
 
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const base64 = reader.result as string;
+        try {
+            setIsUploading(true);
             
-            // If it's a video or audio, we might want to store metadata
+            // Read as Base64 first to send to our Media API
+            const reader = new FileReader();
+            const base64: string = await new Promise((resolve, reject) => {
+                reader.onload = () => resolve(reader.result as string);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+
+            // Call the Media API for optimization and storage
+            const res = await fetch('/api/media/upload', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` 
+                },
+                body: JSON.stringify({
+                    module: 'interactive_page',
+                    entity_type: selectedBlock?.type || 'block',
+                    file_name: file.name,
+                    mime_type: file.type,
+                    base64_content: base64,
+                    size: file.size
+                })
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.error || 'Upload failed');
+            }
+
+            const data = await res.json();
+            const mediaUrl = `/api/media/${data.asset.id}`;
+
+            // Store ONLY the URL reference, not the giant Base64
             if (isVideo || isAudio) {
                 updateSelectedBlocks({ 
-                    [field]: base64,
+                    [field]: mediaUrl,
                     fileName: file.name,
-                    mimeType: file.type,
-                    size: file.size,
-                    lastModified: file.lastModified
+                    mimeType: data.asset.mime_type || file.type,
+                    size: data.asset.optimized_size || file.size
                 });
             } else {
-                updateSelectedBlocks({ [field]: base64 });
+                updateSelectedBlocks({ [field]: mediaUrl });
             }
-        };
-        reader.onerror = () => {
-            alert("Error reading file.");
-        };
-        reader.readAsDataURL(file);
+
+        } catch (error: any) {
+            console.error('Upload error:', error);
+            alert(`Error uploading media: ${error.message}`);
+        } finally {
+            setIsUploading(false);
+            if (e.target) e.target.value = '';
+        }
     };
 
     const handleDragEnd = (id: string, info: any) => {
@@ -502,6 +538,33 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[9999] bg-[#0c0e1a] text-white flex flex-col font-sans overflow-hidden"
         >
+            {/* UI: Uploading Overlay */}
+            <AnimatePresence>
+                {isUploading && (
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[2000] flex flex-col items-center justify-center bg-[#0c0e1a]/80 backdrop-blur-md"
+                    >
+                        <div className="relative">
+                            <div className="w-24 h-24 border-4 border-accent/20 border-t-accent rounded-full animate-spin" />
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <Sparkles className="text-accent animate-pulse" size={32} />
+                            </div>
+                        </div>
+                        <motion.div 
+                            initial={{ y: 10, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{ delay: 0.2 }}
+                            className="mt-6 text-center"
+                        >
+                            <h3 className="text-xl font-black text-white uppercase tracking-[0.2em] mb-2">Optimizing Media</h3>
+                            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest animate-pulse">Building a "Super Light" version...</p>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
             {/* ── TOPBAR ── */}
             {!isPreview && (
                 <div className="h-14 bg-[#161930] border-b border-white/5 flex items-center justify-between px-4 shadow-xl relative z-50">
@@ -896,7 +959,7 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                             )}
                         </AnimatePresence>
                     </div>
-                </div>
+                    </div>
 
                 {/* ── RIGHT SIDEBAR (PROPERTIES) ── */}
                 {!isPreview && (
@@ -921,36 +984,38 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
 
                             <div className="flex-1 overflow-y-auto p-5 custom-scrollbar space-y-6">
                                 {!selectedBlock ? (
-                                    <div className="space-y-6">
-                                        <div className="p-4 bg-white/5 rounded-xl border border-white/10 space-y-4">
-                                            <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest block">Canvas Designer</label>
-                                            <div className="space-y-4">
-                                                <div className="flex items-center justify-between">
-                                                    <span className="text-[9px] font-black text-gray-500 uppercase">Bg Color</span>
-                                                    <input type="color" value={canvasBg.color} onChange={e => setCanvasBg({ ...canvasBg, color: e.target.value })} className="w-8 h-8 rounded-lg bg-transparent cursor-pointer" />
+                                    <>
+                                        <div className="space-y-6">
+                                            <div className="p-4 bg-white/5 rounded-xl border border-white/10 space-y-4">
+                                                <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest block">Canvas Designer</label>
+                                                <div className="space-y-4">
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="text-[9px] font-black text-gray-500 uppercase">Bg Color</span>
+                                                        <input type="color" value={canvasBg.color} onChange={e => setCanvasBg({ ...canvasBg, color: e.target.value })} className="w-8 h-8 rounded-lg bg-transparent cursor-pointer" />
+                                                    </div>
+                                                    <label className="w-full p-4 border-2 border-dashed border-white/10 rounded-xl hover:border-accent group cursor-pointer transition-all flex flex-col items-center gap-2">
+                                                        <Upload size={20} className="text-gray-500 group-hover:text-accent" />
+                                                        <span className="text-[9px] font-black text-gray-500 uppercase">Set Canvas Image</span>
+                                                        <input type="file" className="hidden" accept="image/*" onChange={(e) => {
+                                                            const file = e.target.files?.[0];
+                                                            if (file) {
+                                                                const reader = new FileReader();
+                                                                reader.onloadend = () => setCanvasBg({ ...canvasBg, url: reader.result as string });
+                                                                reader.readAsDataURL(file);
+                                                            }
+                                                        }} />
+                                                    </label>
+                                                    {canvasBg.url && (
+                                                        <button onClick={() => setCanvasBg({ ...canvasBg, url: '' })} className="w-full py-2 bg-red-500/10 text-red-500 text-[8px] font-black uppercase rounded-lg border border-red-500/20">Remove Image</button>
+                                                    )}
                                                 </div>
-                                                <label className="w-full p-4 border-2 border-dashed border-white/10 rounded-xl hover:border-accent group cursor-pointer transition-all flex flex-col items-center gap-2">
-                                                    <Upload size={20} className="text-gray-500 group-hover:text-accent" />
-                                                    <span className="text-[9px] font-black text-gray-500 uppercase">Set Canvas Image</span>
-                                                    <input type="file" className="hidden" accept="image/*" onChange={(e) => {
-                                                        const file = e.target.files?.[0];
-                                                        if (file) {
-                                                            const reader = new FileReader();
-                                                            reader.onloadend = () => setCanvasBg({ ...canvasBg, url: reader.result as string });
-                                                            reader.readAsDataURL(file);
-                                                        }
-                                                    }} />
-                                                </label>
-                                                {canvasBg.url && (
-                                                    <button onClick={() => setCanvasBg({ ...canvasBg, url: '' })} className="w-full py-2 bg-red-500/10 text-red-500 text-[8px] font-black uppercase rounded-lg border border-red-500/20">Remove Image</button>
-                                                )}
+                                            </div>
+                                            <div className="p-10 text-center opacity-20">
+                                                <Layout size={40} className="mx-auto mb-4" />
+                                                <p className="text-[10px] font-bold">Select an element to edit its properties</p>
                                             </div>
                                         </div>
-                                        <div className="p-10 text-center opacity-20">
-                                            <Layout size={40} className="mx-auto mb-4" />
-                                            <p className="text-[10px] font-bold">Select an element to edit its properties</p>
-                                        </div>
-                                    </div>
+                                    </>
                                 ) : (
                                     <div className="space-y-6">
                                         {/* Geometry & Layering */}
@@ -985,8 +1050,6 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                                     <input type="range" min="0" max="360" value={Math.round(selectedBlock.data.rotate || 0)} onChange={e => updateBlockData(selectedId!, { rotate: parseInt(e.target.value) })} className="w-full h-1 bg-white/10 rounded-full appearance-none cursor-pointer accent-accent" />
                                                 </div>
                                             </div>
-
-                                            {/* Layer Controls */}
                                             <div className="flex gap-2 mt-3 pt-3 border-t border-white/10">
                                                 <button onClick={() => bringToFront(selectedId!)} className="flex-1 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-2 flex items-center justify-center gap-1.5 transition-colors text-gray-400 hover:text-white">
                                                     <ArrowUpToLine size={14} /> <span className="text-[9px] font-black uppercase tracking-widest">Traer Frente</span>
@@ -2821,7 +2884,7 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                 confirmLabel={"Delete"}
                 cancelLabel={"Cancel"}
             />
-        </motion.div >
+        </motion.div>
     );
 };
 

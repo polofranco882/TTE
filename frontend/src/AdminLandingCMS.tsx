@@ -197,17 +197,51 @@ const AdminLandingCMS = ({ token, onNotify, onUnauthorized }: AdminLandingCMSPro
         if (!file) return;
         try {
             setIsUploading(true);
-            onNotify('Optimizing image...', 'info');
-            const optimized = await optimizeImageFile(file, 1920, 1080, 0.85);
+            const isVideo = file.type.startsWith('video/');
+            onNotify(isVideo ? 'Optimizing video (Super Light)...' : 'Optimizing image...', 'info');
+
+            let payload: any;
+
+            if (isVideo) {
+                // For videos, we send the raw base64 and let the backend optimize it
+                const reader = new FileReader();
+                const base64: string = await new Promise((resolve) => {
+                    reader.onload = (ev) => resolve(ev.target?.result as string);
+                    reader.readAsDataURL(file);
+                });
+                
+                payload = { 
+                    module: 'landing', 
+                    entity_type: field, 
+                    file_name: file.name, 
+                    mime_type: file.type, 
+                    base64_content: base64, 
+                    size: file.size 
+                };
+            } else {
+                const optimized = await optimizeImageFile(file, 1920, 1080, 0.85);
+                payload = { 
+                    module: 'landing', 
+                    entity_type: field, 
+                    file_name: file.name, 
+                    mime_type: optimized.mimeType, 
+                    base64_content: optimized.base64, 
+                    size: optimized.size, 
+                    width: optimized.width, 
+                    height: optimized.height 
+                };
+            }
+
             const res = await fetch('/api/media/upload', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-                body: JSON.stringify({ module: 'landing', entity_type: field, file_name: file.name, mime_type: optimized.mimeType, base64_content: optimized.base64, size: optimized.size, width: optimized.width, height: optimized.height })
+                body: JSON.stringify(payload)
             });
+
             if (!res.ok) throw new Error((await res.json()).error || 'Upload failed');
             const data = await res.json();
             handleStructuralChange(sectionId, field, `/api/media/${data.asset.id}`);
-            onNotify('Image uploaded!', 'success');
+            onNotify(isVideo ? 'Video optimized & uploaded!' : 'Image uploaded!', 'success');
         } catch (err: any) {
             onNotify(err.message || 'Upload error', 'error');
         } finally {
@@ -216,7 +250,7 @@ const AdminLandingCMS = ({ token, onNotify, onUnauthorized }: AdminLandingCMSPro
         }
     };
 
-    // ── UI helpers
+    // UI helpers
     const renderToggle = (sectionId: string, field: string, label: string) => {
         const val = draftSettings[sectionId]?.[field] ?? true;
         return (
@@ -260,17 +294,47 @@ const AdminLandingCMS = ({ token, onNotify, onUnauthorized }: AdminLandingCMSPro
 
     const renderImageUpload = (sectionId: string, field: string, label: string) => {
         const val = draftSettings[sectionId]?.[field] || '';
+        const isVideo = val.toLowerCase().includes('video') || val.includes('.mp4');
+
         return (
             <div className="space-y-1">
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">{label}</label>
+                <div className="flex justify-between items-center">
+                    <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">{label}</label>
+                    {val && (
+                        <button onClick={() => handleStructuralChange(sectionId, field, '')} className="text-[9px] font-bold text-red-500 hover:underline uppercase tracking-tighter">Remove</button>
+                    )}
+                </div>
                 <div className="border-2 border-dashed border-gray-200 rounded-2xl p-6 text-center hover:border-accent transition-colors relative cursor-pointer group bg-gray-50 overflow-hidden">
-                    <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, sectionId, field)} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" disabled={isUploading} />
-                    <div className="w-12 h-12 bg-white rounded-xl shadow-sm border border-gray-100 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
-                        {isUploading ? <Activity className="w-6 h-6 text-accent animate-spin" /> : <UploadCloud className="w-6 h-6 text-gray-400 group-hover:text-accent" />}
-                    </div>
-                    <p className="text-sm font-bold text-gray-600 mb-1">{isUploading ? 'Uploading...' : 'Click to upload'}</p>
+                    <input type="file" accept="image/*,video/*" onChange={(e) => handleFileUpload(e, sectionId, field)} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" disabled={isUploading} />
+                    
+                    {val ? (
+                        <div className="relative z-0 w-full aspect-video bg-black rounded-lg overflow-hidden mb-4 border border-gray-200 shadow-inner">
+                            {isVideo ? (
+                                <video src={val} className="w-full h-full object-cover" controls muted loop />
+                            ) : (
+                                <img src={val} className="w-full h-full object-cover" alt="Preview" />
+                            )}
+                        </div>
+                    ) : (
+                        <div className="w-12 h-12 bg-white rounded-xl shadow-sm border border-gray-100 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                            {isUploading ? <Activity className="w-6 h-6 text-accent animate-spin" /> : <UploadCloud className="w-6 h-6 text-gray-400 group-hover:text-accent" />}
+                        </div>
+                    )}
+                    
+                    <p className="text-sm font-bold text-gray-600 mb-1">
+                        {isUploading ? 'Optimizing Media...' : val ? 'Change Media' : 'Click to upload'}
+                    </p>
+                    <p className="text-[10px] text-gray-400 font-medium tracking-wide">JPG, PNG, WebP or MP4 up to 50MB</p>
+                    
                     <div className="relative z-20 mt-4">
-                        <input type="text" value={val} onChange={e => handleStructuralChange(sectionId, field, e.target.value)} className="w-full px-3 py-2 text-xs border rounded-lg bg-white bg-opacity-90" placeholder="Or enter external URL..." />
+                        <input 
+                            type="text" 
+                            value={val} 
+                            onClick={(e) => e.stopPropagation()} 
+                            onChange={e => handleStructuralChange(sectionId, field, e.target.value)} 
+                            className="w-full px-3 py-2 text-xs border rounded-lg bg-white bg-opacity-90 focus:ring-2 focus:ring-accent/20 outline-none" 
+                            placeholder="Or enter external URL..." 
+                        />
                     </div>
                 </div>
             </div>
