@@ -9,6 +9,9 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'brand-logo-512.png'],
+      workbox: {
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024 // 5 MB
+      },
       manifest: {
         name: 'TTESOL Academy',
         short_name: 'TTESOL',
@@ -39,6 +42,15 @@ export default defineConfig({
     target: ['es2019', 'chrome67', 'edge18', 'firefox62', 'safari12'],
     sourcemap: false,
     minify: 'esbuild',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          utils: ['xlsx', 'recharts', 'react-quill-new'],
+          pdf: ['pdfjs-dist']
+        }
+      }
+    }
   },
   server: {
     port: 3002,
