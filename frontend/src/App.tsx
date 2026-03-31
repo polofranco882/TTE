@@ -14,6 +14,7 @@ import Notification, { type NotificationType } from './components/Notification';
 import PublicLanding from './PublicLanding';
 import AdminLandingCMS from './AdminLandingCMS';
 import AdminTranslations from './AdminTranslations';
+import AdminMarketing from './AdminMarketing';
 import { loadTranslationsFromDB } from './i18n';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from './components/LanguageSwitcher';
@@ -116,7 +117,7 @@ function App() {
         localStorage.setItem('token', data.token);
         localStorage.setItem('role', data.user.role);
         // Set default tab based on role
-        setActiveTab(['admin', 'manager'].includes(data.user.role) ? 'dashboard' : 'welcome');
+        setActiveTab(['admin', 'manager', 'marketing'].includes(data.user.role) ? 'dashboard' : 'welcome');
         showNotification('Welcome back! Login successful.', 'success');
       } else {
         if (res.status === 401) {
@@ -139,7 +140,7 @@ function App() {
     const role = localStorage.getItem('role');
     const token = localStorage.getItem('token');
     if (!token) return 'welcome';
-    return (role === 'admin' || role === 'manager') ? 'dashboard' : 'welcome';
+    return (role === 'admin' || role === 'manager' || role === 'marketing') ? 'dashboard' : 'welcome';
   });
   const [selectedBookId, setSelectedBookId] = useState<number | null>(null);
 
@@ -409,7 +410,7 @@ function App() {
     }
 
     if (activeTab === 'dashboard') {
-      if (userRole === 'admin' || userRole === 'manager') {
+      if (userRole === 'admin' || userRole === 'manager' || userRole === 'marketing') {
         return <AdminDashboard token={token} onNotify={showNotification} onUnauthorized={handleUnauthorized} />;
       }
       return <Library token={token} userRole={userRole} onNotify={showNotification} onStartReading={setSelectedBookId} onUnauthorized={handleUnauthorized} />;
@@ -427,10 +428,18 @@ function App() {
       return <AdminUsers token={token} onNotify={showNotification} onUnauthorized={handleUnauthorized} />;
     }
 
-    if (activeTab === 'landing' && userRole === 'admin') {
+    if (activeTab === 'landing' && (userRole === 'admin' || userRole === 'marketing')) {
       return (
         <div className="flex-1 h-full min-h-[700px]">
           <AdminLandingCMS token={token} onNotify={showNotification} onUnauthorized={handleUnauthorized} />
+        </div>
+      );
+    }
+    
+    if (activeTab === 'marketing' && (userRole === 'admin' || userRole === 'marketing')) {
+      return (
+        <div className="flex-1 h-full min-h-[700px]">
+          <AdminMarketing token={token} onNotify={showNotification} onUnauthorized={handleUnauthorized} />
         </div>
       );
     }

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import {
     Book, LayoutDashboard, PieChart, Settings, LogOut,
-    ChevronLeft, Menu, BookOpen, Star, LayoutTemplate, Globe
+    ChevronLeft, Menu, BookOpen, Star, LayoutTemplate, Globe, Mail
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from './components/LanguageSwitcher';
@@ -53,14 +53,15 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen, userRole, onLogou
     if (isEditorActive) return null;
 
     const menuItems = [
-        { id: 'welcome', label: t('menu.welcome', 'Welcome'), icon: <Star size={20} />, roles: ['user', 'admin', 'manager'] },
-        { id: 'dashboard', label: t('menu.dashboard', 'Dashboard'), icon: <LayoutDashboard size={20} />, roles: ['admin', 'manager'] },
-        { id: 'landing', label: t('menu.landing', 'Landing Page'), icon: <LayoutTemplate size={20} />, roles: ['admin'] },
+        { id: 'welcome', label: t('menu.welcome', 'Welcome'), icon: <Star size={20} />, roles: ['user', 'admin', 'manager', 'marketing'] },
+        { id: 'dashboard', label: t('menu.dashboard', 'Dashboard'), icon: <LayoutDashboard size={20} />, roles: ['admin', 'manager', 'marketing'] },
+        { id: 'landing', label: t('menu.landing', 'Landing Page'), icon: <LayoutTemplate size={20} />, roles: ['admin', 'marketing'] },
         { id: 'books', label: t('menu.books', 'Library'), icon: <Book size={20} />, roles: ['user', 'admin', 'manager'] },
         { id: 'admin-books', label: t('menu.adminBooks', 'Manage Books'), icon: <BookOpen size={20} />, roles: ['admin', 'manager'] },
+        { id: 'marketing', label: t('menu.marketing', 'Email Marketing'), icon: <Mail size={20} />, roles: ['admin', 'marketing'] },
         { id: 'reports', label: t('menu.reports', 'Reports'), icon: <PieChart size={20} />, roles: ['admin', 'manager'] },
         { id: 'languages', label: t('menu.languages', 'Translations'), icon: <Globe size={20} />, roles: ['admin'] },
-        { id: 'settings', label: t('menu.settings', 'Settings'), icon: <Settings size={20} />, roles: ['admin', 'manager', 'user'] },
+        { id: 'settings', label: t('menu.settings', 'Settings'), icon: <Settings size={20} />, roles: ['admin', 'manager', 'user', 'marketing'] },
     ];
 
     const filteredItems = menuItems.filter(item => !item.roles || item.roles.includes(userRole || ''));

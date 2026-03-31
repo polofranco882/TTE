@@ -28,6 +28,7 @@
   "dependencies": {
     "@google/genai": "^1.43.0",
     "@types/fluent-ffmpeg": "^2.1.28",
+    "@types/nodemailer": "^7.0.11",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
@@ -37,6 +38,7 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
     "morgan": "^1.10.1",
+    "nodemailer": "^8.0.4",
     "openai": "^6.25.0",
     "pg": "^8.18.0",
     "zod": "^4.3.6"

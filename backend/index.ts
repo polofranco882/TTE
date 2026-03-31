@@ -40,6 +40,9 @@ import landingRoutes from './routes/landing';
 import landingModulesRoutes from './routes/landing-modules';
 import mediaRoutes from './routes/media';
 import i18nRoutes from './routes/i18n';
+import marketingRoutes from './routes/marketing';
+
+import { initWorker } from './emailWorker';
 
 app.use('/auth', authRoutes);
 app.use('/books', bookRoutes);
@@ -51,6 +54,7 @@ app.use('/landing', landingRoutes);
 app.use('/landing-modules', landingModulesRoutes);
 app.use('/media', mediaRoutes);
 app.use('/i18n', i18nRoutes);
+app.use('/marketing', marketingRoutes);
 
 // Protected Route Example
 app.get('/protected', (req, res) => {
@@ -60,4 +64,6 @@ app.get('/protected', (req, res) => {
 // Start Server
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
+    // Start background jobs
+    initWorker();
 });

@@ -1,0 +1,16 @@
+﻿src/AdminMarketingCampaigns.tsx(267,125): error TS1127: Invalid character.
+src/AdminMarketingCampaigns.tsx(267,166): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/AdminMarketingCampaigns.tsx(267,167): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/AdminMarketingCampaigns.tsx(267,168): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+src/AdminMarketingCampaigns.tsx(268,125): error TS1127: Invalid character.
+src/AdminMarketingCampaigns.tsx(268,168): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/AdminMarketingCampaigns.tsx(268,169): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/AdminMarketingCampaigns.tsx(268,170): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+src/AdminMarketingCampaigns.tsx(271,33): error TS1005: ')' expected.
+src/AdminMarketingCampaigns.tsx(309,21): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/AdminMarketingCampaigns.tsx(309,23): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/AdminMarketingCampaigns.tsx(311,13): error TS1005: ')' expected.
+src/AdminMarketingCampaigns.tsx(436,13): error TS1128: Declaration or statement expected.
+src/AdminMarketingCampaigns.tsx(439,9): error TS1128: Declaration or statement expected.
+src/AdminMarketingCampaigns.tsx(440,5): error TS1109: Expression expected.
+src/AdminMarketingCampaigns.tsx(441,1): error TS1128: Declaration or statement expected.
