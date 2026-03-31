@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useSmartBlockFocus } from '../hooks/useSmartBlockFocus';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, XCircle, RefreshCcw } from 'lucide-react';
 
@@ -24,6 +25,9 @@ const ClozeBlock: React.FC<ClozeBlockProps> = ({ data, onComplete, isAdmin }) =>
     const [inputs, setInputs] = useState<Record<string, string>>({});
     const [status, setStatus] = useState<'idle' | 'correct' | 'incorrect'>('idle');
     const [blankResults, setBlankResults] = useState<Record<string, boolean>>({});
+
+    const containerRef = useRef<HTMLDivElement>(null);
+    const { isFocused } = useSmartBlockFocus(containerRef, { disabled: isAdmin });
 
     useEffect(() => {
         // Parse "Hello [world]" into [{type:'text', value:'Hello '}, {type:'blank', value:'world'}]
@@ -106,7 +110,10 @@ const ClozeBlock: React.FC<ClozeBlockProps> = ({ data, onComplete, isAdmin }) =>
     const isCheckDisabled = status === 'correct' || tokens.filter(t => t.type === 'blank').some(t => !(inputs[t.id] || '').trim());
 
     return (
-        <div className={`w-full h-full flex flex-col overflow-y-auto custom-scrollbar ${data.compact ? 'p-1 gap-1' : 'p-4 gap-4'} bg-black/40 border border-white/5 rounded-2xl`}>
+        <div 
+            ref={containerRef}
+            className={`w-full h-full flex flex-col overflow-y-auto custom-scrollbar ${data.compact ? 'p-1 gap-1' : 'p-4 gap-4'} border border-white/5 rounded-2xl transition-all duration-500 ${isFocused && !isAdmin ? 'scale-[1.02] z-[50] ring-2 ring-accent/40 shadow-[0_10px_40px_rgba(255,100,0,0.15)] bg-black/70 backdrop-blur-md' : 'bg-black/40 z-0'}`}
+        >
             {/* Header */}
             {!data.hideQuestion && (
                 <div className="text-center mb-2">
@@ -135,11 +142,11 @@ const ClozeBlock: React.FC<ClozeBlockProps> = ({ data, onComplete, isAdmin }) =>
                                         disabled={status === 'correct'}
                                         style={{ width: `${Math.max(Math.max(...token.answers.map(a => a.length)) * 0.8, 3)}em` }}
                                         className={`
-                                            bg-black/30 border-b-2 text-center text-white font-bold outline-none px-1
-                                            transition-all placeholder:text-white/20
+                                            bg-black/30 border-b-2 text-center text-white font-bold outline-none px-1 rounded-sm
+                                            transition-all duration-300 placeholder:text-white/20
                                             ${isCorrect ? 'border-green-500 text-green-400 bg-green-500/10' :
                                                 isIncorrect ? 'border-red-500 text-red-400 bg-red-500/10' :
-                                                    'border-white/30 focus:border-accent focus:bg-white/5'}
+                                                    'border-white/30 focus:border-accent focus:bg-white/10 focus:scale-[1.15] focus:shadow-xl focus:z-10 focus:-translate-y-1 relative'}
                                         `}
                                     />
                                     {isAdmin && !inputs[token.id] && status === 'idle' && (

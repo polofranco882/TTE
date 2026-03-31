@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useSmartBlockFocus } from '../hooks/useSmartBlockFocus';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, XCircle, RefreshCw } from 'lucide-react';
 
@@ -62,6 +63,9 @@ const LetterCompletionBlock: React.FC<LetterCompletionBlockProps> = ({ data, isA
     const [status, setStatus] = useState<'idle' | 'correct' | 'incorrect'>('idle');
     const [shake, setShake] = useState(false);
     
+    // Auto-focus logic
+    const containerRef = useRef<HTMLDivElement>(null);
+    const { isFocused } = useSmartBlockFocus(containerRef, { disabled: isAdmin });
     // Parse visible indices
     const visibleSet = new Set(
         visibleIndices.split(',').map(i => parseInt(i.trim())).filter(i => !isNaN(i))
@@ -201,7 +205,8 @@ const LetterCompletionBlock: React.FC<LetterCompletionBlockProps> = ({ data, isA
 
     return (
         <div 
-            className={`w-full h-full flex items-center relative block-interactive ${getAlignClasses('container')}`}
+            ref={containerRef}
+            className={`w-full h-full flex items-center relative block-interactive transition-all duration-500 ${getAlignClasses('container')} ${isFocused && !isAdmin ? 'scale-[1.05] md:scale-[1.02] z-[50] shadow-[0_10px_40px_rgba(255,100,0,0.15)] ring-2 ring-accent/40 rounded-[1.5rem]' : 'z-0'}`}
             onPointerDown={(e) => { if (!isAdmin) { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); } }}
             onMouseDown={(e) => { if (!isAdmin) { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); } }}
             onTouchStart={(e) => { if (!isAdmin) { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); } }}
@@ -272,7 +277,7 @@ const LetterCompletionBlock: React.FC<LetterCompletionBlockProps> = ({ data, isA
                                     onMouseDown={(e) => e.stopPropagation()}
                                     onTouchStart={(e) => e.stopPropagation()}
                                     disabled={status === 'correct' || isAdmin}
-                                    className="w-full h-full bg-transparent text-center outline-none uppercase pointer-events-auto cursor-text text-inherit"
+                                    className={`w-full h-full bg-transparent text-center outline-none uppercase pointer-events-auto cursor-text text-inherit transition-all md:hover:bg-white/5 ${isFocused && document.activeElement === inputRefs.current[i] ? 'bg-white/10 rounded border-b-2 border-accent' : ''}`}
                                     style={{ 
                                         color: answerColor,
                                         fontWeight: bold ? '900' : 'normal',

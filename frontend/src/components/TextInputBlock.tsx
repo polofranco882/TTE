@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import { useSmartBlockFocus } from '../hooks/useSmartBlockFocus';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, XCircle, Sparkles } from 'lucide-react';
 
@@ -12,6 +13,9 @@ const TextInputBlock: React.FC<TextInputBlockProps> = ({ data, isAdmin, onComple
     const [value, setValue] = useState('');
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
     const [hasAttempted, setHasAttempted] = useState(false);
+
+    const containerRef = useRef<HTMLDivElement>(null);
+    const { isFocused } = useSmartBlockFocus(containerRef, { disabled: isAdmin });
 
     const {
         placeholder = 'Type here...',
@@ -57,7 +61,10 @@ const TextInputBlock: React.FC<TextInputBlockProps> = ({ data, isAdmin, onComple
     const glowStyles = getBorderStyle();
 
     return (
-        <div className="w-full h-full relative group">
+        <div 
+            ref={containerRef}
+            className={`w-full h-full relative transition-all duration-500 group ${isFocused && !isAdmin ? 'scale-[1.02] z-[50] shadow-[0_10px_40px_rgba(255,100,0,0.15)] ring-2 ring-accent/40 rounded-[1.2rem]' : 'z-0'}`}
+        >
             {/* Ambient glow behind input when correct */}
             <AnimatePresence>
                 {showCorrectState && (

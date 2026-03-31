@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { useSmartBlockFocus } from '../hooks/useSmartBlockFocus';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, XCircle, RefreshCw } from 'lucide-react';
 
@@ -37,6 +38,8 @@ const CompletionBlock: React.FC<CompletionBlockProps> = ({ data, isAdmin, onComp
     const [status, setStatus] = useState<'idle' | 'correct' | 'incorrect'>('idle');
     const [shake, setShake] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const { isFocused } = useSmartBlockFocus(containerRef, { disabled: isAdmin });
 
     const {
         title = 'Good',
@@ -155,7 +158,8 @@ const CompletionBlock: React.FC<CompletionBlockProps> = ({ data, isAdmin, onComp
 
     return (
         <div 
-            className={`w-full h-full flex items-center overflow-visible transition-all duration-500 block-interactive ${styles.container}`}
+            ref={containerRef}
+            className={`w-full h-full flex items-center overflow-visible transition-all duration-500 block-interactive ${styles.container} ${isFocused && !isAdmin ? 'scale-[1.05] md:scale-[1.02] z-[50] shadow-[0_10px_40px_rgba(255,100,0,0.15)] ring-2 ring-accent/40 rounded-[1.5rem]' : 'z-0'}`}
             onPointerDown={(e) => { if (!isAdmin) e.stopPropagation(); }}
             onMouseDown={(e) => { if (!isAdmin) e.stopPropagation(); }}
             onTouchStart={(e) => { if (!isAdmin) e.stopPropagation(); }}
@@ -210,7 +214,7 @@ const CompletionBlock: React.FC<CompletionBlockProps> = ({ data, isAdmin, onComp
                         onTouchStart={(e) => e.stopPropagation()}
                         disabled={status === 'correct'}
                         placeholder={placeholder}
-                        className={`text-center transition-all col-start-1 row-start-1 w-full bg-transparent outline-none pointer-events-auto ${styles.input}`}
+                        className={`text-center transition-all col-start-1 row-start-1 w-full bg-transparent outline-none pointer-events-auto ${styles.input} ${isFocused ? 'bg-white/5 drop-shadow-md rounded-lg' : ''}`}
                         style={{ 
                             color: preset === 'neon' ? undefined : textColor,
                             fontSize: `${fontSize}px`,
