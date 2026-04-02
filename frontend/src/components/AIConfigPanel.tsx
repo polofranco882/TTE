@@ -30,7 +30,7 @@ const AIConfigPanel: React.FC<AIConfigPanelProps> = ({ token, onNotify, onUnauth
 
     const fetchConfig = async () => {
         try {
-            const res = await fetch(`${API}/api/ai/config`, {
+            const res = await fetch(`${API}/ai/config`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (res.status === 401) {
@@ -60,7 +60,7 @@ const AIConfigPanel: React.FC<AIConfigPanelProps> = ({ token, onNotify, onUnauth
     const handleSave = async () => {
         setSaving(true);
         try {
-            const res = await fetch(`${API}/api/ai/config`, {
+            const res = await fetch(`${API}/ai/config`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

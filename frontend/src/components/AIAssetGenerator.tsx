@@ -60,7 +60,7 @@ const AIAssetGenerator: React.FC<AIAssetGeneratorProps> = ({ isOpen, onClose, to
         setResult(null);
 
         try {
-            const res = await fetch(`${API}/api/ai/generate`, {
+            const res = await fetch(`${API}/ai/generate`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

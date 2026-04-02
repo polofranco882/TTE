@@ -80,7 +80,7 @@ const PdfImporterModal: React.FC<PdfImporterModalProps> = ({
                     blocks: []
                 };
 
-                const res = await fetch(`${API}/api/books/${bookId}/contents/add`, {
+                const res = await fetch(`${API}/books/${bookId}/contents/add`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

@@ -72,7 +72,7 @@ const ContentsManager: React.FC<ContentsManagerProps> = ({
     const handleToggleActive = async (item: ContentMeta) => {
         setSaving(item.id);
         try {
-            const res = await fetch(`${API}/api/books/${bookId}/contents/${item.id}/toggle`, {
+            const res = await fetch(`${API}/books/${bookId}/contents/${item.id}/toggle`, {
                 method: 'PATCH',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -93,7 +93,7 @@ const ContentsManager: React.FC<ContentsManagerProps> = ({
     const handleToggleIndex = async (item: ContentMeta) => {
         setSaving(item.id);
         try {
-            const res = await fetch(`${API}/api/books/${bookId}/contents/${item.id}/toggle-index`, {
+            const res = await fetch(`${API}/books/${bookId}/contents/${item.id}/toggle-index`, {
                 method: 'PATCH',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -114,7 +114,7 @@ const ContentsManager: React.FC<ContentsManagerProps> = ({
     const fetchItems = useCallback(async () => {
         setLoading(true);
         try {
-            const res = await fetch(`${API}/api/books/${bookId}/contents-meta`, {
+            const res = await fetch(`${API}/books/${bookId}/contents-meta`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -144,7 +144,7 @@ const ContentsManager: React.FC<ContentsManagerProps> = ({
         const ids = Array.from(selectedIds);
         setLoading(true);
         try {
-            const res = await fetch(`${API}/api/books/${bookId}/contents-batch-toggle-index`, {
+            const res = await fetch(`${API}/books/${bookId}/contents-batch-toggle-index`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -169,7 +169,7 @@ const ContentsManager: React.FC<ContentsManagerProps> = ({
         const ids = Array.from(selectedIds);
         setLoading(true);
         try {
-            const res = await fetch(`${API}/api/books/${bookId}/contents-batch-toggle-active`, {
+            const res = await fetch(`${API}/books/${bookId}/contents-batch-toggle-active`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -193,7 +193,7 @@ const ContentsManager: React.FC<ContentsManagerProps> = ({
     const handleAdd = async (type: 'chapter' | 'topic') => {
         setAddingItem(true);
         try {
-            const res = await fetch(`${API}/api/books/${bookId}/contents/add`, {
+            const res = await fetch(`${API}/books/${bookId}/contents/add`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -235,7 +235,7 @@ const ContentsManager: React.FC<ContentsManagerProps> = ({
 
         setSaving(item.id);
         try {
-            await fetch(`${API}/api/books/${bookId}/contents/${item.id}`, {
+            await fetch(`${API}/books/${bookId}/contents/${item.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -267,7 +267,7 @@ const ContentsManager: React.FC<ContentsManagerProps> = ({
             if (deletingList.length === 1) {
                 // Delete single
                 const item = deletingList[0];
-                const res = await fetch(`${API}/api/books/${bookId}/contents/${item.id}`, {
+                const res = await fetch(`${API}/books/${bookId}/contents/${item.id}`, {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -278,7 +278,7 @@ const ContentsManager: React.FC<ContentsManagerProps> = ({
             } else {
                 // Bulk delete
                 const ids = deletingList.map(i => i.id);
-                const res = await fetch(`${API}/api/books/${bookId}/contents-batch-delete`, {
+                const res = await fetch(`${API}/books/${bookId}/contents-batch-delete`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -324,7 +324,7 @@ const ContentsManager: React.FC<ContentsManagerProps> = ({
     const handleOpenEditor = async (item: ContentMeta, idx: number) => {
         // Fetch the full content for this item
         try {
-            const res = await fetch(`${API}/api/books/${bookId}/contents/${item.id}`, {
+            const res = await fetch(`${API}/books/${bookId}/contents/${item.id}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -344,7 +344,7 @@ const ContentsManager: React.FC<ContentsManagerProps> = ({
         const content = JSON.stringify(data);
 
         try {
-            await fetch(`${API}/api/books/${bookId}/contents/${item.id}`, {
+            await fetch(`${API}/books/${bookId}/contents/${item.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -397,7 +397,7 @@ const ContentsManager: React.FC<ContentsManagerProps> = ({
 
             // Persist to backend
             try {
-                await fetch(`${API}/api/books/${bookId}/contents-reorder`, {
+                await fetch(`${API}/books/${bookId}/contents-reorder`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
