@@ -3,10 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, FileUp, Loader2 } from 'lucide-react';
 import * as pdfjsLib from 'pdfjs-dist';
 // Require worker for Vite/modern environments
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-    'pdfjs-dist/build/pdf.worker.mjs',
-    import.meta.url
-).toString();
+// Use version 5.5.207 to match package.json
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@5.5.207/build/pdf.worker.min.mjs`;
 
 interface PdfImporterModalProps {
     isOpen: boolean;
@@ -17,7 +15,7 @@ interface PdfImporterModalProps {
     onNotify: (msg: string, type: 'success' | 'error' | 'info') => void;
 }
 
-const API = (import.meta as any).env?.VITE_API_URL || '';
+const API = (import.meta as any).env?.VITE_API_URL || '/api';
 const DESIGN_WIDTH = 1350;
 
 const PdfImporterModal: React.FC<PdfImporterModalProps> = ({

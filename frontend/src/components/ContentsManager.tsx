@@ -50,7 +50,7 @@ interface ContentsManagerProps {
     onNotify: (msg: string, type: 'success' | 'error' | 'info') => void;
 }
 
-const API = (import.meta as any).env?.VITE_API_URL || '';
+const API = (import.meta as any).env?.VITE_API_URL || '/api';
 
 const ContentsManager: React.FC<ContentsManagerProps> = ({
     isOpen, onClose, bookId, bookTitle, token, onNotify
