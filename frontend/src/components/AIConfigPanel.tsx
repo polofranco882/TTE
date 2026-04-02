@@ -7,7 +7,7 @@ interface AIConfigPanelProps {
     onUnauthorized: () => void;
 }
 
-const API = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3000';
+const API = (import.meta as any).env?.VITE_API_URL || '/api';
 
 const AIConfigPanel: React.FC<AIConfigPanelProps> = ({ token, onNotify, onUnauthorized }) => {
     const [loading, setLoading] = useState(true);

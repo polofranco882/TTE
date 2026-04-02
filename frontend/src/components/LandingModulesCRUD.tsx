@@ -194,7 +194,7 @@ const LandingModulesCRUD = ({ module, token, onNotify, availableLangs }: Landing
                     <div className="flex gap-4 items-end">
                         <div className="flex-1">
                             <label className="text-xs font-bold text-gray-500 uppercase tracking-widest block mb-1">Background Color</label>
-                            <input type="color" value={formData.bg_color || '#09194F'} onChange={(e: any) => setFormData((p: any) => ({...p, bg_color: e.target.value}))} className="h-10 w-full rounded-lg border border-gray-200 cursor-pointer" />
+                            <input type="color" value={formData.bg_color === 'transparent' ? '#09194F' : (formData.bg_color || '#09194F')} onChange={(e: any) => setFormData((p: any) => ({...p, bg_color: e.target.value}))} className="h-10 w-full rounded-lg border border-gray-200 cursor-pointer" />
                         </div>
                         <div className="flex-1">
                             <Field label="Display Order" type="number" value={String(formData.display_order || 0)} onChange={(v: string) => setFormData((p: any) => ({...p, display_order: +v}))} />

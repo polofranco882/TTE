@@ -200,7 +200,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange }) => {
                     {colorTarget === 'fore' && (
                         <div className="absolute top-9 left-0 z-50 bg-[#1a1f35] border border-white/20 rounded-xl p-3 shadow-2xl">
                             <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2">Text Color</p>
-                            <input type="color" value={foreColor}
+                            <input type="color" value={foreColor === 'transparent' ? '#ffffff' : (foreColor || '#ffffff')}
                                 onChange={(e) => {
                                     setForeColor(e.target.value);
                                     exec('foreColor', e.target.value);
@@ -235,7 +235,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange }) => {
                     {colorTarget === 'hilite' && (
                         <div className="absolute top-9 left-0 z-50 bg-[#1a1f35] border border-white/20 rounded-xl p-3 shadow-2xl">
                             <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2">Highlight</p>
-                            <input type="color" value={hiliteColor}
+                            <input type="color" value={hiliteColor === 'transparent' ? '#ffffff' : (hiliteColor || '#ffffff')}
                                 onChange={(e) => {
                                     setHiliteColor(e.target.value);
                                     exec('hiliteColor', e.target.value);

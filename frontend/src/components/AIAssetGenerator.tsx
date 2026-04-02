@@ -23,7 +23,7 @@ interface AIAssetGeneratorProps {
     }) => void;
 }
 
-const API = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3000';
+const API = (import.meta as any).env?.VITE_API_URL || '/api';
 
 const AIAssetGenerator: React.FC<AIAssetGeneratorProps> = ({ isOpen, onClose, token, onAssetGenerated }) => {
     const [prompt, setPrompt] = useState('');

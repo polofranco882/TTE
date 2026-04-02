@@ -991,7 +991,7 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                                 <div className="space-y-4">
                                                     <div className="flex items-center justify-between">
                                                         <span className="text-[9px] font-black text-gray-500 uppercase">Bg Color</span>
-                                                        <input type="color" value={canvasBg.color} onChange={e => setCanvasBg({ ...canvasBg, color: e.target.value })} className="w-8 h-8 rounded-lg bg-transparent cursor-pointer" />
+                                                        <input type="color" value={canvasBg.color === 'transparent' ? '#ffffff' : (canvasBg.color || '#ffffff')} onChange={e => setCanvasBg({ ...canvasBg, color: e.target.value })} className="w-8 h-8 rounded-lg bg-transparent cursor-pointer" />
                                                     </div>
                                                     <label className="w-full p-4 border-2 border-dashed border-white/10 rounded-xl hover:border-accent group cursor-pointer transition-all flex flex-col items-center gap-2">
                                                         <Upload size={20} className="text-gray-500 group-hover:text-accent" />
@@ -1091,13 +1091,13 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
 
                                                 <div className="flex items-center justify-between pt-2">
                                                     <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Border Color</span>
-                                                    <input type="color" value={selectedBlock.data.borderColor || '#ffffff'} onChange={e => updateBlockData(selectedId!, { borderColor: e.target.value })} className="w-6 h-6 rounded bg-transparent cursor-pointer" />
+                                                    <input type="color" value={selectedBlock.data.borderColor === 'transparent' ? '#ffffff' : (selectedBlock.data.borderColor || '#ffffff')} onChange={e => updateBlockData(selectedId!, { borderColor: e.target.value })} className="w-6 h-6 rounded bg-transparent cursor-pointer" />
                                                 </div>
 
                                                 <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/5">
                                                     <div className="flex flex-col gap-1">
                                                         <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Text Color</span>
-                                                        <input type="color" value={selectedBlock.data.color || '#ffffff'} onChange={e => updateBlockData(selectedId!, { color: e.target.value })} className="w-full h-8 rounded cursor-pointer bg-transparent border-0" />
+                                                        <input type="color" value={selectedBlock.data.color === 'transparent' ? '#ffffff' : (selectedBlock.data.color || '#ffffff')} onChange={e => updateBlockData(selectedId!, { color: e.target.value })} className="w-full h-8 rounded cursor-pointer bg-transparent border-0" />
                                                     </div>
                                                     <div className="flex flex-col gap-1">
                                                         <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Bg Color</span>
@@ -1179,19 +1179,19 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                                             <div className="grid grid-cols-3 gap-2 mt-1">
                                                                 <div className="flex flex-col items-center gap-1">
                                                                     <span className="text-[7px] text-gray-600 uppercase tracking-widest">Fondo</span>
-                                                                    <input type="color" value={selectedBlock.data.frameBg || '#0a1560'}
+                                                                    <input type="color" value={selectedBlock.data.frameBg === 'transparent' ? '#0a1560' : (selectedBlock.data.frameBg || '#0a1560')}
                                                                         onChange={e => updateBlockData(selectedId!, { frameBg: e.target.value })}
                                                                         className="w-full h-7 rounded cursor-pointer bg-transparent border-0" />
                                                                 </div>
                                                                 <div className="flex flex-col items-center gap-1">
                                                                     <span className="text-[7px] text-gray-600 uppercase tracking-widest">Borde ext</span>
-                                                                    <input type="color" value={selectedBlock.data.frameBorder || '#cc0000'}
+                                                                    <input type="color" value={selectedBlock.data.frameBorder === 'transparent' ? '#cc0000' : (selectedBlock.data.frameBorder || '#cc0000')}
                                                                         onChange={e => updateBlockData(selectedId!, { frameBorder: e.target.value })}
                                                                         className="w-full h-7 rounded cursor-pointer bg-transparent border-0" />
                                                                 </div>
                                                                 <div className="flex flex-col items-center gap-1">
                                                                     <span className="text-[7px] text-gray-600 uppercase tracking-widest">Borde int</span>
-                                                                    <input type="color" value={selectedBlock.data.frameInner || '#ffffff'}
+                                                                    <input type="color" value={selectedBlock.data.frameInner === 'transparent' ? '#ffffff' : (selectedBlock.data.frameInner || '#ffffff')}
                                                                         onChange={e => updateBlockData(selectedId!, { frameInner: e.target.value })}
                                                                         className="w-full h-7 rounded cursor-pointer bg-transparent border-0" />
                                                                 </div>
@@ -1241,7 +1241,7 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                                                 </div>
                                                                 <div className="flex items-center justify-between px-1">
                                                                     <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Bubble Color</span>
-                                                                    <input type="color" value={selectedBlock.data.bubbleColor || '#161930'} onChange={_e => updateBlockData(selectedId!, { bubbleColor: _e.target.value })} className="w-8 h-8 rounded-lg bg-transparent cursor-pointer" />
+                                                                    <input type="color" value={selectedBlock.data.bubbleColor === 'transparent' ? '#161930' : (selectedBlock.data.bubbleColor || '#161930')} onChange={_e => updateBlockData(selectedId!, { bubbleColor: _e.target.value })} className="w-8 h-8 rounded-lg bg-transparent cursor-pointer" />
                                                                 </div>
                                                             </div>
                                                         )}
@@ -1428,11 +1428,11 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                                     <div className="grid grid-cols-2 gap-3 pt-2">
                                                         <div className="flex flex-col gap-1">
                                                             <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Hint Color</span>
-                                                            <input type="color" value={selectedBlock.data.hintColor || '#000000'} onChange={e => updateBlockData(selectedId!, { hintColor: e.target.value })} className="w-full h-8 rounded cursor-pointer bg-transparent border-0" />
+                                                            <input type="color" value={selectedBlock.data.hintColor === 'transparent' ? '#000000' : (selectedBlock.data.hintColor || '#000000')} onChange={e => updateBlockData(selectedId!, { hintColor: e.target.value })} className="w-full h-8 rounded cursor-pointer bg-transparent border-0" />
                                                         </div>
                                                         <div className="flex flex-col gap-1">
                                                             <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Answer Color</span>
-                                                            <input type="color" value={selectedBlock.data.answerColor || '#2563eb'} onChange={e => updateBlockData(selectedId!, { answerColor: e.target.value })} className="w-full h-8 rounded cursor-pointer bg-transparent border-0" />
+                                                            <input type="color" value={selectedBlock.data.answerColor === 'transparent' ? '#2563eb' : (selectedBlock.data.answerColor || '#2563eb')} onChange={e => updateBlockData(selectedId!, { answerColor: e.target.value })} className="w-full h-8 rounded cursor-pointer bg-transparent border-0" />
                                                         </div>
                                                     </div>
 
@@ -1706,11 +1706,11 @@ const InteractivePageEditor: React.FC<InteractivePageEditorProps> = ({
                                                     <div className="grid grid-cols-2 gap-3 pt-2">
                                                         <div className="flex flex-col gap-1">
                                                             <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Title Color</span>
-                                                            <input type="color" value={selectedBlock.data.titleColor || '#000000'} onChange={e => updateBlockData(selectedId!, { titleColor: e.target.value })} className="w-full h-8 rounded cursor-pointer bg-transparent border-0" />
+                                                            <input type="color" value={selectedBlock.data.titleColor === 'transparent' ? '#000000' : (selectedBlock.data.titleColor || '#000000')} onChange={e => updateBlockData(selectedId!, { titleColor: e.target.value })} className="w-full h-8 rounded cursor-pointer bg-transparent border-0" />
                                                         </div>
                                                         <div className="flex flex-col gap-1">
                                                             <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Text Color</span>
-                                                            <input type="color" value={selectedBlock.data.textColor || '#000000'} onChange={e => updateBlockData(selectedId!, { textColor: e.target.value })} className="w-full h-8 rounded cursor-pointer bg-transparent border-0" />
+                                                            <input type="color" value={selectedBlock.data.textColor === 'transparent' ? '#000000' : (selectedBlock.data.textColor || '#000000')} onChange={e => updateBlockData(selectedId!, { textColor: e.target.value })} className="w-full h-8 rounded cursor-pointer bg-transparent border-0" />
                                                         </div>
                                                     </div>
 

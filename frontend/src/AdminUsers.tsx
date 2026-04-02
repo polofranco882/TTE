@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Search, Check, X, ChevronRight, Shield, KeyRound, Eye, EyeOff } from 'lucide-react';
+import { Users, Search, Check, X, ChevronRight, Shield, KeyRound, Eye, EyeOff, BookOpen, Presentation, Megaphone, ServerCog } from 'lucide-react';
 import { type NotificationType } from './components/Notification';
 
 interface User {
@@ -301,80 +301,138 @@ const AdminUsers = ({ token, onNotify, onUnauthorized }: AdminUsersProps) => {
                         onClick={() => { setCreateModal(false); setNewUserForm({ name: '', email: '', password: '', role: 'user' }); }}
                     >
                         <motion.div
-                            initial={{ scale: 0.9, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.9, opacity: 0 }}
-                            className="bg-white rounded-2xl shadow-premium p-6 max-w-md w-full border border-gray-100"
+                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                            className="bg-white rounded-3xl shadow-premium p-1 max-w-2xl w-full border border-gray-100 overflow-hidden"
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <div className="flex items-center gap-3 mb-6">
-                                <div className="p-3 bg-accent/10 rounded-xl">
-                                    <Users className="w-6 h-6 text-accent" />
+                            <div className="bg-[#09194F] p-5 flex justify-between items-center text-white shrink-0 rounded-t-[20px]">
+                                <h3 className="text-lg font-bold flex items-center gap-2">
+                                    <Users className="w-5 h-5 text-[#B1B3D8]" />
+                                    Crear Nuevo Usuario
+                                </h3>
+                                <button onClick={() => { setCreateModal(false); setNewUserForm({ name: '', email: '', password: '', role: 'user' }); }} className="bg-white/10 hover:bg-white/20 p-1.5 rounded-lg transition-colors"><X className="w-5 h-5" /></button>
+                            </div>
+
+                            <div className="p-6 md:p-8 space-y-8 bg-slate-50">
+                                
+                                {/* Info fields section */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-4">
+                                        <div>
+                                            <label className="text-xs font-bold text-gray-500 mb-1.5 block uppercase tracking-wider">Nombre Completo</label>
+                                            <input
+                                                type="text"
+                                                value={newUserForm.name}
+                                                onChange={(e) => setNewUserForm({ ...newUserForm, name: e.target.value })}
+                                                placeholder="Ej: John Doe"
+                                                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2E49AC]/20 focus:border-[#2E49AC] transition-all shadow-sm"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-xs font-bold text-gray-500 mb-1.5 block uppercase tracking-wider">Contraseña Temporal</label>
+                                            <input
+                                                type="text"
+                                                value={newUserForm.password}
+                                                onChange={(e) => setNewUserForm({ ...newUserForm, password: e.target.value })}
+                                                placeholder="Mínimo 4 caracteres"
+                                                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2E49AC]/20 focus:border-[#2E49AC] transition-all shadow-sm"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="text-xs font-bold text-gray-500 mb-1.5 block uppercase tracking-wider">Correo Electrónico</label>
+                                        <input
+                                            type="email"
+                                            value={newUserForm.email}
+                                            onChange={(e) => setNewUserForm({ ...newUserForm, email: e.target.value })}
+                                            placeholder="correo@ejemplo.com"
+                                            className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2E49AC]/20 focus:border-[#2E49AC] transition-all shadow-sm"
+                                        />
+                                    </div>
                                 </div>
+
+                                {/* Roles Selector */}
                                 <div>
-                                    <h3 className="text-xl font-bold text-gray-800">Create New User</h3>
-                                    <p className="text-sm text-gray-500">Add a student, manager or admin.</p>
+                                    <label className="text-xs font-bold text-gray-500 mb-3 block uppercase tracking-wider">Asignación de Rol</label>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        {/* Student Role */}
+                                        <div 
+                                            onClick={() => setNewUserForm({ ...newUserForm, role: 'user' })}
+                                            className={`relative flex items-start gap-4 p-4 rounded-2xl cursor-pointer border-2 transition-all ${newUserForm.role === 'user' ? 'border-[#2E49AC] bg-[#e9effd]' : 'border-gray-100 bg-white hover:border-[#2E49AC]/30'}`}
+                                        >
+                                            {newUserForm.role === 'user' && <Check className="absolute top-3 right-3 w-5 h-5 text-[#2E49AC]" />}
+                                            <div className={`p-3 rounded-xl ${newUserForm.role === 'user' ? 'bg-[#2E49AC] text-white' : 'bg-slate-100 text-slate-500'}`}>
+                                                <BookOpen className="w-6 h-6" />
+                                            </div>
+                                            <div>
+                                                <h4 className="font-bold text-[#09194F]">Estudiante</h4>
+                                                <p className="text-[11px] text-gray-500 leading-tight mt-1">Acceso a la librería interactiva y libros asignados.</p>
+                                            </div>
+                                        </div>
+
+                                        {/* Teacher Role */}
+                                        <div 
+                                            onClick={() => setNewUserForm({ ...newUserForm, role: 'manager' })}
+                                            className={`relative flex items-start gap-4 p-4 rounded-2xl cursor-pointer border-2 transition-all ${newUserForm.role === 'manager' ? 'border-amber-500 bg-amber-50' : 'border-gray-100 bg-white hover:border-amber-500/30'}`}
+                                        >
+                                            {newUserForm.role === 'manager' && <Check className="absolute top-3 right-3 w-5 h-5 text-amber-500" />}
+                                            <div className={`p-3 rounded-xl ${newUserForm.role === 'manager' ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-500'}`}>
+                                                <Presentation className="w-6 h-6" />
+                                            </div>
+                                            <div>
+                                                <h4 className="font-bold text-[#09194F]">Profesor</h4>
+                                                <p className="text-[11px] text-gray-500 leading-tight mt-1">Gestión de libros, lectura de reportes y calificaciones.</p>
+                                            </div>
+                                        </div>
+
+                                        {/* Marketing Role */}
+                                        <div 
+                                            onClick={() => setNewUserForm({ ...newUserForm, role: 'marketing' })}
+                                            className={`relative flex items-start gap-4 p-4 rounded-2xl cursor-pointer border-2 transition-all ${newUserForm.role === 'marketing' ? 'border-[#AC2425] bg-red-50' : 'border-gray-100 bg-white hover:border-[#AC2425]/30'}`}
+                                        >
+                                            {newUserForm.role === 'marketing' && <Check className="absolute top-3 right-3 w-5 h-5 text-[#AC2425]" />}
+                                            <div className={`p-3 rounded-xl ${newUserForm.role === 'marketing' ? 'bg-[#AC2425] text-white' : 'bg-slate-100 text-slate-500'}`}>
+                                                <Megaphone className="w-6 h-6" />
+                                            </div>
+                                            <div>
+                                                <h4 className="font-bold text-[#09194F]">Marketing</h4>
+                                                <p className="text-[11px] text-gray-500 leading-tight mt-1">Editor Landing Page y Módulo de Correo Masivo. </p>
+                                            </div>
+                                        </div>
+
+                                        {/* Admin Role */}
+                                        <div 
+                                            onClick={() => setNewUserForm({ ...newUserForm, role: 'admin' })}
+                                            className={`relative flex items-start gap-4 p-4 rounded-2xl cursor-pointer border-2 transition-all ${newUserForm.role === 'admin' ? 'border-[#09194F] bg-indigo-50' : 'border-gray-100 bg-white hover:border-[#09194F]/30'}`}
+                                        >
+                                            {newUserForm.role === 'admin' && <Check className="absolute top-3 right-3 w-5 h-5 text-[#09194F]" />}
+                                            <div className={`p-3 rounded-xl ${newUserForm.role === 'admin' ? 'bg-[#09194F] text-white' : 'bg-slate-100 text-slate-500'}`}>
+                                                <Shield className="w-6 h-6" />
+                                            </div>
+                                            <div>
+                                                <h4 className="font-bold text-[#09194F]">Administrador</h4>
+                                                <p className="text-[11px] text-gray-500 leading-tight mt-1">Control maestro. Panel de configuraciones, credenciales SMTP.</p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="space-y-4 mb-8">
-                                <div>
-                                    <label className="text-xs font-bold text-gray-600 mb-1.5 block uppercase tracking-wider">Full Name</label>
-                                    <input
-                                        type="text"
-                                        value={newUserForm.name}
-                                        onChange={(e) => setNewUserForm({ ...newUserForm, name: e.target.value })}
-                                        placeholder="John Doe"
-                                        className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="text-xs font-bold text-gray-600 mb-1.5 block uppercase tracking-wider">Email Address</label>
-                                    <input
-                                        type="email"
-                                        value={newUserForm.email}
-                                        onChange={(e) => setNewUserForm({ ...newUserForm, email: e.target.value })}
-                                        placeholder="john@example.com"
-                                        className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="text-xs font-bold text-gray-600 mb-1.5 block uppercase tracking-wider">Temporary Password</label>
-                                    <input
-                                        type="text"
-                                        value={newUserForm.password}
-                                        onChange={(e) => setNewUserForm({ ...newUserForm, password: e.target.value })}
-                                        placeholder="At least 4 characters"
-                                        className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="text-xs font-bold text-gray-600 mb-1.5 block uppercase tracking-wider">Role</label>
-                                    <select
-                                        value={newUserForm.role}
-                                        onChange={(e) => setNewUserForm({ ...newUserForm, role: e.target.value })}
-                                        className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all bg-white"
-                                    >
-                                        <option value="user">Student (User)</option>
-                                        <option value="manager">Teacher (Manager)</option>
-                                        <option value="admin">Administrator (Admin)</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div className="flex justify-end gap-3">
+                            <div className="bg-white p-5 flex justify-between items-center rounded-b-[20px] border-t border-gray-100">
                                 <button
                                     onClick={() => { setCreateModal(false); setNewUserForm({ name: '', email: '', password: '', role: 'user' }); }}
-                                    className="px-5 py-2.5 text-gray-500 hover:bg-gray-100 rounded-xl transition-colors font-medium text-sm"
+                                    className="px-5 py-2.5 text-gray-500 hover:bg-gray-100 rounded-xl transition-colors font-bold text-sm"
                                 >
-                                    Cancel
+                                    Cancelar
                                 </button>
                                 <button
                                     onClick={handleCreateUser}
                                     disabled={creating}
-                                    className="px-6 py-2.5 text-white rounded-xl shadow-lg transition-all font-bold bg-accent shadow-accent/30 hover:shadow-accent/50 disabled:opacity-50 flex items-center gap-2 text-sm"
+                                    className="px-8 py-2.5 text-white rounded-xl shadow-premium transition-all font-bold bg-accent hover:bg-[#c93f2f] hover:shadow-lg disabled:opacity-50 flex items-center justify-center gap-2 text-sm min-w-[150px]"
                                 >
-                                    {creating ? 'Creating...' : 'Create User'}
+                                    {creating ? <ServerCog className="w-5 h-5 animate-spin" /> : 'Crear Usuario'}
                                 </button>
                             </div>
                         </motion.div>
