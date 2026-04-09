@@ -160,7 +160,7 @@ router.post('/', authenticateToken, authorizeAdmin, async (req, res) => {
                     VALUES ($1, $2, 0, $3, NOW())
                     ON CONFLICT (landing_page_id, section_key)
                     DO UPDATE SET content_data = EXCLUDED.content_data, updated_at = NOW()
-                `, [pageId, key, data]);
+                `, [pageId, key, JSON.stringify(data)]);
             }
 
             await client.query('COMMIT');

@@ -23,7 +23,7 @@ import LanguageSwitcher from './components/LanguageSwitcher';
 // Types
 
 function App() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -94,6 +94,38 @@ function App() {
         window.removeEventListener('focus', handleFocus);
     };
   }, [token]);
+
+  useEffect(() => {
+    // Fetch global landing configuration for CSS Variables overriding
+    const fetchGlobalVisuals = async () => {
+      try {
+        const langCode = (i18n.language || 'en').split('-')[0].toLowerCase();
+        const res = await fetch(`/api/landing?lang=${langCode}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.landing_cms_config) {
+            const config = JSON.parse(data.landing_cms_config);
+            if (config.visuals) {
+              const root = document.documentElement;
+              if (config.visuals.colorPrimary) {
+                root.style.setProperty('--color-primary', config.visuals.colorPrimary);
+              } else {
+                root.style.removeProperty('--color-primary');
+              }
+              if (config.visuals.colorAccent) {
+                root.style.setProperty('--color-accent', config.visuals.colorAccent);
+              } else {
+                root.style.removeProperty('--color-accent');
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load global visual settings', err);
+      }
+    };
+    fetchGlobalVisuals();
+  }, [i18n.language]);
 
   const login = async (e: React.FormEvent) => {
     e.preventDefault();

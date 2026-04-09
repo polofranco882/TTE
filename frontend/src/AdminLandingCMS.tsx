@@ -177,6 +177,13 @@ const AdminLandingCMS = ({ token, onNotify, onUnauthorized }: AdminLandingCMSPro
             if (res.ok) {
                 onNotify('Landing Page structural config saved!', 'success');
                 setHasUnsavedChanges(false);
+
+                // Apply globally without refresh
+                if (draftSettings?.visuals) {
+                    const root = document.documentElement;
+                    if (draftSettings.visuals.colorPrimary) root.style.setProperty('--color-primary', draftSettings.visuals.colorPrimary);
+                    if (draftSettings.visuals.colorAccent) root.style.setProperty('--color-accent', draftSettings.visuals.colorAccent);
+                }
             } else {
                 onNotify('Failed to save settings.', 'error');
             }
@@ -264,7 +271,19 @@ const AdminLandingCMS = ({ token, onNotify, onUnauthorized }: AdminLandingCMSPro
     };
 
     const renderStructuralInput = (sectionId: string, field: string, label: string, type = 'text', placeholder = '') => {
-        const val = draftSettings[sectionId]?.[field] || '';
+        let val = draftSettings[sectionId]?.[field] ?? '';
+        
+        // Preload defaults for visual colors if empty
+        if (sectionId === 'visuals' && !val) {
+            if (field === 'colorPrimary') val = '#09194f';
+            if (field === 'colorAccent') val = '#ac2425';
+        }
+
+        // HTML5 color inputs strictly require lowercase hex strings
+        if (type === 'color' && typeof val === 'string') {
+            val = val.toLowerCase();
+        }
+
         return (
             <div className="space-y-1">
                 <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">{label}</label>
