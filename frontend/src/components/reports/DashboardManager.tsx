@@ -134,6 +134,7 @@ const DashboardManager = ({ userRole, token }: DashboardManagerProps) => {
                     <Notification 
                         message={notification.msg} 
                         type={notification.type} 
+                        isVisible={true}
                         onClose={() => setNotification(null)} 
                     />
                 </div>
