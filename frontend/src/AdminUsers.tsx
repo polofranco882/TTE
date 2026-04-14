@@ -270,14 +270,14 @@ const AdminUsers = ({ token, onNotify, onUnauthorized }: AdminUsersProps) => {
     return (
         <div className="flex flex-col lg:flex-row h-[calc(100vh-120px)] gap-6 p-2 lg:p-4 bg-[#F8FAFC]">
             {/* Left Panel: Navigation & User List */}
-            <div className={`w-full lg:w-[400px] flex flex-col gap-4 ${selectedUser ? 'hidden lg:flex' : 'flex'}`}>
+            <div className={`w-full lg:w-[380px] lg:min-w-[340px] shrink-0 flex flex-col gap-4 ${selectedUser ? 'hidden lg:flex' : 'flex'}`}>
                 {/* Tabs */}
-                <div className="bg-white p-1.5 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap">
+                <div className="bg-white p-1.5 rounded-2xl shadow-sm border border-slate-200 flex">
                     {(['student', 'teacher', 'admin', 'marketing'] as const).map((tab) => (
                         <button
                             key={tab}
                             onClick={() => { setActiveTab(tab); setSelectedUser(null); }}
-                            className={`flex-1 min-w-[80px] py-2.5 rounded-xl text-[10px] font-bold transition-all uppercase tracking-wider ${
+                            className={`flex-1 py-2 sm:py-2.5 rounded-xl text-[9px] sm:text-[10px] font-bold transition-all uppercase tracking-wider ${
                                 activeTab === tab 
                                 ? 'bg-primary text-white shadow-lg' 
                                 : 'text-slate-500 hover:bg-slate-50'
@@ -398,7 +398,7 @@ const AdminUsers = ({ token, onNotify, onUnauthorized }: AdminUsersProps) => {
             </div>
 
             {/* Right Panel: Details & Content */}
-            <div className={`flex-1 bg-white rounded-[32px] shadow-sm border border-slate-200 overflow-hidden flex flex-col ${!selectedUser ? 'hidden lg:flex' : 'flex'}`}>
+            <div className={`flex-1 min-w-0 bg-white rounded-[32px] shadow-sm border border-slate-200 overflow-hidden flex flex-col ${!selectedUser ? 'hidden lg:flex' : 'flex'}`}>
                 {!selectedUser ? (
                     <div className="flex-1 flex flex-col items-center justify-center text-slate-300 gap-6 bg-slate-50/50 relative overflow-hidden">
                         <div className="absolute inset-0 opacity-20 pointer-events-none">
@@ -416,28 +416,27 @@ const AdminUsers = ({ token, onNotify, onUnauthorized }: AdminUsersProps) => {
                 ) : (
                     <>
                         {/* Header */}
-                        <div className="p-6 lg:p-8 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 bg-white shrink-0">
-                            <div className="flex items-center gap-5">
-                                <button onClick={() => setSelectedUser(null)} className="lg:hidden p-3 bg-slate-100 rounded-2xl hover:bg-slate-200 transition-all">
+                        <div className="p-4 sm:p-6 lg:p-8 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white shrink-0">
+                            <div className="flex items-center gap-3 sm:gap-5 min-w-0">
+                                <button onClick={() => setSelectedUser(null)} className="lg:hidden shrink-0 p-2.5 bg-slate-100 rounded-2xl hover:bg-slate-200 transition-all">
                                     <ChevronRight className="rotate-180 w-5 h-5 text-slate-600" />
                                 </button>
-                                <div className="p-5 bg-slate-50 rounded- [32px] border border-slate-100 shadow-sm">
-                                    {selectedUser.role_name === 'student' ? <GraduationCap className="w-10 h-10 text-accent" /> : selectedUser.role_name === 'teacher' ? <Presentation className="w-10 h-10 text-primary" /> : <Shield className="w-10 h-10 text-primary" />}
+                                <div className="shrink-0 p-3 sm:p-5 bg-slate-50 rounded-2xl border border-slate-100 shadow-sm">
+                                    {selectedUser.role_name === 'student' ? <GraduationCap className="w-8 h-8 sm:w-10 sm:h-10 text-accent" /> : selectedUser.role_name === 'teacher' ? <Presentation className="w-8 h-8 sm:w-10 sm:h-10 text-primary" /> : <Shield className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />}
                                 </div>
-                                <div>
-                                    <div className="flex items-center gap-3">
-                                        <h2 className="text-3xl font-black text-slate-800 tracking-tight leading-none">{selectedUser.name}</h2>
-                                        <span className="px-3 py-1 bg-primary text-white text-[10px] font-black rounded-lg uppercase tracking-widest shadow-md">
+                                <div className="min-w-0">
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                        <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-800 tracking-tight leading-none truncate max-w-[200px] sm:max-w-xs">{selectedUser.name}</h2>
+                                        <span className="shrink-0 px-2.5 py-1 bg-primary text-white text-[9px] sm:text-[10px] font-black rounded-lg uppercase tracking-widest shadow-md">
                                             {selectedUser.role_name}
                                         </span>
                                     </div>
-                                    <div className="flex items-center gap-3 mt-2 text-slate-400">
-                                        <div className="flex items-center gap-1.5 font-bold text-xs bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
-                                            <Mail size={14} className="text-slate-300" />
-                                            {selectedUser.email}
+                                    <div className="flex items-center gap-2 mt-2 text-slate-400 flex-wrap">
+                                        <div className="flex items-center gap-1.5 font-bold text-xs bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-100 min-w-0">
+                                            <Mail size={12} className="text-slate-300 shrink-0" />
+                                            <span className="truncate max-w-[140px] sm:max-w-[200px]">{selectedUser.email}</span>
                                         </div>
-                                        <div className="w-1.5 h-1.5 bg-slate-200 rounded-full" />
-                                        <div className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest">
+                                        <div className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest shrink-0">
                                             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                                             Active
                                         </div>
@@ -445,12 +444,12 @@ const AdminUsers = ({ token, onNotify, onUnauthorized }: AdminUsersProps) => {
                                 </div>
                             </div>
                             
-                            <div className="flex gap-3 w-full sm:w-auto self-end sm:self-center">
+                            <div className="flex gap-2 w-full sm:w-auto self-stretch sm:self-center shrink-0">
                                 <motion.button 
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     onClick={() => setFormModal({ isOpen: true, editingUser: selectedUser })}
-                                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-3 bg-white border-2 border-slate-100 rounded-2xl text-slate-700 text-xs font-black shadow-sm transition-all hover:border-accent/40"
+                                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-white border-2 border-slate-100 rounded-2xl text-slate-700 text-xs font-black shadow-sm transition-all hover:border-accent/40"
                                 >
                                     <Edit3 className="w-4 h-4 text-accent" />
                                     {t('common.edit', 'EDIT')}
@@ -459,7 +458,7 @@ const AdminUsers = ({ token, onNotify, onUnauthorized }: AdminUsersProps) => {
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     onClick={() => setResetModal({ isOpen: true, userId: selectedUser.id, userName: selectedUser.name })}
-                                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-3 bg-white border-2 border-slate-100 rounded-2xl text-slate-700 text-xs font-black shadow-sm transition-all hover:border-amber-400 group"
+                                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-white border-2 border-slate-100 rounded-2xl text-slate-700 text-xs font-black shadow-sm transition-all hover:border-amber-400 group"
                                 >
                                     <KeyRound className="w-4 h-4 text-amber-500 group-hover:rotate-12 transition-transform" />
                                     {t('admin.users.password', 'KEY')}
@@ -468,9 +467,9 @@ const AdminUsers = ({ token, onNotify, onUnauthorized }: AdminUsersProps) => {
                         </div>
 
                         {/* Content Area */}
-                        <div className="flex-1 overflow-y-auto p-6 lg:p-8 bg-slate-50/50 custom-scrollbar pb-20">
-                            {/* Academic Hierarchy Context */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-50/50 custom-scrollbar pb-20">
+                            {/* Academic Cards Grid */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8">
                             {/* Interactive Modules Management */}
                             <div className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-premium flex flex-col gap-4 relative overflow-hidden group">
                                 <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity">
@@ -562,17 +561,17 @@ const AdminUsers = ({ token, onNotify, onUnauthorized }: AdminUsersProps) => {
                                 </div>
 
                                 {booksLoading ? (
-                                    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 px-2">
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 px-2">
                                         {[1,2,3,4].map(i => (
-                                            <div key={i} className="aspect-[3/4] bg-white rounded-[40px] border border-slate-100 shadow-sm p-4 space-y-4">
-                                                <div className="w-full h-[70%] bg-slate-100 rounded-[32px] animate-pulse" />
-                                                <div className="h-4 w-3/4 bg-slate-50 rounded-full animate-pulse" />
-                                                <div className="h-4 w-1/2 bg-slate-50 rounded-full animate-pulse" />
+                                            <div key={i} className="aspect-[3/4] bg-white rounded-[32px] border border-slate-100 shadow-sm p-4 space-y-4">
+                                                <div className="w-full h-[70%] bg-slate-100 rounded-[24px] animate-pulse" />
+                                                <div className="h-3 w-3/4 bg-slate-50 rounded-full animate-pulse" />
+                                                <div className="h-3 w-1/2 bg-slate-50 rounded-full animate-pulse" />
                                             </div>
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 px-2">
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 px-2">
                                         {userBooks.map(book => (
                                             <motion.div
                                                 key={book.id}
