@@ -415,205 +415,207 @@ const AdminUsers = ({ token, onNotify, onUnauthorized }: AdminUsersProps) => {
                     </div>
                 ) : (
                     <>
-                        {/* Header */}
-                        <div className="p-4 sm:p-6 lg:p-8 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white shrink-0">
-                            <div className="flex items-center gap-3 sm:gap-5 min-w-0">
-                                <button onClick={() => setSelectedUser(null)} className="lg:hidden shrink-0 p-2.5 bg-slate-100 rounded-2xl hover:bg-slate-200 transition-all">
-                                    <ChevronRight className="rotate-180 w-5 h-5 text-slate-600" />
-                                </button>
-                                <div className="shrink-0 p-3 sm:p-5 bg-slate-50 rounded-2xl border border-slate-100 shadow-sm">
-                                    {selectedUser.role_name === 'student' ? <GraduationCap className="w-8 h-8 sm:w-10 sm:h-10 text-accent" /> : selectedUser.role_name === 'teacher' ? <Presentation className="w-8 h-8 sm:w-10 sm:h-10 text-primary" /> : <Shield className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />}
-                                </div>
-                                <div className="min-w-0">
-                                    <div className="flex items-center gap-2 flex-wrap">
-                                        <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-800 tracking-tight leading-none truncate max-w-[200px] sm:max-w-xs">{selectedUser.name}</h2>
-                                        <span className="shrink-0 px-2.5 py-1 bg-primary text-white text-[9px] sm:text-[10px] font-black rounded-lg uppercase tracking-widest shadow-md">
-                                            {selectedUser.role_name}
-                                        </span>
+                        {/* === PROFILE IDENTITY CARD HEADER === */}
+                        <div className="relative bg-white shrink-0 border-b border-slate-100 overflow-hidden">
+                            {/* Gradient banner */}
+                            <div className="h-16 bg-gradient-to-r from-primary/90 to-primary/60" />
+
+                            {/* Back button (mobile only) */}
+                            <button
+                                onClick={() => setSelectedUser(null)}
+                                className="lg:hidden absolute top-3 left-3 p-2 bg-white/20 backdrop-blur text-white rounded-xl hover:bg-white/30 transition-all"
+                            >
+                                <ChevronRight className="rotate-180 w-4 h-4" />
+                            </button>
+
+                            {/* Avatar + Name row */}
+                            <div className="px-5 sm:px-7 pb-5">
+                                {/* Avatar overlapping banner */}
+                                <div className="flex items-end justify-between -mt-7 mb-3">
+                                    <div className="w-14 h-14 rounded-2xl bg-white shadow-lg border-4 border-white flex items-center justify-center">
+                                        {selectedUser.role_name === 'student'
+                                            ? <GraduationCap className="w-7 h-7 text-accent" />
+                                            : selectedUser.role_name === 'teacher'
+                                            ? <Presentation className="w-7 h-7 text-primary" />
+                                            : <Shield className="w-7 h-7 text-primary" />}
                                     </div>
-                                    <div className="flex items-center gap-2 mt-2 text-slate-400 flex-wrap">
-                                        <div className="flex items-center gap-1.5 font-bold text-xs bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-100 min-w-0">
-                                            <Mail size={12} className="text-slate-300 shrink-0" />
-                                            <span className="truncate max-w-[140px] sm:max-w-[200px]">{selectedUser.email}</span>
-                                        </div>
-                                        <div className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest shrink-0">
-                                            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                                            Active
-                                        </div>
+                                    {/* Action buttons */}
+                                    <div className="flex gap-2 pt-8">
+                                        <motion.button
+                                            whileTap={{ scale: 0.95 }}
+                                            onClick={() => setFormModal({ isOpen: true, editingUser: selectedUser })}
+                                            className="flex items-center gap-1.5 px-4 py-2 bg-white border border-slate-200 rounded-xl text-slate-700 text-xs font-bold shadow-sm hover:border-accent/40 hover:text-accent transition-all"
+                                        >
+                                            <Edit3 className="w-3.5 h-3.5" />
+                                            {t('common.edit', 'Edit')}
+                                        </motion.button>
+                                        <motion.button
+                                            whileTap={{ scale: 0.95 }}
+                                            onClick={() => setResetModal({ isOpen: true, userId: selectedUser.id, userName: selectedUser.name })}
+                                            className="flex items-center gap-1.5 px-4 py-2 bg-white border border-slate-200 rounded-xl text-slate-700 text-xs font-bold shadow-sm hover:border-amber-300 hover:text-amber-600 transition-all group"
+                                        >
+                                            <KeyRound className="w-3.5 h-3.5 text-amber-400 group-hover:rotate-12 transition-transform" />
+                                            {t('admin.users.password', 'Key')}
+                                        </motion.button>
                                     </div>
                                 </div>
-                            </div>
-                            
-                            <div className="flex gap-2 w-full sm:w-auto self-stretch sm:self-center shrink-0">
-                                <motion.button 
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={() => setFormModal({ isOpen: true, editingUser: selectedUser })}
-                                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-white border-2 border-slate-100 rounded-2xl text-slate-700 text-xs font-black shadow-sm transition-all hover:border-accent/40"
-                                >
-                                    <Edit3 className="w-4 h-4 text-accent" />
-                                    {t('common.edit', 'EDIT')}
-                                </motion.button>
-                                <motion.button 
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={() => setResetModal({ isOpen: true, userId: selectedUser.id, userName: selectedUser.name })}
-                                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-white border-2 border-slate-100 rounded-2xl text-slate-700 text-xs font-black shadow-sm transition-all hover:border-amber-400 group"
-                                >
-                                    <KeyRound className="w-4 h-4 text-amber-500 group-hover:rotate-12 transition-transform" />
-                                    {t('admin.users.password', 'KEY')}
-                                </motion.button>
+
+                                {/* Name, role badge, email */}
+                                <h2 className="text-2xl font-black text-slate-800 leading-tight truncate">{selectedUser.name}</h2>
+                                <div className="flex items-center gap-2 mt-1 flex-wrap">
+                                    <span className="px-2.5 py-0.5 bg-primary text-white text-[9px] font-black rounded-md uppercase tracking-widest">
+                                        {selectedUser.role_name}
+                                    </span>
+                                    <span className="flex items-center gap-1 text-xs text-slate-400 font-medium truncate">
+                                        <Mail className="w-3 h-3 shrink-0" />
+                                        <span className="truncate max-w-[200px]">{selectedUser.email}</span>
+                                    </span>
+                                    <span className="flex items-center gap-1 text-[10px] font-bold text-green-500">
+                                        <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse inline-block" />
+                                        Active
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
-                        {/* Content Area */}
-                        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-50/50 custom-scrollbar pb-20">
-                            {/* Academic Cards Grid */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8">
-                            {/* Interactive Modules Management */}
-                            <div className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-premium flex flex-col gap-4 relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity">
-                                    <LayoutGrid size={120} />
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-14 h-14 bg-primary text-white rounded-2xl flex items-center justify-center shadow-lg">
-                                            <LayoutGrid className="w-7 h-7" />
-                                        </div>
-                                        <div>
-                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('admin.users.hierarchy_context', 'Curriculum Coverage')}</p>
-                                            <h4 className="text-lg font-black text-slate-800 leading-tight">Module Access</h4>
-                                        </div>
-                                    </div>
-                                    <div className="text-[10px] font-black text-primary bg-primary/5 px-3 py-1 rounded-full">
-                                        {userModules.filter(m => m.assignment_status === 'assigned').length} / {userModules.length}
-                                    </div>
-                                </div>
-                                <div className="flex flex-wrap gap-2 relative z-10">
-                                    {modulesLoading ? (
-                                        [1,2,3].map(i => <div key={i} className="h-9 w-28 bg-slate-100 rounded-2xl animate-pulse" />)
-                                    ) : userModules.length === 0 ? (
-                                        <span className="text-xs text-slate-400 italic">No modules found</span>
-                                    ) : (
-                                        userModules.map((mod: any) => (
-                                            <button
-                                                key={mod.id}
-                                                onClick={() => handleToggleModule(selectedUser.id, mod.id, mod.assignment_status)}
-                                                title={mod.assignment_status === 'assigned' ? 'Click to remove' : 'Click to assign'}
-                                                className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-[10px] font-black border-2 transition-all active:scale-95 ${
-                                                    mod.assignment_status === 'assigned'
-                                                    ? 'bg-primary border-primary text-white shadow-md shadow-primary/20'
-                                                    : 'bg-white border-slate-100 text-slate-400 hover:border-primary/40 hover:text-primary'
-                                                }`}
-                                            >
-                                                {mod.assignment_status === 'assigned' && <Check size={10} strokeWidth={4}/>}
-                                                {mod.name.toUpperCase()}
-                                            </button>
-                                        ))
-                                    )}
-                                </div>
-                            </div>
+                        {/* === CONTENT AREA === */}
+                        <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/60">
+                            <div className="p-4 sm:p-5 space-y-4 pb-24">
 
-                                <div className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-premium flex flex-col gap-4 relative overflow-hidden group">
-                                    <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity">
-                                        <GraduationCap size={120} />
-                                    </div>
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-14 h-14 bg-accent text-white rounded-2xl flex items-center justify-center shadow-lg">
-                                            <GraduationCap className="w-7 h-7" />
+                                {/* --- Academic Cards Row --- */}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+                                    {/* Module Access Card */}
+                                    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 space-y-3">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-9 h-9 bg-primary/10 text-primary rounded-xl flex items-center justify-center shrink-0">
+                                                    <LayoutGrid className="w-4.5 h-4.5 w-[18px] h-[18px]" />
+                                                </div>
+                                                <div>
+                                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">{t('admin.users.hierarchy_context', 'Modules')}</p>
+                                                    <p className="text-sm font-black text-slate-700">Module Access</p>
+                                                </div>
+                                            </div>
+                                            <span className="text-xs font-black text-primary bg-primary/8 bg-primary/5 px-2.5 py-1 rounded-lg tabular-nums">
+                                                {userModules.filter(m => m.assignment_status === 'assigned').length}/{userModules.length}
+                                            </span>
                                         </div>
-                                        <div>
-                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('admin.users.tier_context', 'Educational Placement')}</p>
-                                            <h4 className="text-lg font-black text-slate-800 leading-tight">Enrolled Tiers</h4>
+                                        <div className="flex flex-wrap gap-1.5">
+                                            {modulesLoading ? (
+                                                [1,2,3].map(i => <div key={i} className="h-7 w-20 bg-slate-100 rounded-xl animate-pulse" />)
+                                            ) : userModules.length === 0 ? (
+                                                <span className="text-xs text-slate-300 italic">No modules</span>
+                                            ) : (
+                                                userModules.map((mod: any) => (
+                                                    <button
+                                                        key={mod.id}
+                                                        onClick={() => handleToggleModule(selectedUser.id, mod.id, mod.assignment_status)}
+                                                        title={mod.assignment_status === 'assigned' ? 'Click to remove' : 'Click to assign'}
+                                                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-black border transition-all active:scale-95 ${
+                                                            mod.assignment_status === 'assigned'
+                                                            ? 'bg-primary border-primary text-white shadow-sm'
+                                                            : 'bg-white border-slate-200 text-slate-400 hover:border-primary/40 hover:text-primary'
+                                                        }`}
+                                                    >
+                                                        {mod.assignment_status === 'assigned' && <Check size={9} strokeWidth={4}/>}
+                                                        {mod.name.toUpperCase()}
+                                                    </button>
+                                                ))
+                                            )}
                                         </div>
                                     </div>
-                                    <div className="flex flex-wrap gap-2 relative z-10">
-                                        {selectedUser.levels && selectedUser.levels.length > 0 ? (
-                                            selectedUser.levels.map(level => (
-                                                <span key={level} className="px-3 py-1.5 bg-amber-50 text-amber-700 rounded-xl text-[10px] font-black uppercase tracking-wider border border-amber-100/50">
-                                                    {level}
-                                                </span>
-                                            ))
+
+                                    {/* Enrolled Tiers Card */}
+                                    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 space-y-3">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-9 h-9 bg-accent/10 text-accent rounded-xl flex items-center justify-center shrink-0">
+                                                <GraduationCap className="w-[18px] h-[18px]" />
+                                            </div>
+                                            <div>
+                                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">{t('admin.users.tier_context', 'Academic')}</p>
+                                                <p className="text-sm font-black text-slate-700">Enrolled Tiers</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-wrap gap-1.5">
+                                            {selectedUser.levels && selectedUser.levels.length > 0 ? (
+                                                selectedUser.levels.map(level => (
+                                                    <span key={level} className="px-3 py-1.5 bg-amber-50 text-amber-700 rounded-xl text-[10px] font-black uppercase tracking-wide border border-amber-100">
+                                                        {level}
+                                                    </span>
+                                                ))
+                                            ) : (
+                                                <span className="text-xs text-slate-300 italic">No tiers assigned</span>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* --- Library Privileges Section --- */}
+                                <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                                    <div className="flex items-center justify-between px-4 py-3 border-b border-slate-50">
+                                        <div className="flex items-center gap-2.5">
+                                            <div className="w-8 h-8 bg-accent/10 rounded-xl flex items-center justify-center">
+                                                <BookOpen className="w-4 h-4 text-accent" />
+                                            </div>
+                                            <div>
+                                                <h3 className="text-sm font-black text-slate-700">{t('admin.users.library_access', 'Library Privileges')}</h3>
+                                                <p className="text-[10px] text-slate-400">Toggle access to digital resources</p>
+                                            </div>
+                                        </div>
+                                        <span className="text-[10px] font-black px-3 py-1 bg-slate-50 border border-slate-100 rounded-lg text-slate-500 uppercase tracking-wider">
+                                            {userBooks.filter(b => b.assignment_status === 'assigned').length} Assigned
+                                        </span>
+                                    </div>
+                                    <div className="p-4">
+                                        {booksLoading ? (
+                                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                                {[1,2,3,4].map(i => (
+                                                    <div key={i} className="aspect-[3/4] bg-slate-100 rounded-2xl animate-pulse" />
+                                                ))}
+                                            </div>
                                         ) : (
-                                            <span className="text-xs text-slate-400 italic">No tiers assigned</span>
+                                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                                {userBooks.map(book => (
+                                                    <motion.div
+                                                        key={book.id}
+                                                        layout
+                                                        initial={{ opacity: 0, scale: 0.9 }}
+                                                        animate={{ opacity: 1, scale: 1 }}
+                                                        className={`group relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer border-4 transition-all duration-500 shadow-sm hover:shadow-xl ${
+                                                            book.assignment_status === 'assigned' 
+                                                            ? 'border-accent/40 ring-1 ring-accent/10 scale-[1.02]' 
+                                                            : 'border-white grayscale opacity-60 hover:grayscale-0 hover:opacity-100'
+                                                        }`}
+                                                        onClick={() => handleToggleBook(selectedUser.id, book.id, book.assignment_status)}
+                                                    >
+                                                        <img 
+                                                            src={book.cover_image || 'https://placehold.co/400x600?text=BOOK'} 
+                                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                                                            alt=""
+                                                        />
+                                                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/10 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
+                                                        <div className="absolute top-3 right-3">
+                                                            {book.assignment_status === 'assigned' ? (
+                                                                <div className="w-8 h-8 bg-accent text-white rounded-full flex items-center justify-center shadow-lg border-2 border-white/20">
+                                                                    <Check className="w-4 h-4" strokeWidth={3} />
+                                                                </div>
+                                                            ) : (
+                                                                <div className="w-8 h-8 bg-white/20 backdrop-blur border border-white/20 rounded-full flex items-center justify-center group-hover:bg-accent group-hover:border-transparent transition-all">
+                                                                    <Plus className="w-4 h-4 text-white" />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <div className="absolute bottom-0 inset-x-0 p-3 translate-y-1 group-hover:translate-y-0 transition-transform">
+                                                            <p className="text-xs font-black text-white leading-tight drop-shadow-lg">{book.title}</p>
+                                                        </div>
+                                                    </motion.div>
+                                                ))}
+                                            </div>
                                         )}
                                     </div>
                                 </div>
-                            </div>
 
-                            {/* Books Section */}
-                            <div className="space-y-8">
-                                <div className="flex items-center justify-between px-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="p-2.5 bg-white shadow-md rounded-xl">
-                                            <BookOpen className="w-5 h-5 text-accent" />
-                                        </div>
-                                        <div>
-                                            <h3 className="text-xl font-black text-slate-800 tracking-tight">{t('admin.users.library_access', 'Library Privileges')}</h3>
-                                            <p className="text-xs text-slate-400 font-medium">Toggle access for digital educational resources</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-4">
-                                        <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-slate-100 shadow-sm text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                            {userBooks.filter(b => b.assignment_status === 'assigned').length} Assigned
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {booksLoading ? (
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 px-2">
-                                        {[1,2,3,4].map(i => (
-                                            <div key={i} className="aspect-[3/4] bg-white rounded-[32px] border border-slate-100 shadow-sm p-4 space-y-4">
-                                                <div className="w-full h-[70%] bg-slate-100 rounded-[24px] animate-pulse" />
-                                                <div className="h-3 w-3/4 bg-slate-50 rounded-full animate-pulse" />
-                                                <div className="h-3 w-1/2 bg-slate-50 rounded-full animate-pulse" />
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 px-2">
-                                        {userBooks.map(book => (
-                                            <motion.div
-                                                key={book.id}
-                                                layout
-                                                initial={{ opacity: 0, scale: 0.9 }}
-                                                animate={{ opacity: 1, scale: 1 }}
-                                                className={`group relative aspect-[3/4] rounded-[40px] overflow-hidden cursor-pointer border-[5px] transition-all duration-700 shadow-premium hover:shadow-2xl ${
-                                                    book.assignment_status === 'assigned' 
-                                                    ? 'border-accent/40 ring-1 ring-accent/10 scale-[1.02]' 
-                                                    : 'border-white grayscale opacity-60 hover:grayscale-0 hover:opacity-100'
-                                                }`}
-                                                onClick={() => handleToggleBook(selectedUser.id, book.id, book.assignment_status)}
-                                            >
-                                                <img 
-                                                    src={book.cover_image || 'https://placehold.co/400x600?text=BOOK'} 
-                                                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
-                                                    alt=""
-                                                />
-                                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
-                                                
-                                                <div className="absolute top-6 right-6">
-                                                    {book.assignment_status === 'assigned' ? (
-                                                        <div className="w-10 h-10 bg-accent text-white rounded-full flex items-center justify-center shadow-xl transform scale-100 group-hover:scale-110 transition-all border-2 border-white/20">
-                                                            <Check className="w-5 h-5" strokeWidth={4} />
-                                                        </div>
-                                                    ) : (
-                                                        <div className="w-10 h-10 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full flex items-center justify-center shadow-xl group-hover:bg-accent group-hover:text-white group-hover:border-transparent transition-all">
-                                                            <Plus className="w-5 h-5 text-white" />
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                                <div className="absolute bottom-0 inset-x-0 p-6 translate-y-2 group-hover:translate-y-0 transition-transform">
-                                                    <div className="px-2 py-1 bg-white/10 backdrop-blur-md rounded-lg w-fit mb-3">
-                                                        <p className="text-[9px] font-black text-accent-light uppercase tracking-widest">{book.category}</p>
-                                                    </div>
-                                                    <p className="text-base font-black text-white leading-tight drop-shadow-lg">{book.title}</p>
-                                                </div>
-                                            </motion.div>
-                                        ))}
-                                    </div>
-                                )}
                             </div>
                         </div>
                     </>
