@@ -6,6 +6,7 @@ import {
 } from 'recharts';
 import { Users, BookOpen, Activity, TrendingUp, AlertCircle } from 'lucide-react';
 import { type NotificationType } from './components/Notification';
+import PremiumLoader from './components/PremiumLoader';
 import { useTranslation } from 'react-i18next';
 
 interface BookStat {
@@ -54,7 +55,14 @@ const AdminDashboard = ({ token, onNotify, onUnauthorized }: { token: string; on
             });
     }, [token]);
 
-    if (loading) return <div className="flex justify-center p-10"><Activity className="animate-spin text-accent" /></div>;
+    if (loading) return (
+        <div className="flex flex-col items-center justify-center p-20 space-y-4">
+            <PremiumLoader size="md" />
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest animate-pulse">
+                {t('dashboard.admin.loading', 'Compiling Metrics...')}
+            </p>
+        </div>
+    );
     if (!data) return <div className="text-center p-10 text-red-500">Failed to load data</div>;
 
     return (

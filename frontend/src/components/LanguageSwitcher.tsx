@@ -14,7 +14,7 @@ const LANGUAGES = [
   { code: 'ht', label: 'Kreyòl (Haitian)', flag: '🇭🇹' },
 ];
 
-export default function LanguageSwitcher({ direction = 'down' }: { direction?: 'up' | 'down' }) {
+export default function LanguageSwitcher({ direction = 'down', sidebarCollapsed = false }: { direction?: 'up' | 'down'; sidebarCollapsed?: boolean }) {
   const { i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -53,7 +53,9 @@ export default function LanguageSwitcher({ direction = 'down' }: { direction?: '
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: direction === 'up' ? 10 : -10 }}
             transition={{ duration: 0.15 }}
-            className={`absolute right-0 ${direction === 'up' ? 'bottom-full mb-2 origin-bottom-right' : 'top-full mt-2 origin-top-right'} w-48 bg-white rounded-[1.25rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] border border-black/5 overflow-hidden z-[9999] py-2`}
+            className={`absolute ${
+              sidebarCollapsed ? 'left-0 origin-bottom-left' : 'right-0 origin-bottom-right'
+            } ${direction === 'up' ? 'bottom-full mb-2' : 'top-full mt-2'} w-52 bg-white rounded-[1.25rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] border border-black/5 overflow-hidden z-[9999] py-2`}
           >
             {LANGUAGES.map((lang) => (
               <button

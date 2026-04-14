@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { User, Lock, ArrowRight, Activity, Settings as SettingsIcon, Download } from 'lucide-react';
 import AdminDashboard from './AdminDashboard';
@@ -11,11 +11,15 @@ import Settings from './Settings';
 import bgLogin from './assets/final-login-bg.jpg';
 import WelcomeScreen from './WelcomeScreen';
 import Notification, { type NotificationType } from './components/Notification';
+import PremiumLoader from './components/PremiumLoader';
 import PublicLanding from './PublicLanding';
 import AdminLandingCMS from './AdminLandingCMS';
 import AdminTranslations from './AdminTranslations';
 import AdminMarketing from './AdminMarketing';
+import AdminLevels from './AdminLevels';
+import DashboardManager from './components/reports/DashboardManager';
 import { loadTranslationsFromDB } from './i18n';
+
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from './components/LanguageSwitcher';
 
@@ -31,6 +35,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(localStorage.getItem('role'));
+  const [logoUrl, setLogoUrl] = useState('/Logo.png');
 
   // Notification State
   const [notification, setNotification] = useState<{ message: string; type: NotificationType; isVisible: boolean }>({
@@ -39,13 +44,13 @@ function App() {
     isVisible: false
   });
 
-  const showNotification = (message: string, type: NotificationType) => {
+  const showNotification = useCallback((message: string, type: NotificationType) => {
     setNotification({ message, type, isVisible: true });
-  };
+  }, []);
 
-  const closeNotification = () => {
+  const closeNotification = useCallback(() => {
     setNotification(prev => ({ ...prev, isVisible: false }));
-  };
+  }, []);
 
   // Settings State
   const [settings, setSettings] = useState<{ [key: string]: string }>({});
@@ -95,37 +100,46 @@ function App() {
     };
   }, [token]);
 
-  useEffect(() => {
-    // Fetch global landing configuration for CSS Variables overriding
-    const fetchGlobalVisuals = async () => {
-      try {
-        const langCode = (i18n.language || 'en').split('-')[0].toLowerCase();
-        const res = await fetch(`/api/landing?lang=${langCode}`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.landing_cms_config) {
-            const config = JSON.parse(data.landing_cms_config);
-            if (config.visuals) {
-              const root = document.documentElement;
-              if (config.visuals.colorPrimary) {
-                root.style.setProperty('--color-primary', config.visuals.colorPrimary);
-              } else {
-                root.style.removeProperty('--color-primary');
-              }
-              if (config.visuals.colorAccent) {
-                root.style.setProperty('--color-accent', config.visuals.colorAccent);
-              } else {
-                root.style.removeProperty('--color-accent');
-              }
+  // Fetch global landing configuration for CSS Variables overriding
+  const fetchGlobalVisuals = useCallback(async () => {
+    try {
+      const langCode = (i18n.language || 'en').split('-')[0].toLowerCase();
+      const res = await fetch(`/api/landing?lang=${langCode}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.landing_cms_config) {
+          const config = JSON.parse(data.landing_cms_config);
+          if (config.visuals) {
+            const root = document.documentElement;
+            if (config.visuals.colorPrimary) {
+              root.style.setProperty('--color-primary', config.visuals.colorPrimary);
+            } else {
+              root.style.removeProperty('--color-primary');
+            }
+            if (config.visuals.colorAccent) {
+              root.style.setProperty('--color-accent', config.visuals.colorAccent);
+            } else {
+              root.style.removeProperty('--color-accent');
+            }
+            
+            // Apply Logo globally
+            const newLogo = config.visuals?.logoUrl || config.header?.logoUrl;
+            if (newLogo) {
+              setLogoUrl(newLogo);
+            } else {
+              setLogoUrl('/Logo.png');
             }
           }
         }
-      } catch (err) {
-        console.error('Failed to load global visual settings', err);
       }
-    };
-    fetchGlobalVisuals();
+    } catch (err) {
+      console.error('Failed to load global visual settings', err);
+    }
   }, [i18n.language]);
+
+  useEffect(() => {
+    fetchGlobalVisuals();
+  }, [fetchGlobalVisuals]);
 
   const login = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -191,12 +205,12 @@ function App() {
     setShowLogin(false); // Reset to public landing
   };
 
-  const handleUnauthorized = () => {
+  const handleUnauthorized = useCallback(() => {
     if (token) { // Only notify if we were previously logged in
         logout();
         showNotification(t('login.error_expired', 'Your session has expired. Please log in again.'), 'error');
     }
-  };
+  }, [token, logout, showNotification, t]);
 
   // PWA Install Logic
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -322,8 +336,8 @@ function App() {
               className="p-1 rounded-2xl mt-4"
             >
               {/* TTESOL abstract logo or text */}
-              <div className="w-32 h-32 flex items-center justify-center mb-4">
-                <img src="/Logo.png" alt="TTESOL Logo" className="w-full h-full object-contain drop-shadow-xl" />
+              <div className="w-full h-32 flex items-center justify-center mb-6 px-8">
+                <img src={logoUrl} alt="TTESOL Logo" className="max-w-full max-h-full object-contain filter drop-shadow-2xl" />
               </div>
             </motion.div>
           </div>
@@ -370,7 +384,7 @@ function App() {
               className="w-full bg-accent hover:bg-accent-dark text-white py-4 rounded-xl font-bold text-sm uppercase tracking-wide shadow-premium hover:shadow-premium-hover transition-all flex items-center justify-center gap-2 group mt-2"
             >
               {loading ? (
-                <Activity className="w-5 h-5 animate-spin" />
+                <PremiumLoader size="sm" color="white" />
               ) : (
                 <>
                   {t('login.signIn', 'Secure Login')} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -411,8 +425,16 @@ function App() {
   const renderContent = () => {
     if (loading) {
       return (
-        <div className="flex justify-center py-20 h-full items-center">
-          <Activity className="w-10 h-10 text-accent animate-spin" />
+        <div className="flex flex-col gap-6 justify-center py-20 h-full items-center">
+          <PremiumLoader size="lg" />
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="text-[10px] font-black text-accent uppercase tracking-[0.3em] animate-pulse"
+          >
+            {t('common.loading', 'Curating Content')}
+          </motion.p>
         </div>
       );
     }
@@ -437,12 +459,13 @@ function App() {
           settings={settings}
           userRole={userRole}
           onUpdateSettings={updateSettings}
+          logoUrl={logoUrl}
         />
       );
     }
 
     if (activeTab === 'dashboard') {
-      if (userRole === 'admin' || userRole === 'manager' || userRole === 'marketing') {
+      if (userRole === 'admin' || userRole === 'manager' || userRole === 'marketing' || userRole === 'teacher') {
         return <AdminDashboard token={token} onNotify={showNotification} onUnauthorized={handleUnauthorized} />;
       }
       return <Library token={token} userRole={userRole} onNotify={showNotification} onStartReading={setSelectedBookId} onUnauthorized={handleUnauthorized} />;
@@ -452,18 +475,23 @@ function App() {
       return <Library token={token} userRole={userRole} onNotify={showNotification} onStartReading={setSelectedBookId} onUnauthorized={handleUnauthorized} />;
     }
 
-    if (activeTab === 'reports' && (userRole === 'admin' || userRole === 'manager')) {
-      return <AdminDashboard token={token} onNotify={showNotification} onUnauthorized={handleUnauthorized} />;
+    if (activeTab === 'reports') {
+      return <DashboardManager token={token || ''} userRole={userRole} />;
     }
 
-    if (activeTab === 'users' && userRole === 'admin') {
+    if (activeTab === 'users' && (userRole === 'admin' || userRole === 'manager')) {
       return <AdminUsers token={token} onNotify={showNotification} onUnauthorized={handleUnauthorized} />;
     }
 
     if (activeTab === 'landing' && (userRole === 'admin' || userRole === 'marketing')) {
       return (
         <div className="flex-1 h-full min-h-[700px]">
-          <AdminLandingCMS token={token} onNotify={showNotification} onUnauthorized={handleUnauthorized} />
+          <AdminLandingCMS 
+            token={token} 
+            onNotify={showNotification} 
+            onUnauthorized={handleUnauthorized} 
+            onBrandingUpdate={fetchGlobalVisuals}
+          />
         </div>
       );
     }
@@ -484,6 +512,15 @@ function App() {
       );
     }
 
+    if (activeTab === 'levels' && userRole === 'admin') {
+      return (
+        <div className="flex-1 h-full min-h-[700px]">
+          <AdminLevels token={token} onNotify={showNotification} onUnauthorized={handleUnauthorized} />
+        </div>
+      );
+    }
+
+
     if (activeTab === 'admin-books' && (userRole === 'admin' || userRole === 'manager')) {
       return (
         <div className="p-0 md:p-4 h-full flex flex-col pt-4 md:pt-12">
@@ -498,8 +535,15 @@ function App() {
       );
     }
 
-    if (activeTab === 'settings') {
-      return <Settings token={token} userRole={userRole} onNotify={showNotification} onUnauthorized={handleUnauthorized} />;
+    if (activeTab.startsWith('settings')) {
+      const section = activeTab.split('-')[1] || 'profile';
+      return <Settings 
+        token={token} 
+        userRole={userRole} 
+        onNotify={showNotification} 
+        onUnauthorized={handleUnauthorized} 
+        activeSection={section as any}
+      />;
     }
 
     return (
@@ -537,6 +581,7 @@ function App() {
         setIsOpen={setIsSidebarOpen}
         activeTab={activeTab}
         setActiveTab={handleTabChange}
+        logoUrl={logoUrl}
       />
 
       <main className="flex-1 min-w-0 h-[100dvh] overflow-y-auto overflow-x-hidden p-4 pt-16 lg:p-8 flex flex-col relative z-0 transition-all duration-300">

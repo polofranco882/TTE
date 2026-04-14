@@ -619,6 +619,7 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
 
     return (
         <div className={`fixed inset-y-0 right-0 z-[150] bg-[#0f172a] text-white overflow-hidden ${transitionClass}`} style={{ left: 'var(--sidebar-width)' }}>
+            <audio ref={flipAudioRef} src={pasaHojaAudio} preload="auto" />
             {/* Immersive Background */}
             <div className="absolute inset-0 z-0 overflow-hidden">
                 <div

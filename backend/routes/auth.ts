@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import client from '../db';
+import { authenticateToken, AuthRequest } from '../middleware/auth';
 
 const router = Router();
 const SECRET = process.env.JWT_SECRET || 'secret';
@@ -57,8 +58,34 @@ router.post('/login', async (req, res) => {
         res.json({ token, user: { id: user.id, name: user.name, email: user.email, role } });
 
     } catch (error) {
-        console.error(error);
+        console.error('Login error:', error);
         res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Activity Logging Route
+router.post('/log', authenticateToken, async (req: AuthRequest, res) => {
+    const { action, metadata } = req.body;
+    const userId = req.user?.id;
+
+    if (!userId) return res.status(401).json({ message: 'User identity lost' });
+
+    try {
+        await client.query(`
+            INSERT INTO activity_log (user_id, action, module, details, ip, user_agent)
+            VALUES ($1, $2, 'APP', $3, $4, $5)
+        `, [
+            userId, 
+            action, 
+            metadata ? JSON.stringify(metadata) : 'No details provided', 
+            req.ip, 
+            req.headers['user-agent']
+        ]);
+        
+        res.status(204).send(); // No content success
+    } catch (error) {
+        console.error('Logger error:', error);
+        res.status(500).json({ message: 'Failed to log event' });
     }
 });
 

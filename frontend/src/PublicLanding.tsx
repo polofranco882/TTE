@@ -101,8 +101,12 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
             <nav className="fixed top-0 left-0 w-full z-50 bg-primary/95 backdrop-blur-xl border-b border-white/10 shadow-sm">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
                     <div className="flex items-center gap-1 sm:gap-3 flex-shrink-0 lg:flex-1">
-                        <div className="flex items-center justify-center pr-1 shrink-0">
-                            <img src={c(h, 'logoUrl', '/Logo.png')} alt="TTESOL Logo" className="h-7 sm:h-10 md:h-12 w-auto object-contain drop-shadow-lg" />
+                        <div className="flex items-center justify-center pr-1 shrink-0 w-16 h-16 sm:w-20 sm:h-20">
+                            <img 
+                                src={cms?.visuals?.logoUrl || h?.logoUrl || '/Logo.png'} 
+                                alt="TTESOL Logo" 
+                                className="max-w-full max-h-full object-contain drop-shadow-lg" 
+                            />
                         </div>
                         <span className="font-serif font-bold text-[14px] leading-none sm:text-xl md:text-2xl text-white tracking-tight shrink min-w-0 max-w-[140px] sm:max-w-none break-words">{c(h, 'institutionName', 'TTESOL Academy')}</span>
                     </div>
@@ -439,8 +443,12 @@ const PublicLanding = ({ onLoginClick }: PublicLandingProps) => {
                 <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
                     <div className="col-span-1 md:col-span-2">
                         <div className="flex items-center gap-3 mb-6">
-                            <div className="flex items-center justify-center pr-1">
-                                <img src={c(h, 'logoUrl', '/Logo.png')} alt="TTESOL Logo" className="h-8 w-auto object-contain drop-shadow-md" />
+                            <div className="flex items-center justify-center pr-1 w-16 h-16">
+                                <img 
+                                    src={cms?.visuals?.logoUrl || h?.logoUrl || '/Logo.png'} 
+                                    alt="TTESOL Logo" 
+                                    className="max-w-full max-h-full object-contain drop-shadow-md" 
+                                />
                             </div>
                             <span className="font-serif font-bold text-xl text-white tracking-tight">{c(h, 'institutionName', 'TTESOL')}</span>
                         </div>

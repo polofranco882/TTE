@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     LayoutTemplate, Image as ImageIcon, AlignLeft, BookOpen, Images, Video,
@@ -13,6 +13,7 @@ interface AdminLandingCMSProps {
     token: string;
     onNotify: (msg: string, type: NotificationType) => void;
     onUnauthorized: () => void;
+    onBrandingUpdate?: () => void;
 }
 
 // All sections
@@ -56,7 +57,7 @@ const LANG_META: Record<string, { label: string; flag: string }> = {
     ht: { label: 'Kreyòl (Haitian)', flag: '🇭🇹' },
 };
 
-const AdminLandingCMS = ({ token, onNotify, onUnauthorized }: AdminLandingCMSProps) => {
+const AdminLandingCMS = ({ token, onNotify, onUnauthorized, onBrandingUpdate }: AdminLandingCMSProps) => {
     const [activeSection, setActiveSection] = useState('hero');
     const [activeLang, setActiveLang] = useState('en');
     const [availableLangs, setAvailableLangs] = useState<string[]>(['en', 'es', 'pt']);
@@ -65,9 +66,16 @@ const AdminLandingCMS = ({ token, onNotify, onUnauthorized }: AdminLandingCMSPro
 
     // translations[sectionKey][langCode][fieldKey] = value
     const [translations, setTranslations] = useState<any>({});
-    // draftSettings: structural / non-translatable config (images, toggles)
     const [draftSettings, setDraftSettings] = useState<any>({});
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+    
+    // Use a ref to track unsaved changes state for async callbacks (avoids closure staleness)
+    const hasUnsavedChangesRef = useRef(false);
+
+    // Sync ref with state
+    useEffect(() => {
+        hasUnsavedChangesRef.current = hasUnsavedChanges;
+    }, [hasUnsavedChanges]);
 
     // ── Load available languages
     useEffect(() => {
@@ -85,23 +93,32 @@ const AdminLandingCMS = ({ token, onNotify, onUnauthorized }: AdminLandingCMSPro
 
     // ── Load translations for admin
     const loadTranslations = useCallback(() => {
+        if (hasUnsavedChangesRef.current) return; 
         fetch('/api/landing/translations', { headers: { Authorization: `Bearer ${token}` } })
             .then(r => {
                 if (r.status === 401) onUnauthorized();
                 return r.json();
             })
-            .then(data => setTranslations(data || {}))
+            .then(data => {
+                // Critical: check ref again to prevent race conditions from stale fetches
+                if (hasUnsavedChangesRef.current) return;
+                setTranslations(data || {});
+            })
             .catch(err => console.error('Failed to load translations:', err));
-    }, [token, onUnauthorized]);
+    }, [token, onUnauthorized]); // removed hasUnsavedChanges from deps to avoid re-triggering effect
 
     // ── Load base (structural) config
     const loadBase = useCallback(() => {
+        if (hasUnsavedChangesRef.current) return;
         fetch('/api/landing', { headers: { Authorization: `Bearer ${token}` } })
             .then(r => {
                 if (r.status === 401) onUnauthorized();
                 return r.json();
             })
             .then(data => {
+                // Critical: check ref again 
+                if (hasUnsavedChangesRef.current) return;
+
                 if (data.landing_cms_config) {
                     setDraftSettings(JSON.parse(data.landing_cms_config));
                 }
@@ -183,6 +200,9 @@ const AdminLandingCMS = ({ token, onNotify, onUnauthorized }: AdminLandingCMSPro
                     const root = document.documentElement;
                     if (draftSettings.visuals.colorPrimary) root.style.setProperty('--color-primary', draftSettings.visuals.colorPrimary);
                     if (draftSettings.visuals.colorAccent) root.style.setProperty('--color-accent', draftSettings.visuals.colorAccent);
+                    
+                    // Trigger global update in App.tsx
+                    if (onBrandingUpdate) onBrandingUpdate();
                 }
             } else {
                 onNotify('Failed to save settings.', 'error');
@@ -226,7 +246,8 @@ const AdminLandingCMS = ({ token, onNotify, onUnauthorized }: AdminLandingCMSPro
                     size: file.size 
                 };
             } else {
-                const optimized = await optimizeImageFile(file, 1920, 1080, 0.85);
+                const isLogo = field === 'logoUrl';
+                const optimized = await optimizeImageFile(file, isLogo ? 600 : 1920, isLogo ? 400 : 1080, 0.9);
                 payload = { 
                     module: 'landing', 
                     entity_type: field, 
@@ -327,11 +348,11 @@ const AdminLandingCMS = ({ token, onNotify, onUnauthorized }: AdminLandingCMSPro
                     <input type="file" accept="image/*,video/*" onChange={(e) => handleFileUpload(e, sectionId, field)} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" disabled={isUploading} />
                     
                     {val ? (
-                        <div className="relative z-0 w-full aspect-video bg-black rounded-lg overflow-hidden mb-4 border border-gray-200 shadow-inner">
+                        <div className="relative z-0 w-full aspect-video bg-[#1a1c2e] rounded-lg overflow-hidden mb-4 border border-white/10 shadow-inner flex items-center justify-center p-4">
                             {isVideo ? (
-                                <video src={val} className="w-full h-full object-cover" controls muted loop />
+                                <video src={val} className="max-w-full max-h-full object-contain" controls muted loop />
                             ) : (
-                                <img src={val} className="w-full h-full object-cover" alt="Preview" />
+                                <img src={val} className="max-w-full max-h-full object-contain filter drop-shadow-xl" alt="Preview" />
                             )}
                         </div>
                     ) : (
@@ -610,7 +631,10 @@ const AdminLandingCMS = ({ token, onNotify, onUnauthorized }: AdminLandingCMSPro
                                 {renderStructuralInput('visuals', 'colorPrimary', 'Primary Color', 'color')}
                                 {renderStructuralInput('visuals', 'colorAccent', 'Accent Color', 'color')}
                             </div>
-                            {renderImageUpload('visuals', 'faviconUrl', 'Favicon')}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {renderImageUpload('visuals', 'logoUrl', 'System Logo (Branding)')}
+                                {renderImageUpload('visuals', 'faviconUrl', 'Favicon')}
+                            </div>
                         </div>
                     );
                 case 'languages':

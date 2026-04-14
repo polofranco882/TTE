@@ -41,12 +41,16 @@ import landingModulesRoutes from './routes/landing-modules';
 import mediaRoutes from './routes/media';
 import i18nRoutes from './routes/i18n';
 import marketingRoutes from './routes/marketing';
+import profileRoutes from './routes/profile';
+import reportRoutesV2 from './routes/reports_v2';
+import teacherRoutes from './routes/teacher';
 
 import { initWorker } from './emailWorker';
 
 app.use('/auth', authRoutes);
 app.use('/books', bookRoutes);
 app.use('/reports', reportRoutes);
+app.use('/reports/v2', reportRoutesV2);
 app.use('/admin', adminRoutes);
 app.use('/ai', aiRoutes);
 app.use('/settings', settingsRoutes);
@@ -55,6 +59,8 @@ app.use('/landing-modules', landingModulesRoutes);
 app.use('/media', mediaRoutes);
 app.use('/i18n', i18nRoutes);
 app.use('/marketing', marketingRoutes);
+app.use('/profile', profileRoutes);
+app.use('/teacher', teacherRoutes);
 
 // Protected Route Example
 app.get('/protected', (req, res) => {
@@ -67,3 +73,4 @@ app.listen(port, () => {
     // Start background jobs
     initWorker();
 });
+

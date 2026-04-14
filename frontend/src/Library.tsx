@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { BookOpen, Search, Filter, Star, Edit3 } from 'lucide-react';
 import { type NotificationType } from './components/Notification';
 import EditBookModal from './components/EditBookModal';
+import PremiumLoader from './components/PremiumLoader';
 import { useTranslation } from 'react-i18next';
 // Loading from src/assets as requested
 import bgLogin from './assets/final-login-bg.png';
@@ -137,10 +138,16 @@ const Library = ({ token, userRole, onNotify, onStartReading, onUnauthorized }: 
 
                 {/* Books Grid */}
                 {loading ? (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-[1200px] mx-auto">
-                        {[1, 2, 3].map(i => (
-                            <div key={i} className="h-[500px] bg-white/5 rounded-3xl animate-pulse border border-white/5"></div>
-                        ))}
+                    <div className="flex flex-col items-center justify-center py-32 space-y-8 max-w-[1200px] mx-auto">
+                        <PremiumLoader size="lg" color="white" />
+                        <motion.p 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.5 }}
+                            className="text-xs md:text-sm font-black text-white/40 uppercase tracking-[0.4em] animate-pulse"
+                        >
+                            {t('books.library.loading', 'Synchronizing Library')}
+                        </motion.p>
                     </div>
                 ) : (
                     <motion.div

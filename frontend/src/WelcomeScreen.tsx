@@ -8,9 +8,10 @@ interface WelcomeScreenProps {
   settings: { [key: string]: string };
   userRole: string | null;
   onUpdateSettings: (newSettings: { [key: string]: string }) => Promise<void>;
+  logoUrl?: string;
 }
 
-const WelcomeScreen = ({ onStartLearning, settings, userRole, onUpdateSettings }: WelcomeScreenProps) => {
+const WelcomeScreen = ({ onStartLearning, settings, userRole, onUpdateSettings, logoUrl }: WelcomeScreenProps) => {
   const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [localSettings, setLocalSettings] = useState(settings);
@@ -110,7 +111,7 @@ const WelcomeScreen = ({ onStartLearning, settings, userRole, onUpdateSettings }
             />
             {/* Logo shell */}
             <div className="relative w-40 h-40 flex items-center justify-center">
-              <img src="/Logo.png" alt="TTESOL Logo" className="w-full h-full object-contain drop-shadow-2xl" />
+              <img src={logoUrl || "/Logo.png"} alt="TTESOL Logo" className="w-full h-full object-contain drop-shadow-2xl" />
             </div>
           </div>
         </motion.div>

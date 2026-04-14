@@ -1,8 +1,13 @@
-
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Search, Check, X, ChevronRight, Shield, KeyRound, Eye, EyeOff, BookOpen, Presentation, Megaphone, ServerCog } from 'lucide-react';
+import { 
+    Users, Search, Check, X, ChevronRight, Shield, KeyRound, 
+    Eye, EyeOff, BookOpen, Presentation, ServerCog, Filter, GraduationCap, LayoutGrid, Mail,
+    Edit3, Trash2, AlertCircle, ChevronDown, BookMarked, Plus
+} from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { type NotificationType } from './components/Notification';
+import PremiumLoader from './components/PremiumLoader';
 
 interface User {
     id: number;
@@ -10,6 +15,23 @@ interface User {
     email: string;
     status: string;
     created_at: string;
+    level_ids?: number[];
+    levels?: string[];
+    role_name: string;
+    module_ids?: number[];
+    modules?: string[];
+}
+
+interface AcademicLevel {
+    id: number;
+    name: string;
+    module_id: number;
+    module_name?: string;
+}
+
+interface Module {
+    id: number;
+    name: string;
 }
 
 interface UserBook {
@@ -27,189 +49,203 @@ interface AdminUsersProps {
 }
 
 const AdminUsers = ({ token, onNotify, onUnauthorized }: AdminUsersProps) => {
+    const { t } = useTranslation();
+    
+    // State
     const [users, setUsers] = useState<User[]>([]);
+    const [levels, setLevels] = useState<AcademicLevel[]>([]);
+    const [allModules, setAllModules] = useState<Module[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState<'admin' | 'teacher' | 'student' | 'marketing'>('student');
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [userBooks, setUserBooks] = useState<UserBook[]>([]);
-    const [loading, setLoading] = useState(true);
     const [booksLoading, setBooksLoading] = useState(false);
+    const [userModules, setUserModules] = useState<any[]>([]);
+    const [modulesLoading, setModulesLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    
+    // Filters
+    const [filterLevel, setFilterLevel] = useState<string>('');
+    const [filterModule, setFilterModule] = useState<string>('');
 
-    // Fetch Users on Mount
+    // Modals
+    const [formModal, setFormModal] = useState<{ isOpen: boolean; editingUser: User | null }>({ isOpen: false, editingUser: null });
+    const [resetModal, setResetModal] = useState<{ isOpen: boolean; userId: number; userName: string } | null>(null);
+
+    // Fetch Meta Data
     useEffect(() => {
-        fetchUsers();
+        const fetchMeta = async () => {
+            try {
+                const headers = { Authorization: `Bearer ${token}` };
+                const [levelsRes, modulesRes] = await Promise.all([
+                    fetch('/api/admin/meta/academic-levels', { headers }),
+                    fetch('/api/admin/meta/modules', { headers })
+                ]);
+                if (resUnauthorized(levelsRes)) return;
+                if (levelsRes.ok) setLevels(await levelsRes.json());
+                if (modulesRes.ok) setAllModules(await modulesRes.json());
+            } catch (err) {
+                console.error('Error fetching meta:', err);
+            }
+        };
+        fetchMeta();
     }, [token]);
 
+    const resUnauthorized = (res: Response) => {
+        if (res.status === 401 || res.status === 403) {
+            onUnauthorized();
+            return true;
+        }
+        return false;
+    };
+
+    // Fetch Users with active tab
+    useEffect(() => {
+        fetchUsers();
+    }, [activeTab, token, filterLevel, filterModule]);
+
     const fetchUsers = async () => {
+        setLoading(true);
         try {
-            const res = await fetch('/api/admin/users', {
+            let url = `/api/admin/users?role=${activeTab}`;
+            if (activeTab === 'student' && filterLevel) url += `&level_id=${filterLevel}`;
+            if (activeTab === 'teacher' && filterModule) url += `&module_id=${filterModule}`;
+
+            const res = await fetch(url, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            if (res.status === 401) {
-                onUnauthorized();
-                return;
-            }
+            if (resUnauthorized(res)) return;
             if (res.ok) {
                 const data = await res.json();
                 setUsers(data);
-            } else {
-                onNotify('Failed to load users', 'error');
+                if (selectedUser) {
+                    const updated = data.find((u: User) => u.id === selectedUser.id);
+                    if (updated) setSelectedUser(updated);
+                }
             }
         } catch (err) {
-            onNotify('Connection error', 'error');
-            console.error(err);
+            onNotify(t('admin.users.error_fetch', 'Error loading users'), 'error');
         } finally {
             setLoading(false);
         }
     };
 
-    // Fetch Books when a user is selected
+    // Fetch user books and modules when selected
     useEffect(() => {
         if (selectedUser) {
             fetchUserBooks(selectedUser.id);
+            fetchUserModules(selectedUser.id);
         }
     }, [selectedUser]);
 
+    const fetchUserModules = async (userId: number) => {
+        setModulesLoading(true);
+        setUserModules([]);
+        try {
+            const res = await fetch(`/api/admin/users/${userId}/modules`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (res.ok) setUserModules(await res.json());
+        } catch (err) {
+            console.error('Error fetching user modules:', err);
+        } finally {
+            setModulesLoading(false);
+        }
+    };
+
+    const handleToggleModule = async (userId: number, moduleId: number, currentStatus: string) => {
+        const newStatus = currentStatus === 'assigned' ? 'inactive' : 'assigned';
+        try {
+            const res = await fetch(`/api/admin/users/${userId}/modules`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                body: JSON.stringify({ moduleId, status: newStatus })
+            });
+            if (res.ok) {
+                onNotify(newStatus === 'assigned' ? 'Module assigned ✓' : 'Module removed', 'success');
+                fetchUserModules(userId);
+                fetchUsers();
+            } else {
+                onNotify('Error updating module', 'error');
+            }
+        } catch (err) {
+            onNotify('Connection error', 'error');
+        }
+    };
+
     const fetchUserBooks = async (userId: number) => {
         setBooksLoading(true);
+        setUserBooks([]); // Clear previous books while loading
         try {
             const res = await fetch(`/api/admin/users/${userId}/books`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            if (res.status === 401) {
-                onUnauthorized();
-                return;
-            }
             if (res.ok) {
                 const data = await res.json();
                 setUserBooks(data);
             } else {
-                onNotify('Failed to load user books', 'error');
+                console.error('Failed to fetch user books:', res.status);
+                onNotify(t('admin.users.error_books', 'Error loading library access'), 'error');
             }
         } catch (err) {
-            console.error(err);
+            console.error('Fetch error in fetchUserBooks:', err);
+            onNotify(t('common.error_connection', 'Connection error'), 'error');
         } finally {
             setBooksLoading(false);
         }
     };
 
-
-    const [confirmModal, setConfirmModal] = useState<{ isOpen: boolean; bookId: number | null; bookTitle: string; currentStatus: string } | null>(null);
-
-    // Create User State
-    const [createModal, setCreateModal] = useState(false);
-    const [newUserForm, setNewUserForm] = useState({ name: '', email: '', password: '', role: 'user' });
-    const [creating, setCreating] = useState(false);
-
-    const handleCreateUser = async () => {
-        if (!newUserForm.name || !newUserForm.email || !newUserForm.password) {
-            onNotify('Please fill in all fields', 'error');
-            return;
-        }
-        if (newUserForm.password.length < 4) {
-            onNotify('Password must be at least 4 characters', 'error');
-            return;
-        }
-
-        setCreating(true);
+    const handleSaveUser = async (formData: any) => {
         try {
-            const res = await fetch('/api/admin/users/create', {
-                method: 'POST',
+            const isEdit = !!formModal.editingUser;
+            const url = isEdit ? `/api/admin/users/${formModal.editingUser!.id}` : '/api/admin/users/create';
+            const method = isEdit ? 'PUT' : 'POST';
+
+            const res = await fetch(url, {
+                method,
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`
                 },
-                body: JSON.stringify(newUserForm)
+                body: JSON.stringify(formData)
             });
-            if (res.status === 401) {
-                onUnauthorized();
-                return;
-            }
+
             if (res.ok) {
-                onNotify('User created successfully', 'success');
-                setCreateModal(false);
-                setNewUserForm({ name: '', email: '', password: '', role: 'user' });
+                onNotify(isEdit ? t('admin.users.updated_success', 'User updated') : t('admin.users.created_success', 'User created'), 'success');
+                setFormModal({ isOpen: false, editingUser: null });
                 fetchUsers();
             } else {
                 const data = await res.json();
-                onNotify(data.message || 'Failed to create user', 'error');
+                onNotify(data.message || t('admin.users.error_save', 'Error saving user'), 'error');
             }
         } catch (error) {
-            console.error(error);
-            onNotify('Connection error', 'error');
-        } finally {
-            setCreating(false);
+            onNotify(t('common.error_connection', 'Connection error'), 'error');
         }
     };
 
-    // Password Reset State
-    const [resetModal, setResetModal] = useState<{ isOpen: boolean; userId: number; userName: string } | null>(null);
-    const [newPassword, setNewPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [resetting, setResetting] = useState(false);
-
-    const handleResetPassword = async () => {
-        if (!resetModal || !newPassword.trim()) return;
-        if (newPassword.length < 4) {
-            onNotify('Password must be at least 4 characters', 'error');
-            return;
-        }
-        setResetting(true);
+    const handleResetPassword = async (userId: number, pass: string) => {
         try {
-            const res = await fetch(`/api/admin/users/${resetModal.userId}/reset-password`, {
+            const res = await fetch(`/api/admin/users/${userId}/reset-password`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`
                 },
-                body: JSON.stringify({ newPassword })
+                body: JSON.stringify({ newPassword: pass })
             });
-            if (res.status === 401) {
-                onUnauthorized();
-                return;
-            }
             if (res.ok) {
-                onNotify(`Password reset successfully for ${resetModal.userName}`, 'success');
+                onNotify(t('admin.users.password_updated', 'Password updated'), 'success');
                 setResetModal(null);
-                setNewPassword('');
-            } else {
-                const data = await res.json();
-                onNotify(data.message || 'Failed to reset password', 'error');
             }
         } catch (err) {
-            console.error(err);
-            onNotify('Connection error', 'error');
-        } finally {
-            setResetting(false);
+            onNotify(t('admin.users.error_password', 'Error resetting password'), 'error');
         }
     };
 
-    // ... fetch functions remain the same ...
-
-    const handleBookClick = (book: UserBook) => {
-        setConfirmModal({
-            isOpen: true,
-            bookId: book.id,
-            bookTitle: book.title,
-            currentStatus: book.assignment_status
-        });
-    };
-
-    const confirmAction = async () => {
-        if (!confirmModal || !confirmModal.bookId || !selectedUser) return;
-
-        const { bookId, currentStatus } = confirmModal;
-        const newStatus = currentStatus === 'assigned' ? 'inactive' : 'assigned';
-
-        // Optimistic UI Update
-        setUserBooks(prev => prev.map(b =>
-            b.id === bookId ? { ...b, assignment_status: newStatus } : b
-        ));
-
-        // Close modal immediately
-        setConfirmModal(null);
-
+    const handleToggleBook = async (userId: number, bookId: number, status: string) => {
+        const newStatus = status === 'assigned' ? 'inactive' : 'assigned';
         try {
-            const res = await fetch(`/api/admin/users/${selectedUser.id}/books`, {
+            const res = await fetch(`/api/admin/users/${userId}/books`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -217,23 +253,12 @@ const AdminUsers = ({ token, onNotify, onUnauthorized }: AdminUsersProps) => {
                 },
                 body: JSON.stringify({ bookId, status: newStatus })
             });
-
-            if (res.status === 401) {
-                onUnauthorized();
-                return;
-            }
-
             if (res.ok) {
-                onNotify(`Book ${newStatus === 'assigned' ? 'activated' : 'deactivated'}`, 'success');
-            } else {
-                // Revert on failure
-                onNotify('Failed to update book status', 'error');
-                fetchUserBooks(selectedUser.id);
+                onNotify(t('admin.users.access_updated', 'Access updated'), 'success');
+                fetchUserBooks(userId);
             }
         } catch (err) {
-            console.error(err);
-            onNotify('Connection error', 'error');
-            fetchUserBooks(selectedUser.id); // Revert
+            onNotify(t('admin.users.error_access', 'Error updating access'), 'error');
         }
     };
 
@@ -243,435 +268,681 @@ const AdminUsers = ({ token, onNotify, onUnauthorized }: AdminUsersProps) => {
     );
 
     return (
-        <div className="flex flex-col lg:flex-row h-auto lg:h-[calc(100vh-100px)] gap-6 relative">
-            {/* Confirmation Modal */}
-            <AnimatePresence>
-                {confirmModal?.isOpen && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
-                    >
-                        <motion.div
-                            initial={{ scale: 0.9, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.9, opacity: 0 }}
-                            className="bg-white rounded-2xl shadow-premium p-6 max-w-sm w-full border border-gray-100"
-                        >
-                            <h3 className="text-xl font-bold text-gray-800 mb-2">
-                                {confirmModal.currentStatus === 'inactive' ? 'Activate Book' : 'Deactivate Book'}
-                            </h3>
-                            <p className="text-gray-600 mb-6">
-                                {confirmModal.currentStatus === 'inactive'
-                                    ? `Do you want to activate "${confirmModal.bookTitle}" for this user?`
-                                    : `Do you want to deactivate "${confirmModal.bookTitle}" for this user?`
-                                }
-                            </p>
-                            <div className="flex justify-end gap-3">
-                                <button
-                                    onClick={() => setConfirmModal(null)}
-                                    className="px-4 py-2 text-gray-500 hover:bg-gray-100 rounded-xl transition-colors font-medium"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={confirmAction}
-                                    className={`px-4 py-2 text-white rounded-xl shadow-lg transition-all font-bold ${confirmModal.currentStatus === 'inactive'
-                                        ? 'bg-gradient-to-r from-green-500 to-emerald-600 shadow-green-500/30'
-                                        : 'bg-gradient-to-r from-red-500 to-rose-600 shadow-red-500/30'
-                                        }`}
-                                >
-                                    {confirmModal.currentStatus === 'inactive' ? 'Activate' : 'Deactivate'}
-                                </button>
-                            </div>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
-            {/* Create User Modal */}
-            <AnimatePresence>
-                {createModal && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
-                        onClick={() => { setCreateModal(false); setNewUserForm({ name: '', email: '', password: '', role: 'user' }); }}
-                    >
-                        <motion.div
-                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
-                            animate={{ scale: 1, opacity: 1, y: 0 }}
-                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
-                            className="bg-white rounded-3xl shadow-premium p-1 max-w-2xl w-full border border-gray-100 overflow-hidden"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <div className="bg-[#09194F] p-5 flex justify-between items-center text-white shrink-0 rounded-t-[20px]">
-                                <h3 className="text-lg font-bold flex items-center gap-2">
-                                    <Users className="w-5 h-5 text-[#B1B3D8]" />
-                                    Crear Nuevo Usuario
-                                </h3>
-                                <button onClick={() => { setCreateModal(false); setNewUserForm({ name: '', email: '', password: '', role: 'user' }); }} className="bg-white/10 hover:bg-white/20 p-1.5 rounded-lg transition-colors"><X className="w-5 h-5" /></button>
-                            </div>
-
-                            <div className="p-6 md:p-8 space-y-8 bg-slate-50">
-                                
-                                {/* Info fields section */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-4">
-                                        <div>
-                                            <label className="text-xs font-bold text-gray-500 mb-1.5 block uppercase tracking-wider">Nombre Completo</label>
-                                            <input
-                                                type="text"
-                                                value={newUserForm.name}
-                                                onChange={(e) => setNewUserForm({ ...newUserForm, name: e.target.value })}
-                                                placeholder="Ej: John Doe"
-                                                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2E49AC]/20 focus:border-[#2E49AC] transition-all shadow-sm"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="text-xs font-bold text-gray-500 mb-1.5 block uppercase tracking-wider">Contraseña Temporal</label>
-                                            <input
-                                                type="text"
-                                                value={newUserForm.password}
-                                                onChange={(e) => setNewUserForm({ ...newUserForm, password: e.target.value })}
-                                                placeholder="Mínimo 4 caracteres"
-                                                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2E49AC]/20 focus:border-[#2E49AC] transition-all shadow-sm"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label className="text-xs font-bold text-gray-500 mb-1.5 block uppercase tracking-wider">Correo Electrónico</label>
-                                        <input
-                                            type="email"
-                                            value={newUserForm.email}
-                                            onChange={(e) => setNewUserForm({ ...newUserForm, email: e.target.value })}
-                                            placeholder="correo@ejemplo.com"
-                                            className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2E49AC]/20 focus:border-[#2E49AC] transition-all shadow-sm"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Roles Selector */}
-                                <div>
-                                    <label className="text-xs font-bold text-gray-500 mb-3 block uppercase tracking-wider">Asignación de Rol</label>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        {/* Student Role */}
-                                        <div 
-                                            onClick={() => setNewUserForm({ ...newUserForm, role: 'user' })}
-                                            className={`relative flex items-start gap-4 p-4 rounded-2xl cursor-pointer border-2 transition-all ${newUserForm.role === 'user' ? 'border-[#2E49AC] bg-[#e9effd]' : 'border-gray-100 bg-white hover:border-[#2E49AC]/30'}`}
-                                        >
-                                            {newUserForm.role === 'user' && <Check className="absolute top-3 right-3 w-5 h-5 text-[#2E49AC]" />}
-                                            <div className={`p-3 rounded-xl ${newUserForm.role === 'user' ? 'bg-[#2E49AC] text-white' : 'bg-slate-100 text-slate-500'}`}>
-                                                <BookOpen className="w-6 h-6" />
-                                            </div>
-                                            <div>
-                                                <h4 className="font-bold text-[#09194F]">Estudiante</h4>
-                                                <p className="text-[11px] text-gray-500 leading-tight mt-1">Acceso a la librería interactiva y libros asignados.</p>
-                                            </div>
-                                        </div>
-
-                                        {/* Teacher Role */}
-                                        <div 
-                                            onClick={() => setNewUserForm({ ...newUserForm, role: 'manager' })}
-                                            className={`relative flex items-start gap-4 p-4 rounded-2xl cursor-pointer border-2 transition-all ${newUserForm.role === 'manager' ? 'border-amber-500 bg-amber-50' : 'border-gray-100 bg-white hover:border-amber-500/30'}`}
-                                        >
-                                            {newUserForm.role === 'manager' && <Check className="absolute top-3 right-3 w-5 h-5 text-amber-500" />}
-                                            <div className={`p-3 rounded-xl ${newUserForm.role === 'manager' ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-500'}`}>
-                                                <Presentation className="w-6 h-6" />
-                                            </div>
-                                            <div>
-                                                <h4 className="font-bold text-[#09194F]">Profesor</h4>
-                                                <p className="text-[11px] text-gray-500 leading-tight mt-1">Gestión de libros, lectura de reportes y calificaciones.</p>
-                                            </div>
-                                        </div>
-
-                                        {/* Marketing Role */}
-                                        <div 
-                                            onClick={() => setNewUserForm({ ...newUserForm, role: 'marketing' })}
-                                            className={`relative flex items-start gap-4 p-4 rounded-2xl cursor-pointer border-2 transition-all ${newUserForm.role === 'marketing' ? 'border-[#AC2425] bg-red-50' : 'border-gray-100 bg-white hover:border-[#AC2425]/30'}`}
-                                        >
-                                            {newUserForm.role === 'marketing' && <Check className="absolute top-3 right-3 w-5 h-5 text-[#AC2425]" />}
-                                            <div className={`p-3 rounded-xl ${newUserForm.role === 'marketing' ? 'bg-[#AC2425] text-white' : 'bg-slate-100 text-slate-500'}`}>
-                                                <Megaphone className="w-6 h-6" />
-                                            </div>
-                                            <div>
-                                                <h4 className="font-bold text-[#09194F]">Marketing</h4>
-                                                <p className="text-[11px] text-gray-500 leading-tight mt-1">Editor Landing Page y Módulo de Correo Masivo. </p>
-                                            </div>
-                                        </div>
-
-                                        {/* Admin Role */}
-                                        <div 
-                                            onClick={() => setNewUserForm({ ...newUserForm, role: 'admin' })}
-                                            className={`relative flex items-start gap-4 p-4 rounded-2xl cursor-pointer border-2 transition-all ${newUserForm.role === 'admin' ? 'border-[#09194F] bg-indigo-50' : 'border-gray-100 bg-white hover:border-[#09194F]/30'}`}
-                                        >
-                                            {newUserForm.role === 'admin' && <Check className="absolute top-3 right-3 w-5 h-5 text-[#09194F]" />}
-                                            <div className={`p-3 rounded-xl ${newUserForm.role === 'admin' ? 'bg-[#09194F] text-white' : 'bg-slate-100 text-slate-500'}`}>
-                                                <Shield className="w-6 h-6" />
-                                            </div>
-                                            <div>
-                                                <h4 className="font-bold text-[#09194F]">Administrador</h4>
-                                                <p className="text-[11px] text-gray-500 leading-tight mt-1">Control maestro. Panel de configuraciones, credenciales SMTP.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="bg-white p-5 flex justify-between items-center rounded-b-[20px] border-t border-gray-100">
-                                <button
-                                    onClick={() => { setCreateModal(false); setNewUserForm({ name: '', email: '', password: '', role: 'user' }); }}
-                                    className="px-5 py-2.5 text-gray-500 hover:bg-gray-100 rounded-xl transition-colors font-bold text-sm"
-                                >
-                                    Cancelar
-                                </button>
-                                <button
-                                    onClick={handleCreateUser}
-                                    disabled={creating}
-                                    className="px-8 py-2.5 text-white rounded-xl shadow-premium transition-all font-bold bg-accent hover:bg-[#c93f2f] hover:shadow-lg disabled:opacity-50 flex items-center justify-center gap-2 text-sm min-w-[150px]"
-                                >
-                                    {creating ? <ServerCog className="w-5 h-5 animate-spin" /> : 'Crear Usuario'}
-                                </button>
-                            </div>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
-            {/* Password Reset Modal */}
-            <AnimatePresence>
-                {resetModal?.isOpen && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
-                        onClick={() => { setResetModal(null); setNewPassword(''); }}
-                    >
-                        <motion.div
-                            initial={{ scale: 0.9, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.9, opacity: 0 }}
-                            className="bg-white rounded-2xl shadow-premium p-6 max-w-sm w-full border border-gray-100"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="p-2.5 bg-amber-100 rounded-xl">
-                                    <KeyRound className="w-5 h-5 text-amber-600" />
-                                </div>
-                                <div>
-                                    <h3 className="text-lg font-bold text-gray-800">Reset Password</h3>
-                                    <p className="text-sm text-gray-500">{resetModal.userName}</p>
-                                </div>
-                            </div>
-
-                            <div className="mb-6">
-                                <label className="text-xs font-semibold text-gray-600 mb-1.5 block">New Password</label>
-                                <div className="relative">
-                                    <input
-                                        type={showPassword ? 'text' : 'password'}
-                                        value={newPassword}
-                                        onChange={(e) => setNewPassword(e.target.value)}
-                                        onKeyDown={(e) => e.key === 'Enter' && handleResetPassword()}
-                                        placeholder="Enter new password..."
-                                        autoFocus
-                                        className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 pr-10"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                                    >
-                                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                                    </button>
-                                </div>
-                                {newPassword.length > 0 && newPassword.length < 4 && (
-                                    <p className="text-xs text-red-500 mt-1">Minimum 4 characters</p>
-                                )}
-                            </div>
-
-                            <div className="flex justify-end gap-3">
-                                <button
-                                    onClick={() => { setResetModal(null); setNewPassword(''); }}
-                                    className="px-4 py-2 text-gray-500 hover:bg-gray-100 rounded-xl transition-colors font-medium"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={handleResetPassword}
-                                    disabled={resetting || newPassword.length < 4}
-                                    className="px-4 py-2 text-white rounded-xl shadow-lg transition-all font-bold bg-gradient-to-r from-amber-500 to-orange-600 shadow-amber-500/30 hover:shadow-amber-500/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                                >
-                                    <KeyRound size={14} />
-                                    {resetting ? 'Resetting...' : 'Reset Password'}
-                                </button>
-                            </div>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
-            {/* Left Panel: User List */}
-            <div className={`w-full lg:w-1/3 min-h-[50vh] lg:min-h-0 bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col overflow-hidden ${selectedUser ? 'hidden lg:flex' : 'flex'}`}>
-                <div className="p-4 border-b border-gray-100 bg-gray-50/50">
-                    <div className="flex justify-between items-center mb-3">
-                        <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                            <Users className="w-5 h-5 text-accent" />
-                            User Management
-                        </h2>
+        <div className="flex flex-col lg:flex-row h-[calc(100vh-120px)] gap-6 p-2 lg:p-4 bg-[#F8FAFC]">
+            {/* Left Panel: Navigation & User List */}
+            <div className={`w-full lg:w-[400px] flex flex-col gap-4 ${selectedUser ? 'hidden lg:flex' : 'flex'}`}>
+                {/* Tabs */}
+                <div className="bg-white p-1.5 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap">
+                    {(['student', 'teacher', 'admin', 'marketing'] as const).map((tab) => (
                         <button
-                            onClick={() => setCreateModal(true)}
-                            className="flex items-center gap-2 text-xs bg-accent text-white px-3 py-1.5 rounded-xl font-bold hover:bg-orange-500 transition-colors shadow-sm"
+                            key={tab}
+                            onClick={() => { setActiveTab(tab); setSelectedUser(null); }}
+                            className={`flex-1 min-w-[80px] py-2.5 rounded-xl text-[10px] font-bold transition-all uppercase tracking-wider ${
+                                activeTab === tab 
+                                ? 'bg-primary text-white shadow-lg' 
+                                : 'text-slate-500 hover:bg-slate-50'
+                            }`}
                         >
-                            + New User
+                            {t(`admin.users.tab_${tab}`, tab.charAt(0).toUpperCase() + tab.slice(1))}
                         </button>
-                    </div>
-                    <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                        <input
-                            type="text"
-                            placeholder="Search users..."
-                            value={searchTerm}
-                            onChange={e => setSearchTerm(e.target.value)}
-                            className="w-full pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent"
-                        />
-                    </div>
+                    ))}
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-2 space-y-2">
+                {/* Sidebar Header & Filters */}
+                <div className="bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col p-4 gap-4">
+                    <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-2">
+                            <div className="p-2 bg-indigo-50 rounded-lg">
+                                <Users className="w-5 h-5 text-primary" />
+                            </div>
+                            <h2 className="font-bold text-slate-800">{t('admin.users.management', 'DIRECTORY')}</h2>
+                        </div>
+                        <button 
+                            onClick={() => setFormModal({ isOpen: true, editingUser: null })}
+                            className="bg-accent text-white px-3 py-1.5 rounded-xl text-xs font-bold hover:scale-105 transition-all shadow-sm shadow-accent/20"
+                        >
+                            + {t('common.new', 'NEW')}
+                        </button>
+                    </div>
+
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <input
+                            type="text"
+                            placeholder={t('admin.users.search_placeholder', 'Search by name or email...')}
+                            value={searchTerm}
+                            onChange={e => setSearchTerm(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-accent/10 focus:border-accent transition-all"
+                        />
+                    </div>
+
+                    {/* Contextual Filters */}
+                    <AnimatePresence mode="wait">
+                        {activeTab === 'student' && (
+                            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                                <select 
+                                    className="w-full p-2.5 bg-slate-50 border border-slate-100 rounded-xl text-xs font-bold text-slate-600 focus:outline-none focus:border-accent"
+                                    value={filterLevel}
+                                    onChange={e => setFilterLevel(e.target.value)}
+                                >
+                                    <option value="">{t('admin.users.all_levels', 'All levels')}</option>
+                                    <option value="unassigned" className="font-bold text-accent">-- {t('admin.users.other', 'Unassigned')} --</option>
+                                    {levels.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
+                                </select>
+                            </motion.div>
+                        )}
+                        {activeTab === 'teacher' && (
+                            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                                <select 
+                                    className="w-full p-2.5 bg-slate-50 border border-slate-100 rounded-xl text-xs font-bold text-slate-600 focus:outline-none focus:border-accent"
+                                    value={filterModule}
+                                    onChange={e => setFilterModule(e.target.value)}
+                                >
+                                    <option value="">{t('admin.users.all_modules', 'All modules')}</option>
+                                    {allModules.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+                                </select>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
+
+                {/* User List Scroll Area */}
+                <div className="flex-1 overflow-y-auto pr-1 space-y-2 custom-scrollbar pb-10">
                     {loading ? (
-                        <div className="text-center py-10 text-gray-400">Loading users...</div>
+                        <div className="py-20 text-center space-y-6">
+                            <PremiumLoader size="md" />
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest animate-pulse">{t('common.loading_db', 'Accessing directory...')}</p>
+                        </div>
                     ) : filteredUsers.length === 0 ? (
-                        <div className="text-center py-10 text-gray-400">No users found</div>
+                        <div className="py-20 text-center space-y-2">
+                            <Filter className="w-8 h-8 text-slate-200 mx-auto" />
+                            <p className="text-xs text-slate-400 font-medium">{t('admin.users.no_users', 'No users found matching search')}</p>
+                        </div>
                     ) : (
                         filteredUsers.map(user => (
                             <motion.button
                                 key={user.id}
-                                layout
+                                layoutId={`user-${user.id}`}
                                 onClick={() => setSelectedUser(user)}
-                                className={`w-full text-left p-3 rounded-xl transition-all duration-200 flex items-center justify-between group ${selectedUser?.id === user.id
-                                    ? 'bg-accent/10 border-accent/20 border shadow-sm'
-                                    : 'hover:bg-gray-50 border border-transparent'
-                                    }`}
+                                className={`w-full flex items-center gap-3 p-3 rounded-2xl transition-all border ${
+                                    selectedUser?.id === user.id 
+                                    ? 'bg-white border-accent shadow-premium ring-1 ring-accent/20' 
+                                    : 'bg-white border-transparent hover:border-slate-200 hover:shadow-sm'
+                                }`}
                             >
-                                <div className="flex items-center gap-3">
-                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${selectedUser?.id === user.id ? 'bg-accent text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-gray-200'
-                                        }`}>
-                                        {user.name.charAt(0).toUpperCase()}
-                                    </div>
-                                    <div>
-                                        <p className={`font-semibold text-sm ${selectedUser?.id === user.id ? 'text-accent' : 'text-gray-700'}`}>
-                                            {user.name}
-                                        </p>
-                                        <p className="text-xs text-gray-400 truncate max-w-[150px]">{user.email}</p>
-                                    </div>
+                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black ${
+                                    selectedUser?.id === user.id ? 'bg-accent text-white shadow-lg' : 'bg-slate-100 text-slate-400'
+                                }`}>
+                                    {user.name.charAt(0)}
                                 </div>
-                                <ChevronRight className={`w-4 h-4 text-gray-300 transition-transform ${selectedUser?.id === user.id ? 'text-accent rotate-90 lg:rotate-0' : ''}`} />
+                                <div className="text-left flex-1 min-w-0">
+                                    <p className="text-sm font-bold text-slate-700 truncate">{user.name}</p>
+                                    <p className="text-[10px] text-slate-400 font-medium truncate">{user.email}</p>
+                                </div>
+                                <div className="flex flex-col items-end gap-1">
+                                    {user.levels && user.levels.length > 0 ? (
+                                        <span className="text-[9px] font-black bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-md uppercase tracking-tighter">
+                                            {user.levels.length} {user.levels.length === 1 ? 'Tier' : 'Tiers'}
+                                        </span>
+                                    ) : (user.role_name === 'student' && (
+                                        <span className="text-[9px] font-black bg-amber-50 text-amber-600 px-2 py-0.5 rounded-md uppercase">
+                                            {t('admin.users.unassigned', 'UNASSIGNED')}
+                                        </span>
+                                    ))}
+                                </div>
+                                <ChevronRight className={`w-4 h-4 text-slate-300 ${selectedUser?.id === user.id ? 'text-accent' : ''}`} />
                             </motion.button>
                         ))
                     )}
                 </div>
             </div>
 
-            {/* Right Panel: Selected User & Books */}
-            <div className={`w-full lg:w-2/3 min-h-[70vh] lg:min-h-0 bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col overflow-hidden ${!selectedUser ? 'hidden lg:flex' : 'flex'}`}>
+            {/* Right Panel: Details & Content */}
+            <div className={`flex-1 bg-white rounded-[32px] shadow-sm border border-slate-200 overflow-hidden flex flex-col ${!selectedUser ? 'hidden lg:flex' : 'flex'}`}>
                 {!selectedUser ? (
-                    <div className="flex-1 flex flex-col items-center justify-center text-gray-400 bg-gray-50/30">
-                        <Users className="w-16 h-16 mb-4 opacity-20" />
-                        <p>Select a user to manage their book access</p>
+                    <div className="flex-1 flex flex-col items-center justify-center text-slate-300 gap-6 bg-slate-50/50 relative overflow-hidden">
+                        <div className="absolute inset-0 opacity-20 pointer-events-none">
+                            <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-accent/20 rounded-full blur-3xl animate-pulse" />
+                            <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-primary/20 rounded-full blur-3xl" />
+                        </div>
+                        <div className="w-24 h-24 bg-white rounded-3xl shadow-premium flex items-center justify-center relative z-10 transition-transform hover:scale-110">
+                            <Users className="w-12 h-12 text-slate-150" />
+                        </div>
+                        <div className="text-center relative z-10">
+                            <h3 className="text-xl font-black text-slate-400 tracking-tight">{t('admin.users.selection_prompt', 'PROFILE EXPLORER')}</h3>
+                            <p className="text-sm text-slate-300 max-w-xs mt-2">{t('admin.users.select_user_hint', 'Select a user from the directory to view permissions, library access, and academic assignments.')}</p>
+                        </div>
                     </div>
                 ) : (
                     <>
-                        <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-white">
-                            <div className="flex items-center gap-4">
-                                <button onClick={() => setSelectedUser(null)} className="lg:hidden p-2 -ml-2 hover:bg-gray-100 rounded-full">
-                                    <ChevronRight className="w-5 h-5 rotate-180" />
+                        {/* Header */}
+                        <div className="p-6 lg:p-8 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 bg-white shrink-0">
+                            <div className="flex items-center gap-5">
+                                <button onClick={() => setSelectedUser(null)} className="lg:hidden p-3 bg-slate-100 rounded-2xl hover:bg-slate-200 transition-all">
+                                    <ChevronRight className="rotate-180 w-5 h-5 text-slate-600" />
                                 </button>
+                                <div className="p-5 bg-slate-50 rounded- [32px] border border-slate-100 shadow-sm">
+                                    {selectedUser.role_name === 'student' ? <GraduationCap className="w-10 h-10 text-accent" /> : selectedUser.role_name === 'teacher' ? <Presentation className="w-10 h-10 text-primary" /> : <Shield className="w-10 h-10 text-primary" />}
+                                </div>
                                 <div>
-                                    <h2 className="text-xl font-bold text-gray-800">{selectedUser.name}</h2>
-                                    <div className="flex items-center gap-2 mt-1">
-                                        <span className="text-sm text-gray-500">{selectedUser.email}</span>
-                                        <span className="px-2 py-0.5 bg-green-100 text-green-700 text-[10px] font-bold uppercase rounded-full tracking-wide">
-                                            {selectedUser.status}
+                                    <div className="flex items-center gap-3">
+                                        <h2 className="text-3xl font-black text-slate-800 tracking-tight leading-none">{selectedUser.name}</h2>
+                                        <span className="px-3 py-1 bg-primary text-white text-[10px] font-black rounded-lg uppercase tracking-widest shadow-md">
+                                            {selectedUser.role_name}
                                         </span>
+                                    </div>
+                                    <div className="flex items-center gap-3 mt-2 text-slate-400">
+                                        <div className="flex items-center gap-1.5 font-bold text-xs bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
+                                            <Mail size={14} className="text-slate-300" />
+                                            {selectedUser.email}
+                                        </div>
+                                        <div className="w-1.5 h-1.5 bg-slate-200 rounded-full" />
+                                        <div className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest">
+                                            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                                            Active
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-3">
-                                <button
-                                    onClick={() => setResetModal({ isOpen: true, userId: selectedUser.id, userName: selectedUser.name })}
-                                    className="flex items-center gap-2 px-4 py-2 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-xl text-sm font-semibold transition-all"
-                                    title="Reset user password"
+                            
+                            <div className="flex gap-3 w-full sm:w-auto self-end sm:self-center">
+                                <motion.button 
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={() => setFormModal({ isOpen: true, editingUser: selectedUser })}
+                                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-3 bg-white border-2 border-slate-100 rounded-2xl text-slate-700 text-xs font-black shadow-sm transition-all hover:border-accent/40"
                                 >
-                                    <KeyRound size={16} />
-                                    Reset Password
-                                </button>
-                                <div className="text-right hidden sm:block">
-                                    <p className="text-xs text-gray-400">Manage Access</p>
-                                    <p className="text-sm font-semibold text-accent flex items-center justify-end gap-1">
-                                        <Shield className="w-4 h-4" />
-                                        Administrator Mode
-                                    </p>
-                                </div>
+                                    <Edit3 className="w-4 h-4 text-accent" />
+                                    {t('common.edit', 'EDIT')}
+                                </motion.button>
+                                <motion.button 
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={() => setResetModal({ isOpen: true, userId: selectedUser.id, userName: selectedUser.name })}
+                                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-3 bg-white border-2 border-slate-100 rounded-2xl text-slate-700 text-xs font-black shadow-sm transition-all hover:border-amber-400 group"
+                                >
+                                    <KeyRound className="w-4 h-4 text-amber-500 group-hover:rotate-12 transition-transform" />
+                                    {t('admin.users.password', 'KEY')}
+                                </motion.button>
                             </div>
                         </div>
 
-                        <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-gray-50/30">
-                            {booksLoading ? (
-                                <div className="text-center py-20 text-gray-400">Loading books...</div>
-                            ) : (
-                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-                                    {userBooks.map(book => (
-                                        <motion.div
-                                            key={book.id}
-                                            whileHover={{ scale: 1.05 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            onClick={() => handleBookClick(book)}
-                                            className={`relative aspect-[2/3] rounded-xl shadow-premium hover:shadow-premium-hover overflow-hidden cursor-pointer group transition-all duration-300 ${book.assignment_status === 'assigned'
-                                                ? 'ring-4 ring-green-500/50'
-                                                : 'grayscale opacity-70 hover:opacity-100 hover:grayscale-0'
-                                                }`}
-                                        >
-                                            <img
-                                                src={book.cover_image || `/src/assets/book-cover-placeholder.png`}
-                                                alt={book.title}
-                                                className="w-full h-full object-cover"
-                                                onError={(e) => {
-                                                    // Fallback if image fails
-                                                    (e.target as HTMLImageElement).src = 'https://placehold.co/200x300?text=No+Cover';
-                                                }}
-                                            />
-
-                                            {/* Status Badge Overlays */}
-                                            <div className="absolute top-2 right-2">
-                                                {book.assignment_status === 'assigned' ? (
-                                                    <div className="bg-green-500 text-white p-1 rounded-full shadow-lg">
-                                                        <Check className="w-4 h-4" />
-                                                    </div>
-                                                ) : (
-                                                    <div className="bg-gray-800/80 text-white p-1 rounded-full shadow-lg backdrop-blur-sm">
-                                                        <X className="w-4 h-4" />
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                            {/* Title Overlay on Hover */}
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
-                                                <p className="text-white font-bold text-sm leading-tight mb-1">{book.title}</p>
-                                                <p className="text-gray-300 text-[10px] uppercase font-medium tracking-wider">{book.assignment_status === 'assigned' ? 'Active' : 'Inactive'}</p>
-                                            </div>
-                                        </motion.div>
-                                    ))}
+                        {/* Content Area */}
+                        <div className="flex-1 overflow-y-auto p-6 lg:p-8 bg-slate-50/50 custom-scrollbar pb-20">
+                            {/* Academic Hierarchy Context */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                            {/* Interactive Modules Management */}
+                            <div className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-premium flex flex-col gap-4 relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity">
+                                    <LayoutGrid size={120} />
                                 </div>
-                            )}
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-14 h-14 bg-primary text-white rounded-2xl flex items-center justify-center shadow-lg">
+                                            <LayoutGrid className="w-7 h-7" />
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('admin.users.hierarchy_context', 'Curriculum Coverage')}</p>
+                                            <h4 className="text-lg font-black text-slate-800 leading-tight">Module Access</h4>
+                                        </div>
+                                    </div>
+                                    <div className="text-[10px] font-black text-primary bg-primary/5 px-3 py-1 rounded-full">
+                                        {userModules.filter(m => m.assignment_status === 'assigned').length} / {userModules.length}
+                                    </div>
+                                </div>
+                                <div className="flex flex-wrap gap-2 relative z-10">
+                                    {modulesLoading ? (
+                                        [1,2,3].map(i => <div key={i} className="h-9 w-28 bg-slate-100 rounded-2xl animate-pulse" />)
+                                    ) : userModules.length === 0 ? (
+                                        <span className="text-xs text-slate-400 italic">No modules found</span>
+                                    ) : (
+                                        userModules.map((mod: any) => (
+                                            <button
+                                                key={mod.id}
+                                                onClick={() => handleToggleModule(selectedUser.id, mod.id, mod.assignment_status)}
+                                                title={mod.assignment_status === 'assigned' ? 'Click to remove' : 'Click to assign'}
+                                                className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-[10px] font-black border-2 transition-all active:scale-95 ${
+                                                    mod.assignment_status === 'assigned'
+                                                    ? 'bg-primary border-primary text-white shadow-md shadow-primary/20'
+                                                    : 'bg-white border-slate-100 text-slate-400 hover:border-primary/40 hover:text-primary'
+                                                }`}
+                                            >
+                                                {mod.assignment_status === 'assigned' && <Check size={10} strokeWidth={4}/>}
+                                                {mod.name.toUpperCase()}
+                                            </button>
+                                        ))
+                                    )}
+                                </div>
+                            </div>
+
+                                <div className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-premium flex flex-col gap-4 relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity">
+                                        <GraduationCap size={120} />
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-14 h-14 bg-accent text-white rounded-2xl flex items-center justify-center shadow-lg">
+                                            <GraduationCap className="w-7 h-7" />
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('admin.users.tier_context', 'Educational Placement')}</p>
+                                            <h4 className="text-lg font-black text-slate-800 leading-tight">Enrolled Tiers</h4>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-wrap gap-2 relative z-10">
+                                        {selectedUser.levels && selectedUser.levels.length > 0 ? (
+                                            selectedUser.levels.map(level => (
+                                                <span key={level} className="px-3 py-1.5 bg-amber-50 text-amber-700 rounded-xl text-[10px] font-black uppercase tracking-wider border border-amber-100/50">
+                                                    {level}
+                                                </span>
+                                            ))
+                                        ) : (
+                                            <span className="text-xs text-slate-400 italic">No tiers assigned</span>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Books Section */}
+                            <div className="space-y-8">
+                                <div className="flex items-center justify-between px-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2.5 bg-white shadow-md rounded-xl">
+                                            <BookOpen className="w-5 h-5 text-accent" />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-xl font-black text-slate-800 tracking-tight">{t('admin.users.library_access', 'Library Privileges')}</h3>
+                                            <p className="text-xs text-slate-400 font-medium">Toggle access for digital educational resources</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-slate-100 shadow-sm text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                            {userBooks.filter(b => b.assignment_status === 'assigned').length} Assigned
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {booksLoading ? (
+                                    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 px-2">
+                                        {[1,2,3,4].map(i => (
+                                            <div key={i} className="aspect-[3/4] bg-white rounded-[40px] border border-slate-100 shadow-sm p-4 space-y-4">
+                                                <div className="w-full h-[70%] bg-slate-100 rounded-[32px] animate-pulse" />
+                                                <div className="h-4 w-3/4 bg-slate-50 rounded-full animate-pulse" />
+                                                <div className="h-4 w-1/2 bg-slate-50 rounded-full animate-pulse" />
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 px-2">
+                                        {userBooks.map(book => (
+                                            <motion.div
+                                                key={book.id}
+                                                layout
+                                                initial={{ opacity: 0, scale: 0.9 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                className={`group relative aspect-[3/4] rounded-[40px] overflow-hidden cursor-pointer border-[5px] transition-all duration-700 shadow-premium hover:shadow-2xl ${
+                                                    book.assignment_status === 'assigned' 
+                                                    ? 'border-accent/40 ring-1 ring-accent/10 scale-[1.02]' 
+                                                    : 'border-white grayscale opacity-60 hover:grayscale-0 hover:opacity-100'
+                                                }`}
+                                                onClick={() => handleToggleBook(selectedUser.id, book.id, book.assignment_status)}
+                                            >
+                                                <img 
+                                                    src={book.cover_image || 'https://placehold.co/400x600?text=BOOK'} 
+                                                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                                                    alt=""
+                                                />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
+                                                
+                                                <div className="absolute top-6 right-6">
+                                                    {book.assignment_status === 'assigned' ? (
+                                                        <div className="w-10 h-10 bg-accent text-white rounded-full flex items-center justify-center shadow-xl transform scale-100 group-hover:scale-110 transition-all border-2 border-white/20">
+                                                            <Check className="w-5 h-5" strokeWidth={4} />
+                                                        </div>
+                                                    ) : (
+                                                        <div className="w-10 h-10 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full flex items-center justify-center shadow-xl group-hover:bg-accent group-hover:text-white group-hover:border-transparent transition-all">
+                                                            <Plus className="w-5 h-5 text-white" />
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                <div className="absolute bottom-0 inset-x-0 p-6 translate-y-2 group-hover:translate-y-0 transition-transform">
+                                                    <div className="px-2 py-1 bg-white/10 backdrop-blur-md rounded-lg w-fit mb-3">
+                                                        <p className="text-[9px] font-black text-accent-light uppercase tracking-widest">{book.category}</p>
+                                                    </div>
+                                                    <p className="text-base font-black text-white leading-tight drop-shadow-lg">{book.title}</p>
+                                                </div>
+                                            </motion.div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </>
                 )}
             </div>
+
+            {/* Hierarchical Form Modal */}
+            <UserForm 
+                isOpen={formModal.isOpen} 
+                onClose={() => setFormModal({ isOpen: false, editingUser: null })} 
+                onSubmit={handleSaveUser} 
+                levels={levels}
+                modules={allModules}
+                editingUser={formModal.editingUser}
+                forcedRole={activeTab}
+                t={t}
+            />
+
+            {/* Password Reset Modal */}
+            <PasswordResetModal 
+                data={resetModal} 
+                onClose={() => setResetModal(null)} 
+                onSubmit={handleResetPassword} 
+                t={t}
+            />
         </div>
     );
 };
+
+// --- Helper Components ---
+
+const UserForm = ({ isOpen, onClose, onSubmit, levels, modules, editingUser, forcedRole, t }: any) => {
+    const defaultForm = { 
+        name: '', email: '', password: '', role: (forcedRole || 'student') as any, 
+        level_ids: [] as number[], module_ids: [] as number[] 
+    };
+    const [form, setForm] = useState(defaultForm);
+    const [saving, setSaving] = useState(false);
+
+    useEffect(() => {
+        if (editingUser) {
+            setForm({
+                name: editingUser.name,
+                email: editingUser.email,
+                password: '', // Always empty on edit
+                role: editingUser.role_name,
+                level_ids: editingUser.level_ids || [],
+                module_ids: editingUser.module_ids || []
+            });
+        } else {
+            setForm({
+                ...defaultForm,
+                role: forcedRole || 'student'
+            });
+        }
+    }, [editingUser, isOpen, forcedRole]);
+
+    if (!isOpen) return null;
+
+    const toggleLevel = (id: number) => {
+        setForm(prev => ({
+            ...prev,
+            level_ids: prev.level_ids.includes(id) 
+                ? prev.level_ids.filter(lid => lid !== id) 
+                : [...prev.level_ids, id]
+        }));
+    };
+
+    const toggleModule = (id: number) => {
+        setForm(prev => ({
+            ...prev,
+            module_ids: prev.module_ids.includes(id) 
+                ? prev.module_ids.filter(mid => mid !== id) 
+                : [...prev.module_ids, id]
+        }));
+    };
+
+    const handleFormSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setSaving(true);
+        await onSubmit(form);
+        setSaving(false);
+    };
+
+    // Group levels by module for the hierarchical selector
+    const groupedLevels = modules.map((mod: Module) => ({
+        ...mod,
+        levels: levels.filter((l: AcademicLevel) => Number(l.module_id) === mod.id)
+    }));
+
+    return (
+        <div className="fixed inset-0 z-[300] flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-slate-950/80 backdrop-blur-xl" />
+            <motion.div 
+                initial={{ scale: 0.95, opacity: 0, y: 20 }} 
+                animate={{ scale: 1, opacity: 1, y: 0 }} 
+                exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                className="bg-white w-full max-w-2xl rounded-[48px] shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[95vh]"
+            >
+                <div className="p-8 bg-primary text-white flex justify-between items-center relative overflow-hidden">
+                    <div className="absolute inset-0 opacity-10 pointer-events-none">
+                        <Users className="absolute -bottom-10 -left-10 w-48 h-48 rotate-12" />
+                    </div>
+                    <div className="relative z-10">
+                        <h3 className="text-3xl font-black tracking-tight">{editingUser ? 'REFINE PROFILE' : 'ENROLL NEW MEMBER'}</h3>
+                        <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em] mt-1">Academic Access Control Protocol</p>
+                    </div>
+                    <button onClick={onClose} className="p-4 bg-white/10 rounded-3xl hover:bg-white/20 transition-all border border-white/5 relative z-10"><X size={24} /></button>
+                </div>
+                
+                <form onSubmit={handleFormSubmit} className="flex-1 overflow-y-auto p-10 space-y-10 custom-scrollbar">
+                    {/* Identification Section */}
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-3 mb-2">
+                            <div className="w-1.5 h-6 bg-accent rounded-full" />
+                            <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest">Identification & Credentials</h4>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <InputField label="FULL NAME" value={form.name} onChange={(v: string) => setForm({...form, name: v})} placeholder="e.g. Gabriel García" />
+                            <InputField label="INSTITUTIONAL EMAIL" value={form.email} onChange={(v: string) => setForm({...form, email: v})} placeholder="gabriel@ttesol.com" type="email" />
+                            <InputField label={editingUser ? "CHANGE PASSWORD (OPTIONAL)" : "ACCOUNT PASSWORD"} value={form.password} onChange={(v: string) => setForm({...form, password: v})} placeholder="Min 4 characters" type="password" />
+                            
+                            <div>
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-2 block ml-1">ASSIGNED PROTOCOL (ROLE)</label>
+                                <div className="relative group">
+                                    <select 
+                                        className={`w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-[24px] focus:bg-white focus:border-accent transition-all text-sm font-bold text-slate-700 outline-none appearance-none ${!editingUser ? 'bg-slate-100/50 cursor-not-allowed text-slate-400' : 'cursor-pointer hover:border-slate-200'}`}
+                                        value={form.role}
+                                        onChange={e => setForm({...form, role: e.target.value as any})}
+                                        disabled={!editingUser}
+                                    >
+                                        <option value="student">STUDENT - LEARNER</option>
+                                        <option value="teacher">TEACHER - MENTOR</option>
+                                        <option value="marketing">MARKETING - ANALYST</option>
+                                        <option value="manager">MANAGER - COORDINATOR</option>
+                                        <option value="admin">ADMIN - SYSTEM OVERSEER</option>
+                                    </select>
+                                    <div className="absolute right-5 top-1/2 -translate-y-1/2 flex items-center gap-2 pointer-events-none">
+                                        {!editingUser && <Shield size={14} className="text-slate-300" />}
+                                        <ChevronDown className="text-slate-400" size={20} />
+                                    </div>
+                                    {!editingUser && (
+                                        <div className="absolute -bottom-5 left-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <p className="text-[8px] font-black text-accent uppercase tracking-widest">{t('admin.users.role_context_locked', 'Role locked to active tab context')}</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Hierarchy Assignment Section */}
+                    <AnimatePresence mode="wait">
+                        {(form.role === 'student' || form.role === 'teacher') && (
+                            <motion.div 
+                                initial={{ opacity: 0, y: 20 }} 
+                                animate={{ opacity: 1, y: 0 }} 
+                                exit={{ opacity: 0, y: 20 }}
+                                className="space-y-8"
+                            >
+                                <div className="flex items-center gap-3 mb-2">
+                                    <div className="w-1.5 h-6 bg-primary rounded-full" />
+                                    <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest">Academic Hierarchy Assignment</h4>
+                                </div>
+
+                                {/* Multi-Module Selector for Teachers AND Students */}
+                                {(form.role === 'teacher' || form.role === 'student') && (
+                                    <div className="space-y-4 bg-slate-50 p-6 rounded-[32px] border border-slate-100">
+                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block ml-1">
+                                            {form.role === 'teacher' ? 'Specialty Modules' : 'Enrolled Modules'}
+                                        </label>
+                                        <div className="flex flex-wrap gap-2">
+                                            {modules.map((m: any) => (
+                                                <button 
+                                                    key={m.id} 
+                                                    type="button"
+                                                    onClick={() => toggleModule(m.id)}
+                                                    className={`px-5 py-2.5 rounded-2xl text-[10px] font-black border-2 transition-all ${
+                                                        form.module_ids.includes(m.id) 
+                                                        ? 'bg-primary border-primary text-white shadow-lg' 
+                                                        : 'bg-white border-white text-slate-400 hover:border-primary/30'
+                                                    }`}
+                                                >
+                                                    {m.name.toUpperCase()}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Hierarchical Level Selector for Students/Teachers */}
+                                <div className="space-y-6">
+                                    <div className="flex items-center justify-between ml-1">
+                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block">Enrollment Tiers (Grouped by Module)</label>
+                                        <div className="text-[10px] font-black text-accent uppercase tracking-widest">{form.level_ids.length} Selected</div>
+                                    </div>
+                                    
+                                    <div className="grid grid-cols-1 gap-4">
+                                        {groupedLevels.map((group: any) => (
+                                            <div key={group.id} className="bg-white border-2 border-slate-50 rounded-[32px] overflow-hidden">
+                                                <div className="bg-slate-50/50 px-6 py-3 border-b border-slate-100 flex items-center gap-3">
+                                                    <LayoutGrid size={14} className="text-slate-400" />
+                                                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{group.name}</span>
+                                                </div>
+                                                <div className="p-4 flex flex-wrap gap-2">
+                                                    {group.levels.length > 0 ? (
+                                                        group.levels.map((l: any) => (
+                                                            <button 
+                                                                key={l.id} 
+                                                                type="button"
+                                                                onClick={() => toggleLevel(l.id)}
+                                                                className={`flex items-center gap-2 pl-2 pr-4 py-2 rounded-xl text-[10px] font-bold border-2 transition-all ${
+                                                                    form.level_ids.includes(l.id) 
+                                                                    ? 'bg-accent/10 border-accent text-accent' 
+                                                                    : 'bg-white border-slate-100 text-slate-400 hover:border-slate-200'
+                                                                }`}
+                                                            >
+                                                                <div className={`w-4 h-4 rounded-md flex items-center justify-center transition-colors ${form.level_ids.includes(l.id) ? 'bg-accent' : 'border border-slate-200 bg-white'}`}>
+                                                                    {form.level_ids.includes(l.id) && <Check size={10} className="text-white" strokeWidth={5} />}
+                                                                </div>
+                                                                {l.name}
+                                                            </button>
+                                                        ))
+                                                    ) : (
+                                                        <span className="text-[10px] text-slate-300 italic px-2">No tiers defined for this module</span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </form>
+
+                <div className="p-10 bg-slate-50 border-t border-slate-100 flex gap-4 shrink-0 mt-auto">
+                    <button type="button" onClick={onClose} className="flex-1 py-4 font-black text-slate-400 hover:text-slate-600 uppercase tracking-[0.2em] text-xs transition-colors">ABORT MISSION</button>
+                    <button 
+                        onClick={handleFormSubmit}
+                        disabled={saving || !form.name || !form.email}
+                        className="flex-[2] py-5 bg-accent text-white rounded-[24px] font-black shadow-2xl shadow-accent/40 hover:scale-[1.02] active:scale-95 disabled:opacity-50 transition-all uppercase tracking-[0.2em] text-xs flex items-center justify-center gap-3"
+                    >
+                        {saving ? <LocalLoader className="animate-spin" /> : <LocalSave size={20} />}
+                        {editingUser ? 'COMMIT CHANGES' : 'AUTHORIZE ACCOUNT'}
+                    </button>
+                </div>
+            </motion.div>
+        </div>
+    );
+};
+
+const PasswordResetModal = ({ data, onClose, onSubmit, t }: any) => {
+    const [pass, setPass] = useState('');
+    const [show, setShow] = useState(false);
+    const [saving, setSaving] = useState(false);
+    if (!data) return null;
+
+    return (
+        <div className="fixed inset-0 z-[400] flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-slate-950/90 backdrop-blur-xl" />
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white rounded-[40px] p-10 w-full max-w-sm shadow-2xl relative z-10 border border-slate-100">
+                <div className="flex items-center gap-5 mb-8">
+                    <div className="p-5 bg-amber-50 rounded-[24px] shadow-sm">
+                        <KeyRound className="text-amber-500 w-8 h-8" />
+                    </div>
+                    <div>
+                        <h3 className="text-xl font-black text-slate-800 tracking-tight leading-none">{t('admin.users.reset_pass', 'KEY RESET')}</h3>
+                        <p className="text-[10px] text-amber-600 font-black uppercase tracking-widest mt-1 mt-2">{data.userName}</p>
+                    </div>
+                </div>
+                <div className="relative mb-8 group">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block ml-1">New Operational Password</label>
+                    <div className="relative">
+                        <input 
+                            type={show ? 'text' : 'password'} 
+                            autoFocus
+                            value={pass} 
+                            onChange={e => setPass(e.target.value)} 
+                            className="w-full p-5 bg-slate-50 border-2 border-slate-50 rounded-[20px] focus:bg-white focus:border-amber-500 transition-all text-sm font-bold outline-none pr-14 shadow-sm"
+                            placeholder="Min 4 symbols..."
+                        />
+                        <button onClick={() => setShow(!show)} className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-500 transition-colors">
+                            {show ? <EyeOff size={20} /> : <Eye size={20} />}
+                        </button>
+                    </div>
+                </div>
+                <div className="flex flex-col gap-3">
+                    <button 
+                        onClick={async () => {
+                            setSaving(true);
+                            await onSubmit(data.userId, pass);
+                            setSaving(false);
+                        }} 
+                        disabled={saving || pass.length < 4}
+                        className="w-full py-5 bg-amber-500 text-white rounded-[24px] font-black text-xs uppercase tracking-widest shadow-xl shadow-amber-500/30 hover:scale-[1.02] active:scale-95 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                    >
+                        {saving ? <LocalLoader className="animate-spin" /> : <LocalSave size={18} />}
+                        UPDATE KEY
+                    </button>
+                    <button onClick={onClose} className="w-full py-3 text-[10px] font-black text-slate-300 hover:text-slate-500 uppercase tracking-widest transition-colors">DISCARD</button>
+                </div>
+            </motion.div>
+        </div>
+    );
+};
+
+const InputField = ({ label, value, onChange, placeholder, type = 'text' }: any) => (
+    <div>
+        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-2 block ml-1">{label}</label>
+        <div className="relative group">
+            <input 
+                type={type} 
+                value={value} 
+                onChange={e => onChange(e.target.value)}
+                placeholder={placeholder}
+                className="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-[24px] focus:bg-white focus:border-accent transition-all text-sm font-bold text-slate-700 outline-none placeholder:text-slate-300 shadow-sm"
+            />
+        </div>
+    </div>
+);
+
+const LocalLoader = ({ className, size = 20 }: { className?: string; size?: number }) => (
+    <ServerCog className={`${className} animate-spin`} size={size} />
+);
+
+const LocalSave = ({ className, size = 20 }: { className?: string; size?: number }) => (
+    <Check className={className} size={size} />
+);
 
 export default AdminUsers;

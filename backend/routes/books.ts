@@ -28,11 +28,11 @@ const authenticateToken = (req: any, res: any, next: any) => {
 router.get('/', authenticateToken, async (req: any, res: any) => {
     try {
         const { role, id } = req.user;
-
+        const userRole = (role || '').toLowerCase();
         let query = '';
         let params: any[] = [];
 
-        if (role === 'admin' || role === 'manager') {
+        if (userRole === 'admin' || userRole === 'manager') {
             query = 'SELECT * FROM books ORDER BY COALESCE(sort_order, id) ASC';
         } else {
             query = `
@@ -183,12 +183,11 @@ router.get('/reports/kpi', authenticateToken, async (req: any, res: any) => {
 router.get('/:id/contents', authenticateToken, async (req: any, res: any) => {
     try {
         const { id } = req.params;
-        const { role } = req.user;
-
+        const userRole = (req.user.role || '').toLowerCase();
         let query = '';
         let params: any[] = [id];
 
-        if (role === 'admin' || role === 'manager') {
+        if (userRole === 'admin' || userRole === 'manager') {
             // Admins see ALL items
             query = 'SELECT * FROM book_contents WHERE book_id = $1 ORDER BY order_index ASC';
         } else {
