@@ -152,7 +152,7 @@ router.get('/:id', async (req, res) => {
         // Prepare standard media headers
         res.setHeader('Content-Type', mime_type);
         res.setHeader('Accept-Ranges', 'bytes');
-        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
 
         // Handle HTML5 Video/Audio Range Requests
         const range = req.headers.range;

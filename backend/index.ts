@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import compression from 'compression';
 
 // Database connection import (side effect connects)
 import './db';
@@ -11,6 +12,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // Middleware
+app.use(compression());
 app.use(cors());
 app.use(helmet({
     contentSecurityPolicy: false, // Disable for easier debugging in dev/prod transition if needed

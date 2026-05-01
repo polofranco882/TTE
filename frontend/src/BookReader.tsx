@@ -127,13 +127,13 @@ const FlipbookPage = forwardRef<HTMLDivElement, FlipbookPageProps>((props, ref) 
             {/* Debug Layer (Overlay that shows navigation zones) */}
             {debugNav && (
                 <div className="absolute inset-0 z-[100] pointer-events-none flex">
-                    <div className="h-full w-[5%] bg-green-500/30 border-r border-green-500 flex items-center justify-center text-[8px] font-black text-white">CLICK ZONE</div>
+                    <div className="h-full bg-green-500/30 border-r border-green-500 flex items-center justify-center text-[8px] font-black text-white w-[2.5%]">CLICK ZONE</div>
                     <div className="h-full flex-1 bg-red-500/20 flex flex-col items-center justify-center text-[8px] font-black text-white">
                         <span>PROTECTED AREA</span>
                         <div className="w-1/2 h-px bg-white/20 my-1"/>
                         <span>CONTENT ONLY</span>
                     </div>
-                    <div className="h-full w-[5%] bg-green-500/30 border-l border-green-500 flex items-center justify-center text-[8px] font-black text-white">CLICK ZONE</div>
+                    <div className="h-full bg-green-500/30 border-l border-green-500 flex items-center justify-center text-[8px] font-black text-white w-[2.5%]">CLICK ZONE</div>
                 </div>
             )}
 
@@ -316,7 +316,8 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
             const x = clientX - rect.left;
             const totalWidth = rect.width;
             
-            const margin = totalWidth * 0.12; // Wider margin for touch (fat finger accuracy)
+            const marginRatio = isSinglePage ? 0.025 : 0.0125; // Half width for active area
+            const margin = totalWidth * marginRatio; 
             const isNearEdge = x < margin || x > (totalWidth - margin);
 
             if (!isNearEdge) {
@@ -1124,7 +1125,7 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
                                                          <div className="absolute inset-0 z-[500] pointer-events-none flex">
                                                              {/* Left Navigation Zone */}
                                                              <div 
-                                                                className="nav-zone h-full w-[5%] pointer-events-auto cursor-pointer"
+                                                                className={`nav-zone h-full pointer-events-auto cursor-pointer ${isSinglePage ? 'w-[2.5%]' : 'w-[1.25%]'}`}
                                                                 onClick={handleFlipPrev}
                                                              ></div>
 
@@ -1133,7 +1134,7 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
 
                                                              {/* Right Navigation Zone */}
                                                              <div 
-                                                                className="nav-zone h-full w-[5%] pointer-events-auto cursor-pointer"
+                                                                className={`nav-zone h-full pointer-events-auto cursor-pointer ${isSinglePage ? 'w-[2.5%]' : 'w-[1.25%]'}`}
                                                                 onClick={handleFlipNext}
                                                              ></div>
                                                          </div>
@@ -1186,7 +1187,7 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
                                                             >
                                                                 {/* Navigation Zones (Edge Clicks) */}
                                                                 <div 
-                                                                    className="absolute left-0 top-0 bottom-0 w-[5%] z-[60] cursor-pointer nav-zone group flex items-center justify-start pl-2"
+                                                                    className={`absolute left-0 top-0 bottom-0 z-[60] cursor-pointer nav-zone group flex items-center justify-start pl-2 ${isSinglePage ? 'w-[2.5%]' : 'w-[1.25%]'}`}
                                                                     onClick={(e) => {
                                                                         e.stopPropagation();
                                                                         handleFlipPrev();
@@ -1195,7 +1196,7 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
                                                                     <div className="w-1 h-12 rounded-full bg-accent/0 group-hover:bg-accent/20 transition-all" />
                                                                 </div>
                                                                 <div 
-                                                                    className="absolute right-0 top-0 bottom-0 w-[5%] z-[60] cursor-pointer nav-zone group flex items-center justify-end pr-2"
+                                                                    className={`absolute right-0 top-0 bottom-0 z-[60] cursor-pointer nav-zone group flex items-center justify-end pr-2 ${isSinglePage ? 'w-[2.5%]' : 'w-[1.25%]'}`}
                                                                     onClick={(e) => {
                                                                         e.stopPropagation();
                                                                         handleFlipNext();
@@ -1269,10 +1270,10 @@ const BookReader = ({ bookId, token, sidebarOpen, onBack, onNotify, onUnauthoriz
                                                                         showCover={true}
                                                                         mobileScrollSupport={true}
                                                                         clickEventForward={true}
-                                                                        useMouseEvents={true}
                                                                         swipeDistance={30}
-                                                                        showPageCorners={true}
+                                                                        showPageCorners={false}
                                                                         disableFlipByClick={true}
+                                                                        useMouseEvents={false}
                                                                         startZIndex={0}
                                                                         style={{}}
                                                                         ref={flipBookRef}
